@@ -1,0 +1,413 @@
+{
+  "A.2_ANALYTIC_KG": {
+    "core_data": {
+      "Y0_data": {
+        "Revenue": 545500,
+        "ExtraCash_Revenue": 468000,
+        "Subscription_Revenue": 36000,
+        "Interchange_Revenue": 24000,
+        "Other_Revenue": 17500,
+        "EBIT": 87000,
+        "Gross_Profit": 376000,
+        "Variable_Costs": 148000,
+        "Provision_Credit_Losses": 88000,
+        "Processing_Servicing_Costs": 31000,
+        "Network_Transaction_Costs": 29000,
+        "Fixed_Costs": 188000,
+        "Advertising_Activation": 62000,
+        "Cash_Compensation": 82000,
+        "Technology_Infra": 12000,
+        "Other_OpEx": 32000,
+        "SBC": 23000,
+        "DandA": 6500,
+        "NOPAT": 68700,
+        "Invested_Capital": 350845,
+        "Total_Debt": 75000,
+        "Excess_Cash": 34889,
+        "CapEx": 300,
+        "FDSO": 14500,
+        "Total_Members": 13.5,
+        "MTMs": 2.77,
+        "CAC": 19,
+        "Conversion_Rate": 0.205,
+        "Avg_ExtraCash_Size": 207,
+        "Net_Monetization_Rate": 0.048,
+        "ChargeOff_Rate": 0.0146,
+        "Subscription_Price_Monthly": 2.5,
+        "DaveCard_Spend_per_MTM": 184,
+        "DaveCard_Spend": 2040000,
+        "Interchange_Rate": 0.012,
+        "ExtraCash_Originations": 8000000,
+        "Originations_per_MTM_Annual": 35,
+        "SBC_Pct_Revenue": 0.042,
+        "Tax_Rate": 0.21,
+        "CapEx_Pct_Revenue": 0.0005,
+        "DandA_Pct_Revenue": 0.012,
+        "NWC_Pct_Revenue": -0.05,
+        "Churn_Rate": 0.15,
+        "Marketing_Spend": 46500,
+        "New_Member_Additions": 843,
+        "FCF_Unlevered": 136550
+      }
+    },
+    "market_context": {
+      "RFR": 0.045,
+      "ERP": 0.05,
+      "Current_Stock_Price": 100.00
+    },
+    "share_data": {
+      "FDSO": 14500
+    }
+  },
+  "A.3_CAUSAL_DAG": {
+    "DAG": {
+      "Total_Members": {
+        "type": "Endogenous_Driver",
+        "parents": [],
+        "equation": "PREV('Total_Members') * (1 - GET('Churn_Rate')) + GET('New_Member_Additions') * 4 / 1000"
+      },
+      "New_Member_Additions": {
+        "type": "Endogenous_Driver",
+        "parents": ["Marketing_Spend", "CAC"],
+        "equation": "GET('Marketing_Spend') / GET('CAC')"
+      },
+      "Marketing_Spend": {
+        "type": "Endogenous_Driver",
+        "parents": ["Advertising_Activation"],
+        "equation": "GET('Advertising_Activation') * 0.75"
+      },
+      "CAC": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "Churn_Rate": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "Conversion_Rate": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "MTMs": {
+        "type": "Endogenous_Driver",
+        "parents": ["Total_Members", "Conversion_Rate"],
+        "equation": "GET('Total_Members') * GET('Conversion_Rate')"
+      },
+      "Avg_ExtraCash_Size": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "Originations_per_MTM_Annual": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "ExtraCash_Originations": {
+        "type": "Endogenous_Driver",
+        "parents": ["MTMs", "Avg_ExtraCash_Size", "Originations_per_MTM_Annual"],
+        "equation": "GET('MTMs') * GET('Avg_ExtraCash_Size') * GET('Originations_per_MTM_Annual')"
+      },
+      "Net_Monetization_Rate": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "ExtraCash_Revenue": {
+        "type": "Financial_Line_Item",
+        "parents": ["ExtraCash_Originations", "Net_Monetization_Rate"],
+        "equation": "GET('ExtraCash_Originations') * GET('Net_Monetization_Rate')"
+      },
+      "Subscription_Price_Monthly": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "Subscription_Revenue": {
+        "type": "Financial_Line_Item",
+        "parents": ["MTMs", "Subscription_Price_Monthly"],
+        "equation": "GET('MTMs') * GET('Subscription_Price_Monthly') * 12 * 1000"
+      },
+      "DaveCard_Spend_per_MTM": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "DaveCard_Spend": {
+        "type": "Endogenous_Driver",
+        "parents": ["MTMs", "DaveCard_Spend_per_MTM"],
+        "equation": "GET('MTMs') * GET('DaveCard_Spend_per_MTM') * 4"
+      },
+      "Interchange_Rate": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "Interchange_Revenue": {
+        "type": "Financial_Line_Item",
+        "parents": ["DaveCard_Spend", "Interchange_Rate"],
+        "equation": "GET('DaveCard_Spend') * GET('Interchange_Rate')"
+      },
+      "Other_Revenue": {
+        "type": "Financial_Line_Item",
+        "parents": ["MTMs"],
+        "equation": "GET('MTMs') * 6.3 * 1000"
+      },
+      "Revenue": {
+        "type": "Financial_Line_Item",
+        "parents": ["ExtraCash_Revenue", "Subscription_Revenue", "Interchange_Revenue", "Other_Revenue"],
+        "equation": "GET('ExtraCash_Revenue') + GET('Subscription_Revenue') + GET('Interchange_Revenue') + GET('Other_Revenue')"
+      },
+      "ChargeOff_Rate": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "Provision_Credit_Losses": {
+        "type": "Financial_Line_Item",
+        "parents": ["ExtraCash_Originations", "ChargeOff_Rate"],
+        "equation": "GET('ExtraCash_Originations') * GET('ChargeOff_Rate') * 0.75"
+      },
+      "Processing_Servicing_Costs": {
+        "type": "Financial_Line_Item",
+        "parents": ["ExtraCash_Originations"],
+        "equation": "GET('ExtraCash_Originations') * 0.0039"
+      },
+      "Network_Transaction_Costs": {
+        "type": "Financial_Line_Item",
+        "parents": ["DaveCard_Spend"],
+        "equation": "GET('DaveCard_Spend') * 0.014"
+      },
+      "Variable_Costs": {
+        "type": "Financial_Line_Item",
+        "parents": ["Provision_Credit_Losses", "Processing_Servicing_Costs", "Network_Transaction_Costs"],
+        "equation": "GET('Provision_Credit_Losses') + GET('Processing_Servicing_Costs') + GET('Network_Transaction_Costs')"
+      },
+      "Gross_Profit": {
+        "type": "Financial_Line_Item",
+        "parents": ["Revenue", "Variable_Costs"],
+        "equation": "GET('Revenue') - GET('Variable_Costs')"
+      },
+      "Advertising_Activation": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "Cash_Compensation": {
+        "type": "Financial_Line_Item",
+        "parents": ["Revenue"],
+        "equation": "GET('Revenue') * 0.15"
+      },
+      "Technology_Infra": {
+        "type": "Financial_Line_Item",
+        "parents": ["Revenue"],
+        "equation": "GET('Revenue') * 0.022"
+      },
+      "Other_OpEx": {
+        "type": "Financial_Line_Item",
+        "parents": ["Revenue"],
+        "equation": "GET('Revenue') * 0.058"
+      },
+      "Fixed_Costs": {
+        "type": "Financial_Line_Item",
+        "parents": ["Advertising_Activation", "Cash_Compensation", "Technology_Infra", "Other_OpEx"],
+        "equation": "GET('Advertising_Activation') + GET('Cash_Compensation') + GET('Technology_Infra') + GET('Other_OpEx')"
+      },
+      "SBC_Pct_Revenue": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "SBC": {
+        "type": "Financial_Line_Item",
+        "parents": ["Revenue", "SBC_Pct_Revenue"],
+        "equation": "GET('Revenue') * GET('SBC_Pct_Revenue')"
+      },
+      "EBIT": {
+        "type": "Financial_Line_Item",
+        "parents": ["Gross_Profit", "Fixed_Costs", "SBC"],
+        "equation": "GET('Gross_Profit') - GET('Fixed_Costs') - GET('SBC')"
+      },
+      "Tax_Rate": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "NOPAT": {
+        "type": "Financial_Line_Item",
+        "parents": ["EBIT", "Tax_Rate"],
+        "equation": "GET('EBIT') * (1 - GET('Tax_Rate'))"
+      },
+      "DandA_Pct_Revenue": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "DandA": {
+        "type": "Financial_Line_Item",
+        "parents": ["Revenue", "DandA_Pct_Revenue"],
+        "equation": "GET('Revenue') * GET('DandA_Pct_Revenue')"
+      },
+      "CapEx_Pct_Revenue": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "CapEx": {
+        "type": "Financial_Line_Item",
+        "parents": ["Revenue", "CapEx_Pct_Revenue"],
+        "equation": "GET('Revenue') * GET('CapEx_Pct_Revenue')"
+      },
+      "NWC_Pct_Revenue": {
+        "type": "Exogenous_Driver",
+        "parents": [],
+        "equation": ""
+      },
+      "Delta_NWC": {
+        "type": "Financial_Line_Item",
+        "parents": ["Revenue", "NWC_Pct_Revenue"],
+        "equation": "(GET('Revenue') - PREV('Revenue')) * GET('NWC_Pct_Revenue')"
+      },
+      "FCF_Unlevered": {
+        "type": "Financial_Line_Item",
+        "parents": ["NOPAT", "DandA", "CapEx", "Delta_NWC"],
+        "equation": "GET('NOPAT') + GET('DandA') - GET('CapEx') - GET('Delta_NWC')"
+      },
+      "Invested_Capital": {
+        "type": "Financial_Line_Item",
+        "parents": ["Revenue"],
+        "equation": "GET('Revenue') * 0.64"
+      },
+      "ROIC": {
+        "type": "Financial_Line_Item",
+        "parents": ["NOPAT", "Invested_Capital"],
+        "equation": "GET('NOPAT') / PREV('Invested_Capital')"
+      }
+    },
+    "coverage_manifest": {
+      "Revenue": "covered",
+      "ExtraCash_Revenue": "covered",
+      "Subscription_Revenue": "covered",
+      "Interchange_Revenue": "covered",
+      "Other_Revenue": "covered",
+      "EBIT": "covered",
+      "Gross_Profit": "covered",
+      "Variable_Costs": "covered",
+      "Provision_Credit_Losses": "covered",
+      "Processing_Servicing_Costs": "covered",
+      "Network_Transaction_Costs": "covered",
+      "Fixed_Costs": "covered",
+      "Advertising_Activation": "covered",
+      "Cash_Compensation": "covered",
+      "Technology_Infra": "covered",
+      "Other_OpEx": "covered",
+      "SBC": "covered",
+      "DandA": "covered",
+      "NOPAT": "covered",
+      "Invested_Capital": "covered",
+      "CapEx": "covered",
+      "Total_Members": "covered",
+      "MTMs": "covered",
+      "CAC": "covered",
+      "Conversion_Rate": "covered",
+      "Avg_ExtraCash_Size": "covered",
+      "Net_Monetization_Rate": "covered",
+      "ChargeOff_Rate": "covered",
+      "Subscription_Price_Monthly": "covered",
+      "DaveCard_Spend_per_MTM": "covered",
+      "DaveCard_Spend": "covered",
+      "Interchange_Rate": "covered",
+      "ExtraCash_Originations": "covered",
+      "Originations_per_MTM_Annual": "covered",
+      "SBC_Pct_Revenue": "covered",
+      "Tax_Rate": "covered",
+      "CapEx_Pct_Revenue": "covered",
+      "DandA_Pct_Revenue": "covered",
+      "NWC_Pct_Revenue": "covered",
+      "Churn_Rate": "covered",
+      "Marketing_Spend": "covered",
+      "New_Member_Additions": "covered",
+      "FCF_Unlevered": "covered"
+    }
+  },
+  "A.5_GESTALT_IMPACT_MAP": {
+    "GIM": {
+      "CAC": {
+        "mode": "LINEAR_FADE",
+        "params": {"start_value": 19, "end_value": 25, "fade_years": 20}
+      },
+      "Churn_Rate": {
+        "mode": "STATIC",
+        "params": {"value": 0.15}
+      },
+      "Conversion_Rate": {
+        "mode": "LINEAR_FADE",
+        "params": {"start_value": 0.205, "end_value": 0.25, "fade_years": 5}
+      },
+      "Avg_ExtraCash_Size": {
+        "mode": "LINEAR_FADE",
+        "params": {"start_value": 207, "end_value": 280, "fade_years": 10}
+      },
+      "Originations_per_MTM_Annual": {
+        "mode": "STATIC",
+        "params": {"value": 35}
+      },
+      "Net_Monetization_Rate": {
+        "mode": "LINEAR_FADE",
+        "params": {"start_value": 0.048, "end_value": 0.045, "fade_years": 20}
+      },
+      "Subscription_Price_Monthly": {
+        "mode": "LINEAR_FADE",
+        "params": {"start_value": 2.5, "end_value": 4.0, "fade_years": 20}
+      },
+      "DaveCard_Spend_per_MTM": {
+        "mode": "LINEAR_FADE",
+        "params": {"start_value": 184, "end_value": 300, "fade_years": 10}
+      },
+      "Interchange_Rate": {
+        "mode": "STATIC",
+        "params": {"value": 0.012}
+      },
+      "ChargeOff_Rate": {
+        "mode": "LINEAR_FADE",
+        "params": {"start_value": 0.0146, "end_value": 0.016, "fade_years": 10}
+      },
+      "Advertising_Activation": {
+        "mode": "CAGR_INTERP",
+        "params": {"start_cagr": 0.10, "end_cagr": 0.03, "interp_years": 10}
+      },
+      "SBC_Pct_Revenue": {
+        "mode": "LINEAR_FADE",
+        "params": {"start_value": 0.042, "end_value": 0.035, "fade_years": 5}
+      },
+      "Tax_Rate": {
+        "mode": "STATIC",
+        "params": {"value": 0.21}
+      },
+      "CapEx_Pct_Revenue": {
+        "mode": "STATIC",
+        "params": {"value": 0.005}
+      },
+      "DandA_Pct_Revenue": {
+        "mode": "LINEAR_FADE",
+        "params": {"start_value": 0.012, "end_value": 0.010, "fade_years": 5}
+      },
+      "NWC_Pct_Revenue": {
+        "mode": "LINEAR_FADE",
+        "params": {"start_value": -0.05, "end_value": -0.03, "fade_years": 10}
+      }
+    }
+  },
+  "A.6_DR_DERIVATION_TRACE": {
+    "derivation_trace": {
+      "RFR": 0.045,
+      "ERP": 0.05,
+      "X_Risk_Multiplier": 2.0,
+      "DR_Static": 0.145
+    },
+    "justification": "X=2.0 reflects elevated but manageable risks for a profitable fintech with regulatory uncertainty (DOJ, CFPB), high revenue concentration (86% ExtraCash), but proven unit economics and consistent execution."
+  }
+}

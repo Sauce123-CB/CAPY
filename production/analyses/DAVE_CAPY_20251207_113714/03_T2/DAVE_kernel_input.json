@@ -1,0 +1,705 @@
+{
+  "A.2_ANALYTIC_KG": {
+    "Y0_data": {
+      "fiscal_year_end": "2025-12-31",
+      "as_of_date": "2025-09-30",
+      "currency": "USD",
+      "units": "thousands except per share and ratios",
+      "Revenue": 545500,
+      "Revenue_Q3_2025_actual": 150800,
+      "Revenue_9M_2025_actual": 390461,
+      "ExtraCash_Revenue": 468000,
+      "Subscription_Revenue": 36000,
+      "Interchange_Revenue": 24000,
+      "ATM_Revenue": 3000,
+      "Other_Revenue": 14500,
+      "EBIT": 87000,
+      "EBIT_margin": 0.16,
+      "EBITDA_adjusted": 217000,
+      "EBITDA_margin_adjusted": 0.40,
+      "Gross_Profit_NonGAAP": 376000,
+      "Gross_Margin_NonGAAP": 0.69,
+      "Variable_Costs": 148000,
+      "Provision_Credit_Losses": 88000,
+      "Processing_Servicing_Costs": 31000,
+      "Network_Transaction_Costs": 29000,
+      "Fixed_Costs": 165000,
+      "Advertising_Activation": 62000,
+      "Cash_Compensation": 82000,
+      "Technology_Infra": 12000,
+      "Other_OpEx": 32000,
+      "SBC": 23000,
+      "DandA": 6500,
+      "NOPAT": 68700,
+      "NOPAT_margin": 0.126,
+      "tax_rate_effective": 0.21,
+      "Invested_Capital": 350845,
+      "Total_Debt": 75000,
+      "Cash_and_Equivalents": 49889,
+      "Restricted_Cash": 1841,
+      "Excess_Cash": 34889,
+      "ExtraCash_Receivables_Net": 220523,
+      "Intangible_Assets_Net": 13935,
+      "CapEx": 300,
+      "FDSO": 14500,
+      "share_price_current": 100.00,
+      "Total_Members_millions": 13.5,
+      "MTMs_millions": 2.77,
+      "New_Members_Q3_thousands": 843,
+      "ARPU_annualized": 218,
+      "CAC": 19,
+      "Conversion_Rate": 0.205,
+      "Avg_ExtraCash_Size": 207,
+      "Gross_Monetization_Rate": 0.064,
+      "Net_Monetization_Rate": 0.048,
+      "ChargeOff_Rate_121Day": 0.0146,
+      "Delinquency_Rate_28Day": 0.0233,
+      "DaveCard_Spend_Q3_millions": 510,
+      "Interchange_Rate_implied": 0.012,
+      "Subscription_Price_Monthly_Blended": 2.5,
+      "ExtraCash_Originations_Q3_billions": 2.0
+    },
+    "market_context": {
+      "RFR": 0.045,
+      "ERP": 0.05,
+      "industry": "Fintech - Neobanking",
+      "sector": "Financial Services",
+      "market_cap_category": "Small Cap"
+    },
+    "share_data": {
+      "Class_A_outstanding": 12189314,
+      "Class_V_outstanding": 1314082,
+      "Treasury_shares": 213525,
+      "Options_dilution_shares": 1000000,
+      "FDSO_calculated": 14503396,
+      "current_price": 100.00,
+      "52_week_high": 120.00,
+      "52_week_low": 40.00
+    },
+    "accounting_translation_log": [
+      {
+        "item": "Revenue",
+        "GAAP_value": 545500,
+        "adjusted_value": 545500,
+        "adjustment": "None - using guidance midpoint",
+        "rationale": "FY2025 guidance $544-547M, midpoint $545.5M"
+      },
+      {
+        "item": "EBIT",
+        "GAAP_value": 58400,
+        "adjusted_value": 87000,
+        "adjustment": "Add back SBC, exclude non-recurring items",
+        "rationale": "Normalize for recurring operating earnings"
+      },
+      {
+        "item": "Invested_Capital",
+        "GAAP_value": 433251,
+        "adjusted_value": 350845,
+        "adjustment": "Exclude excess cash, deferred tax assets, warrant liabilities",
+        "rationale": "Focus on operational capital deployed"
+      },
+      {
+        "item": "Tax_Rate",
+        "GAAP_value": -0.25,
+        "adjusted_value": 0.21,
+        "adjustment": "Normalize for deferred tax asset release",
+        "rationale": "Q3 2025 included $33.6M tax benefit from valuation allowance release"
+      },
+      {
+        "item": "SBC",
+        "GAAP_value": 23011,
+        "adjusted_value": 23011,
+        "adjustment": "None",
+        "rationale": "9M 2025 actual, annualized consistent with full-year"
+      }
+    ]
+  },
+  "A.3_CAUSAL_DAG": {
+    "metadata": {
+      "version": "REFINE_v1",
+      "total_nodes": 28,
+      "exogenous_drivers": 15,
+      "derived_nodes": 13
+    },
+    "nodes": {
+      "Total_Members": {
+        "type": "driver",
+        "parents": ["PREV_Total_Members", "New_Member_Additions", "Churn"],
+        "equation": "PREV('Total_Members') + GET('New_Member_Additions') * 4 / 1000 - GET('Total_Members') * GET('Churn_Rate')",
+        "units": "millions",
+        "Y0": 13.5,
+        "description": "Cumulative member base"
+      },
+      "New_Member_Additions": {
+        "type": "input",
+        "parents": ["Marketing_Spend", "CAC"],
+        "equation": "GET('Marketing_Spend') / GET('CAC')",
+        "units": "thousands_per_quarter",
+        "Y0": 843,
+        "description": "New members acquired per quarter"
+      },
+      "Marketing_Spend": {
+        "type": "driver",
+        "parents": ["Advertising_Activation"],
+        "equation": "GET('Advertising_Activation') * 0.75",
+        "units": "thousands",
+        "Y0": 46500,
+        "description": "Annual marketing and acquisition spend (excl. activation)"
+      },
+      "CAC": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "dollars_per_member",
+        "Y0": 19,
+        "description": "Customer acquisition cost per new member"
+      },
+      "Churn_Rate": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "annual_rate",
+        "Y0": 0.15,
+        "description": "Annual member churn rate (implied)"
+      },
+      "Conversion_Rate": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "ratio",
+        "Y0": 0.205,
+        "description": "Percentage of total members who transact monthly"
+      },
+      "MTMs": {
+        "type": "driver",
+        "parents": ["Total_Members", "Conversion_Rate"],
+        "equation": "GET('Total_Members') * GET('Conversion_Rate')",
+        "units": "millions",
+        "Y0": 2.77,
+        "description": "Monthly transacting members"
+      },
+      "Avg_ExtraCash_Size": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "dollars",
+        "Y0": 207,
+        "description": "Average ExtraCash advance size"
+      },
+      "Originations_per_MTM_Annual": {
+        "type": "driver",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "count",
+        "Y0": 35,
+        "description": "Average number of ExtraCash originations per MTM per year"
+      },
+      "ExtraCash_Originations": {
+        "type": "driver",
+        "parents": ["MTMs", "Avg_ExtraCash_Size", "Originations_per_MTM_Annual"],
+        "equation": "GET('MTMs') * GET('Avg_ExtraCash_Size') * GET('Originations_per_MTM_Annual')",
+        "units": "thousands",
+        "Y0": 8000000,
+        "description": "Total ExtraCash origination volume (annualized from $2B Q3)"
+      },
+      "Net_Monetization_Rate": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "ratio",
+        "Y0": 0.048,
+        "description": "Net monetization rate per ExtraCash origination"
+      },
+      "ExtraCash_Revenue": {
+        "type": "output",
+        "parents": ["ExtraCash_Originations", "Net_Monetization_Rate"],
+        "equation": "GET('ExtraCash_Originations') * GET('Net_Monetization_Rate')",
+        "units": "thousands",
+        "Y0": 468000,
+        "description": "Revenue from ExtraCash product (processing fees net of losses)"
+      },
+      "Subscription_Price_Monthly": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "dollars",
+        "Y0": 2.5,
+        "description": "Blended monthly subscription price ($1 legacy, $3 new)"
+      },
+      "Subscription_Revenue": {
+        "type": "output",
+        "parents": ["MTMs", "Subscription_Price_Monthly"],
+        "equation": "GET('MTMs') * GET('Subscription_Price_Monthly') * 12 * 1000",
+        "units": "thousands",
+        "Y0": 36000,
+        "description": "Revenue from monthly subscriptions"
+      },
+      "DaveCard_Spend": {
+        "type": "driver",
+        "parents": ["MTMs", "DaveCard_Spend_per_MTM"],
+        "equation": "GET('MTMs') * GET('DaveCard_Spend_per_MTM') * 4",
+        "units": "thousands",
+        "Y0": 2040000,
+        "description": "Annual Dave Card spending volume"
+      },
+      "DaveCard_Spend_per_MTM": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "dollars_per_quarter",
+        "Y0": 184,
+        "description": "Quarterly Dave Card spend per MTM"
+      },
+      "Interchange_Rate": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "ratio",
+        "Y0": 0.012,
+        "description": "Net interchange rate on Dave Card spend"
+      },
+      "Interchange_Revenue": {
+        "type": "output",
+        "parents": ["DaveCard_Spend", "Interchange_Rate"],
+        "equation": "GET('DaveCard_Spend') * GET('Interchange_Rate')",
+        "units": "thousands",
+        "Y0": 24000,
+        "description": "Revenue from card interchange fees"
+      },
+      "Other_Revenue": {
+        "type": "driver",
+        "parents": ["MTMs"],
+        "equation": "GET('MTMs') * 6.3 * 1000",
+        "units": "thousands",
+        "Y0": 17500,
+        "description": "ATM fees, Side Hustle, account maintenance fees"
+      },
+      "Revenue": {
+        "type": "output",
+        "parents": ["ExtraCash_Revenue", "Subscription_Revenue", "Interchange_Revenue", "Other_Revenue"],
+        "equation": "GET('ExtraCash_Revenue') + GET('Subscription_Revenue') + GET('Interchange_Revenue') + GET('Other_Revenue')",
+        "units": "thousands",
+        "Y0": 545500,
+        "description": "Total operating revenue"
+      },
+      "ChargeOff_Rate": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "ratio",
+        "Y0": 0.0146,
+        "description": "121-day charge-off rate"
+      },
+      "Provision_Credit_Losses": {
+        "type": "driver",
+        "parents": ["ExtraCash_Originations", "ChargeOff_Rate"],
+        "equation": "GET('ExtraCash_Originations') * GET('ChargeOff_Rate') * 0.75",
+        "units": "thousands",
+        "Y0": 88000,
+        "description": "Provision for credit losses"
+      },
+      "Processing_Servicing_Costs": {
+        "type": "driver",
+        "parents": ["ExtraCash_Originations"],
+        "equation": "GET('ExtraCash_Originations') * 0.0039",
+        "units": "thousands",
+        "Y0": 31000,
+        "description": "Processing and servicing costs (variable with originations)"
+      },
+      "Network_Transaction_Costs": {
+        "type": "driver",
+        "parents": ["DaveCard_Spend"],
+        "equation": "GET('DaveCard_Spend') * 0.014",
+        "units": "thousands",
+        "Y0": 29000,
+        "description": "Financial network and transaction costs"
+      },
+      "Variable_Costs": {
+        "type": "output",
+        "parents": ["Provision_Credit_Losses", "Processing_Servicing_Costs", "Network_Transaction_Costs"],
+        "equation": "GET('Provision_Credit_Losses') + GET('Processing_Servicing_Costs') + GET('Network_Transaction_Costs')",
+        "units": "thousands",
+        "Y0": 148000,
+        "description": "Total variable operating expenses"
+      },
+      "Gross_Profit": {
+        "type": "output",
+        "parents": ["Revenue", "Variable_Costs"],
+        "equation": "GET('Revenue') - GET('Variable_Costs')",
+        "units": "thousands",
+        "Y0": 376000,
+        "description": "Non-GAAP gross profit"
+      },
+      "Advertising_Activation": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "thousands",
+        "Y0": 62000,
+        "description": "Advertising and activation costs"
+      },
+      "Cash_Compensation": {
+        "type": "driver",
+        "parents": ["Revenue"],
+        "equation": "GET('Revenue') * 0.15",
+        "units": "thousands",
+        "Y0": 82000,
+        "description": "Cash compensation and benefits (excl. SBC)"
+      },
+      "Technology_Infra": {
+        "type": "driver",
+        "parents": ["Revenue"],
+        "equation": "GET('Revenue') * 0.022",
+        "units": "thousands",
+        "Y0": 12000,
+        "description": "Technology and infrastructure costs"
+      },
+      "Other_OpEx": {
+        "type": "driver",
+        "parents": ["Revenue"],
+        "equation": "GET('Revenue') * 0.058",
+        "units": "thousands",
+        "Y0": 32000,
+        "description": "Other operating expenses"
+      },
+      "Fixed_Costs": {
+        "type": "output",
+        "parents": ["Advertising_Activation", "Cash_Compensation", "Technology_Infra", "Other_OpEx"],
+        "equation": "GET('Advertising_Activation') + GET('Cash_Compensation') + GET('Technology_Infra') + GET('Other_OpEx')",
+        "units": "thousands",
+        "Y0": 188000,
+        "description": "Total non-variable operating expenses (excl. SBC)"
+      },
+      "SBC": {
+        "type": "driver",
+        "parents": ["Revenue", "SBC_Pct_Revenue"],
+        "equation": "GET('Revenue') * GET('SBC_Pct_Revenue')",
+        "units": "thousands",
+        "Y0": 23000,
+        "description": "Stock-based compensation"
+      },
+      "SBC_Pct_Revenue": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "ratio",
+        "Y0": 0.042,
+        "description": "SBC as percentage of revenue"
+      },
+      "EBIT": {
+        "type": "output",
+        "parents": ["Gross_Profit", "Fixed_Costs", "SBC"],
+        "equation": "GET('Gross_Profit') - GET('Fixed_Costs') - GET('SBC')",
+        "units": "thousands",
+        "Y0": 165000,
+        "description": "Operating income (EBIT)"
+      },
+      "Tax_Rate": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "ratio",
+        "Y0": 0.21,
+        "description": "Normalized effective tax rate"
+      },
+      "NOPAT": {
+        "type": "output",
+        "parents": ["EBIT", "Tax_Rate"],
+        "equation": "GET('EBIT') * (1 - GET('Tax_Rate'))",
+        "units": "thousands",
+        "Y0": 130350,
+        "description": "Net operating profit after tax"
+      },
+      "DandA": {
+        "type": "driver",
+        "parents": ["Revenue", "DandA_Pct_Revenue"],
+        "equation": "GET('Revenue') * GET('DandA_Pct_Revenue')",
+        "units": "thousands",
+        "Y0": 6500,
+        "description": "Depreciation and amortization"
+      },
+      "DandA_Pct_Revenue": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "ratio",
+        "Y0": 0.012,
+        "description": "D&A as percentage of revenue"
+      },
+      "CapEx": {
+        "type": "driver",
+        "parents": ["Revenue", "CapEx_Pct_Revenue"],
+        "equation": "GET('Revenue') * GET('CapEx_Pct_Revenue')",
+        "units": "thousands",
+        "Y0": 300,
+        "description": "Capital expenditures"
+      },
+      "CapEx_Pct_Revenue": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "ratio",
+        "Y0": 0.0005,
+        "description": "CapEx as percentage of revenue"
+      },
+      "Delta_NWC": {
+        "type": "driver",
+        "parents": ["Revenue", "NWC_Pct_Revenue"],
+        "equation": "(GET('Revenue') - PREV('Revenue')) * GET('NWC_Pct_Revenue')",
+        "units": "thousands",
+        "Y0": 0,
+        "description": "Change in net working capital"
+      },
+      "NWC_Pct_Revenue": {
+        "type": "input",
+        "parents": [],
+        "equation": "exogenous_input",
+        "units": "ratio",
+        "Y0": -0.05,
+        "description": "NWC as percentage of revenue (negative = source of cash)"
+      },
+      "FCF": {
+        "type": "output",
+        "parents": ["NOPAT", "DandA", "CapEx", "Delta_NWC"],
+        "equation": "GET('NOPAT') + GET('DandA') - GET('CapEx') - GET('Delta_NWC')",
+        "units": "thousands",
+        "Y0": 136550,
+        "description": "Free cash flow to firm"
+      },
+      "ExtraCash_Receivables": {
+        "type": "balance",
+        "parents": ["ExtraCash_Originations"],
+        "equation": "GET('ExtraCash_Originations') * 11 / 365",
+        "units": "thousands",
+        "Y0": 220523,
+        "description": "ExtraCash receivables (avg 11-day duration)"
+      },
+      "Invested_Capital": {
+        "type": "balance",
+        "parents": ["ExtraCash_Receivables", "Intangibles", "Other_Operating_Assets"],
+        "equation": "GET('ExtraCash_Receivables') + 13935 + 116387",
+        "units": "thousands",
+        "Y0": 350845,
+        "description": "Operational invested capital"
+      }
+    },
+    "edges": [
+      {"from": "Marketing_Spend", "to": "New_Member_Additions"},
+      {"from": "CAC", "to": "New_Member_Additions"},
+      {"from": "New_Member_Additions", "to": "Total_Members"},
+      {"from": "Total_Members", "to": "MTMs"},
+      {"from": "Conversion_Rate", "to": "MTMs"},
+      {"from": "MTMs", "to": "ExtraCash_Originations"},
+      {"from": "Avg_ExtraCash_Size", "to": "ExtraCash_Originations"},
+      {"from": "Originations_per_MTM_Annual", "to": "ExtraCash_Originations"},
+      {"from": "ExtraCash_Originations", "to": "ExtraCash_Revenue"},
+      {"from": "Net_Monetization_Rate", "to": "ExtraCash_Revenue"},
+      {"from": "MTMs", "to": "Subscription_Revenue"},
+      {"from": "Subscription_Price_Monthly", "to": "Subscription_Revenue"},
+      {"from": "MTMs", "to": "DaveCard_Spend"},
+      {"from": "DaveCard_Spend_per_MTM", "to": "DaveCard_Spend"},
+      {"from": "DaveCard_Spend", "to": "Interchange_Revenue"},
+      {"from": "Interchange_Rate", "to": "Interchange_Revenue"},
+      {"from": "MTMs", "to": "Other_Revenue"},
+      {"from": "ExtraCash_Revenue", "to": "Revenue"},
+      {"from": "Subscription_Revenue", "to": "Revenue"},
+      {"from": "Interchange_Revenue", "to": "Revenue"},
+      {"from": "Other_Revenue", "to": "Revenue"},
+      {"from": "ExtraCash_Originations", "to": "Provision_Credit_Losses"},
+      {"from": "ChargeOff_Rate", "to": "Provision_Credit_Losses"},
+      {"from": "ExtraCash_Originations", "to": "Processing_Servicing_Costs"},
+      {"from": "DaveCard_Spend", "to": "Network_Transaction_Costs"},
+      {"from": "Provision_Credit_Losses", "to": "Variable_Costs"},
+      {"from": "Processing_Servicing_Costs", "to": "Variable_Costs"},
+      {"from": "Network_Transaction_Costs", "to": "Variable_Costs"},
+      {"from": "Revenue", "to": "Gross_Profit"},
+      {"from": "Variable_Costs", "to": "Gross_Profit"},
+      {"from": "Gross_Profit", "to": "EBIT"},
+      {"from": "Fixed_Costs", "to": "EBIT"},
+      {"from": "SBC", "to": "EBIT"},
+      {"from": "EBIT", "to": "NOPAT"},
+      {"from": "Tax_Rate", "to": "NOPAT"},
+      {"from": "NOPAT", "to": "FCF"},
+      {"from": "DandA", "to": "FCF"},
+      {"from": "CapEx", "to": "FCF"},
+      {"from": "Delta_NWC", "to": "FCF"}
+    ]
+  },
+  "A.5_GESTALT_IMPACT_MAP": {
+    "projection_horizon_years": 20,
+    "drivers": {
+      "MTMs": {
+        "Y0": {"mode": "STATIC", "params": {"value": 2.77}},
+        "Y1_Y3": {"mode": "CAGR_INTERP", "params": {"start_cagr": 0.17, "end_cagr": 0.12, "interp_years": 3}},
+        "Y4_Y10": {"mode": "LINEAR_FADE", "params": {"start_value": 0.12, "end_value": 0.05, "fade_years": 7}},
+        "Y11_Y20": {"mode": "LINEAR_FADE", "params": {"start_value": 0.05, "end_value": 0.02, "fade_years": 10}},
+        "rationale": "Strong MTM growth from conversion improvements and reactivation, fading with market saturation"
+      },
+      "Conversion_Rate": {
+        "Y0": {"mode": "STATIC", "params": {"value": 0.205}},
+        "Y1_Y5": {"mode": "LINEAR_FADE", "params": {"start_value": 0.205, "end_value": 0.25, "fade_years": 5}},
+        "Y6_Y20": {"mode": "STATIC", "params": {"value": 0.25}},
+        "rationale": "Conversion improves with CashAI optimization and product expansion, then stabilizes"
+      },
+      "Avg_ExtraCash_Size": {
+        "Y0": {"mode": "STATIC", "params": {"value": 207}},
+        "Y1_Y5": {"mode": "LINEAR_FADE", "params": {"start_value": 207, "end_value": 250, "fade_years": 5}},
+        "Y6_Y10": {"mode": "LINEAR_FADE", "params": {"start_value": 250, "end_value": 280, "fade_years": 5}},
+        "Y11_Y20": {"mode": "STATIC", "params": {"value": 280}},
+        "rationale": "Advance size grows with member tenure and CashAI v5.5, caps at $500 max"
+      },
+      "Net_Monetization_Rate": {
+        "Y0": {"mode": "STATIC", "params": {"value": 0.048}},
+        "Y1_Y5": {"mode": "STATIC", "params": {"value": 0.048}},
+        "Y6_Y20": {"mode": "LINEAR_FADE", "params": {"start_value": 0.048, "end_value": 0.045, "fade_years": 15}},
+        "rationale": "Stable near-term with CashAI optimization, modest compression from competition long-term"
+      },
+      "ChargeOff_Rate": {
+        "Y0": {"mode": "STATIC", "params": {"value": 0.0146}},
+        "Y1_Y5": {"mode": "STATIC", "params": {"value": 0.0146}},
+        "Y6_Y10": {"mode": "LINEAR_FADE", "params": {"start_value": 0.0146, "end_value": 0.0160, "fade_years": 5}},
+        "Y11_Y20": {"mode": "STATIC", "params": {"value": 0.0160}},
+        "rationale": "Controlled loss rates with CashAI, modest increase as growth slows"
+      },
+      "Subscription_Price_Monthly": {
+        "Y0": {"mode": "STATIC", "params": {"value": 2.5}},
+        "Y1_Y3": {"mode": "LINEAR_FADE", "params": {"start_value": 2.5, "end_value": 3.0, "fade_years": 3}},
+        "Y4_Y10": {"mode": "STATIC", "params": {"value": 3.0}},
+        "Y11_Y20": {"mode": "LINEAR_FADE", "params": {"start_value": 3.0, "end_value": 4.0, "fade_years": 10}},
+        "rationale": "Migration to $3 completes, then inflation-linked increases"
+      },
+      "DaveCard_Spend_per_MTM": {
+        "Y0": {"mode": "STATIC", "params": {"value": 184}},
+        "Y1_Y5": {"mode": "LINEAR_FADE", "params": {"start_value": 184, "end_value": 250, "fade_years": 5}},
+        "Y6_Y10": {"mode": "LINEAR_FADE", "params": {"start_value": 250, "end_value": 300, "fade_years": 5}},
+        "Y11_Y20": {"mode": "STATIC", "params": {"value": 300}},
+        "rationale": "Card spend grows as Dave Card becomes primary card for more members"
+      },
+      "Interchange_Rate": {
+        "Y0": {"mode": "STATIC", "params": {"value": 0.012}},
+        "Y1_Y20": {"mode": "STATIC", "params": {"value": 0.012}},
+        "rationale": "Durbin-exempt status maintained, interchange stable"
+      },
+      "CAC": {
+        "Y0": {"mode": "STATIC", "params": {"value": 19}},
+        "Y1_Y5": {"mode": "LINEAR_FADE", "params": {"start_value": 19, "end_value": 22, "fade_years": 5}},
+        "Y6_Y20": {"mode": "LINEAR_FADE", "params": {"start_value": 22, "end_value": 25, "fade_years": 15}},
+        "rationale": "Modest CAC inflation from competition, offset by organic growth"
+      },
+      "SBC_Pct_Revenue": {
+        "Y0": {"mode": "STATIC", "params": {"value": 0.042}},
+        "Y1_Y5": {"mode": "LINEAR_FADE", "params": {"start_value": 0.042, "end_value": 0.035, "fade_years": 5}},
+        "Y6_Y20": {"mode": "STATIC", "params": {"value": 0.035}},
+        "rationale": "SBC normalizes as company matures"
+      },
+      "Tax_Rate": {
+        "Y1_Y20": {"mode": "STATIC", "params": {"value": 0.21}},
+        "rationale": "Normalized statutory rate after NOL utilization"
+      },
+      "CapEx_Pct_Revenue": {
+        "Y1_Y20": {"mode": "STATIC", "params": {"value": 0.005}},
+        "rationale": "Asset-light model with minimal physical capital requirements"
+      },
+      "DandA_Pct_Revenue": {
+        "Y0": {"mode": "STATIC", "params": {"value": 0.012}},
+        "Y1_Y5": {"mode": "LINEAR_FADE", "params": {"start_value": 0.012, "end_value": 0.010, "fade_years": 5}},
+        "Y6_Y20": {"mode": "STATIC", "params": {"value": 0.010}},
+        "rationale": "Primarily intangible amortization, declining as revenue scales"
+      },
+      "NWC_Pct_Revenue": {
+        "Y0": {"mode": "STATIC", "params": {"value": -0.05}},
+        "Y1_Y5": {"mode": "STATIC", "params": {"value": -0.05}},
+        "Y6_Y20": {"mode": "STATIC", "params": {"value": -0.03}},
+        "rationale": "Negative NWC due to off-balance sheet receivables transition"
+      }
+    }
+  },
+  "A.6_DR_DERIVATION_TRACE": {
+    "methodology": "Risk-Factor-Based X Multiplier with REFINE Validation",
+    "components": {
+      "RFR": {
+        "value": 0.045,
+        "source": "10-Year US Treasury Yield",
+        "date": "2025-12-07"
+      },
+      "ERP": {
+        "value": 0.05,
+        "source": "Long-term equity risk premium estimate",
+        "methodology": "Geometric average historical premium"
+      },
+      "X_T1": {
+        "value": 2.0,
+        "adjustments": {
+          "business_model_maturity": 0.3,
+          "revenue_concentration": 0.2,
+          "regulatory_environment": 0.4,
+          "competitive_position": 0.1,
+          "financial_leverage": 0.1,
+          "management_governance": -0.1
+        }
+      },
+      "X_REFINE": {
+        "value": 2.0,
+        "adjustments": {
+          "business_model_maturity": {
+            "value": 0.3,
+            "rationale": "Confirmed - 8 years operating, recently profitable, business model still evolving"
+          },
+          "revenue_concentration": {
+            "value": 0.3,
+            "rationale": "Increased from T1 - ExtraCash is 86% of revenue (vs. T1's 70%+ estimate)"
+          },
+          "regulatory_environment": {
+            "value": 0.4,
+            "rationale": "Confirmed - DOJ lawsuit, CFPB uncertainty, state-level regulatory risk"
+          },
+          "competitive_position": {
+            "value": 0.05,
+            "rationale": "Reduced from T1 - Strong unit economics proven across 4 quarters, CAC leadership durable"
+          },
+          "financial_leverage": {
+            "value": 0.1,
+            "rationale": "Confirmed - $75M facility stable, off-balance sheet transition reduces risk"
+          },
+          "management_governance": {
+            "value": -0.15,
+            "rationale": "Improved from T1 - Four consecutive quarters of guidance beats, consistent execution"
+          }
+        },
+        "total_adjustment": 1.0,
+        "base_X": 1.0,
+        "X_final": 2.0
+      },
+      "X_divergence": {
+        "value": 0.0,
+        "threshold": 0.3,
+        "status": "PASS"
+      },
+      "X_final": {
+        "calculation": "(X_T1 + X_REFINE) / 2",
+        "value": 2.0
+      }
+    },
+    "calculation": {
+      "formula": "DR = RFR + (X_final * ERP)",
+      "values": "DR = 0.045 + (2.0 * 0.05)",
+      "DR_final": 0.145
+    },
+    "sensitivity": {
+      "X_1.5": {"DR": 0.12},
+      "X_2.0": {"DR": 0.145},
+      "X_2.5": {"DR": 0.17}
+    },
+    "peer_comparison": {
+      "note": "Limited direct public comps; Chime private, Cash App (Block) larger/diversified",
+      "implied_cost_of_equity_range": "12-18% for fintech small caps with regulatory risk"
+    },
+    "final_DR": {
+      "value": 0.145,
+      "confidence": "Medium-High",
+      "range_low": 0.12,
+      "range_high": 0.17,
+      "rationale": "X=2.0 reflects elevated but manageable risks appropriate for a profitable, growing fintech with regulatory uncertainty but proven unit economics"
+    }
+  }
+}

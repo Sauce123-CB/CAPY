@@ -1,0 +1,33 @@
+{
+  "stage": "BASE_T1",
+  "status": "PASS",
+  "checks": {
+    "output_structure": {
+      "pass": true,
+      "notes": "File is complete, well-structured with multiple headers, and shows no truncation"
+    },
+    "artifacts_present": {
+      "pass": true,
+      "notes": "All five required artifacts present: A.1, A.2, A.3, A.5, A.6"
+    },
+    "json_valid": {
+      "pass": true,
+      "notes": "All JSON blocks properly formatted with valid syntax, matching braces/brackets, no trailing commas"
+    },
+    "sanity_bounds": {
+      "pass": true,
+      "notes": "DR 14.5% (5-16% range), Revenue $540.5M (>0), ROIC targets 10-25% (0-200% range)"
+    },
+    "no_fabrication": {
+      "pass": true,
+      "notes": "No specific IVPS value stated; analysis documents methodology and parameters appropriately for T1 stage"
+    },
+    "dr_derivation": {
+      "pass": null,
+      "notes": "N/A for T1"
+    }
+  },
+  "issues": [],
+  "warnings": [],
+  "proceed": true
+}

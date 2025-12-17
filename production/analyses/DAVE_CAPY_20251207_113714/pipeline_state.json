@@ -1,0 +1,25 @@
+{
+  "ticker": "DAVE",
+  "company_name": "Dave Inc",
+  "date": "2025-12-07",
+  "run_id": "DAVE_CAPY_20251207_113714",
+  "run_timestamp": "2024-12-16T11:37:14Z",
+  "prompt_versions": {
+    "base": "G3BASE_2.2.1e.md",
+    "refine": "BASE_T1_REFINE_v1_1.md",
+    "kernel": "BASE_CVR_KERNEL_2.2.1e.py"
+  },
+  "completed_turns": ["T1", "REFINE", "T2"],
+  "current_turn": null,
+  "validation_results": {
+    "T1": "PASS",
+    "REFINE": "PASS",
+    "T2": "PASS"
+  },
+  "outputs": {
+    "T1": "01_T1/DAVE_BASE_T1.md",
+    "REFINE": "02_REFINE/DAVE_BASE_REFINE.md",
+    "T2": "03_T2/DAVE_BASE_T2.md",
+    "IVPS": 127.68
+  }
+}

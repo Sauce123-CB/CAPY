@@ -1,0 +1,81 @@
+{
+  "schema_version": "G3_2.2.1e",
+  "ivps_summary": {
+    "IVPS": 154.90367717625136,
+    "DR": 0.145,
+    "Terminal_g": 0.04413438562263735,
+    "ROIC_Terminal": 0.8080310197180699,
+    "Current_Market_Price": 100.0
+  },
+  "implied_multiples_analysis": {
+    "Implied_EV_Sales_Y1": 13.677584638283339,
+    "Implied_EV_EBIT_Y1": 43.178528022522514,
+    "Implied_P_NOPAT_Y1": 53.697433735631776,
+    "Market_EV_Sales_Y1": 8.914789463551147,
+    "Market_EV_EBIT_Y1": 28.14294313262196,
+    "Market_P_NOPAT_Y1": 34.66504779904879
+  },
+  "sensitivity_analysis": {
+    "tornado_summary": []
+  },
+  "key_forecast_metrics": {
+    "Revenue_CAGR_Y1_Y5": -0.005110343151972452,
+    "EBIT_Margin_Y5": 0.5566620909294971,
+    "ROIC_Y5": 0.8489167807563739
+  },
+  "terminal_drivers": {
+    "CAC": 25.0,
+    "Churn_Rate": 0.15,
+    "Conversion_Rate": 0.25,
+    "Avg_ExtraCash_Size": 280.0,
+    "Originations_per_MTM_Annual": 35.0,
+    "Net_Monetization_Rate": 0.045,
+    "Subscription_Price_Monthly": 4.0,
+    "DaveCard_Spend_per_MTM": 300.0,
+    "Interchange_Rate": 0.012,
+    "ChargeOff_Rate": 0.016,
+    "Advertising_Activation": 156064.51392755483,
+    "SBC_Pct_Revenue": 0.035,
+    "Tax_Rate": 0.21,
+    "CapEx_Pct_Revenue": 0.005,
+    "DandA_Pct_Revenue": 0.01,
+    "NWC_Pct_Revenue": -0.03
+  },
+  "forecast_trajectory_checkpoints": {
+    "Y0": {
+      "Revenue": 545500.0,
+      "EBIT": 87000.0,
+      "NOPAT": 68700.0,
+      "Invested_Capital": 350845.0
+    },
+    "Y5": {
+      "Revenue": 531703.27,
+      "EBIT": 295979.06,
+      "NOPAT": 233823.45,
+      "Invested_Capital": 340290.10
+    },
+    "Y10": {
+      "Revenue": 910225.50,
+      "EBIT": 549420.37,
+      "NOPAT": 434042.09,
+      "Invested_Capital": 582544.32
+    },
+    "Y20": {
+      "Revenue": 1519681.27,
+      "EBIT": 956110.32,
+      "NOPAT": 755327.16,
+      "Invested_Capital": 972596.01
+    }
+  },
+  "_execution_notes": {
+    "kernel_version": "G3_2.2.1e",
+    "execution_status": "SUCCESS",
+    "warnings": [
+      "Revenue_CAGR_Y1_Y5 is negative (-0.5%) - indicates DAG equation issues",
+      "EBIT_Margin_Y5 is 55.7% - unrealistically high, DAG cost structure likely misconfigured",
+      "ROIC values 80%+ throughout forecast - suggests Invested_Capital scaling issues",
+      "Subscription_Revenue dominates by Y5 ($443K) vs ExtraCash ($5K) - revenue mix inverted"
+    ],
+    "root_cause_hypothesis": "GIM driver trajectories for MTMs and revenue components don't flow through DAG correctly. CAGR_INTERP for Advertising_Activation may be causing cascade issues."
+  }
+}

@@ -1,0 +1,41 @@
+# CAPY Production .gitignore
+
+# Binary source documents (access via Dropbox)
+*.pdf
+*.PDF
+*.zip
+*.ZIP
+
+# Image files (screenshots, page extracts)
+*.png
+*.PNG
+*.jpg
+*.jpeg
+*.JPG
+*.JPEG
+
+# Python bytecode
+*.pyc
+*.pyo
+__pycache__/
+*.pyd
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Claude Code local settings (keep .claude/ but not local settings)
+.claude/settings.local.json

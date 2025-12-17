@@ -1,0 +1,33 @@
+{
+  "stage": "BASE_T2",
+  "status": "PASS",
+  "checks": {
+    "output_structure": {
+      "pass": true,
+      "notes": "File complete with 9 sections, clear structure, no truncation"
+    },
+    "artifacts_present": {
+      "pass": true,
+      "notes": "A.7_LIGHTWEIGHT_VALUATION_SUMMARY present with all required fields"
+    },
+    "json_valid": {
+      "pass": true,
+      "notes": "A.7 JSON properly formatted and parses correctly"
+    },
+    "sanity_bounds": {
+      "pass": true,
+      "notes": "IVPS=$127.68 > 0; DR=14.5% within 5-16%; Terminal g=2.5% < DR"
+    },
+    "no_fabrication": {
+      "pass": null,
+      "notes": "N/A for T2 - IVPS is expected kernel-computed output"
+    },
+    "dr_derivation": {
+      "pass": null,
+      "notes": "N/A for T2"
+    }
+  },
+  "issues": [],
+  "warnings": [],
+  "proceed": true
+}

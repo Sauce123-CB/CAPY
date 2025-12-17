@@ -1,0 +1,43 @@
+# CAPY Mono-Repo .gitignore
+
+# Binary source documents (PDFs live in Dropbox, not Git)
+*.pdf
+*.PDF
+
+# Image files (screenshots, page extracts)
+*.png
+*.PNG
+*.jpg
+*.JPG
+*.jpeg
+*.JPEG
+
+# Archives
+*.zip
+*.ZIP
+
+# Python bytecode
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Claude Code local settings (keep .claude/ but not local settings)
+.claude/settings.local.json
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
