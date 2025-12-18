@@ -1,0 +1,83 @@
+{
+  "validation_result": "WARN",
+  "timestamp": "2025-12-18T15:30:00Z",
+  "metrics": {
+    "total_queries": 6,
+    "successful": 6,
+    "failed": 0,
+    "avg_response_length": 3819,
+    "total_execution_time": 506.231814
+  },
+  "checks": {
+    "schema_conformance": true,
+    "success_rate": true,
+    "response_length": false,
+    "content_quality": false,
+    "coverage_completeness": true
+  },
+  "issues": [
+    {
+      "severity": "WARNING",
+      "check": "content_quality",
+      "message": "Response contains internal reasoning/chain-of-thought instead of clean research output. Includes phrases like 'I made a mistake and called a tool that is not available' and '[... truncated internal reasoning ...]'",
+      "rq_id": "RQ2"
+    },
+    {
+      "severity": "WARNING",
+      "check": "response_length",
+      "message": "Response appears severely truncated at end. Only ~200 chars of actual content before abrupt cutoff at 'A comparison of operating and EBITDA margins for the specified companies reveals a'",
+      "rq_id": "RQ6"
+    },
+    {
+      "severity": "WARNING",
+      "check": "response_length",
+      "message": "Response appears truncated at end. Ends abruptly with incomplete table data and '2\\n' - likely cut off mid-response",
+      "rq_id": "RQ4"
+    },
+    {
+      "severity": "INFO",
+      "check": "execution_metrics",
+      "message": "Total execution time 506.23 seconds (8.4 minutes) - within normal range for Deep Research queries"
+    }
+  ],
+  "per_query_summary": [
+    {
+      "rq_id": "RQ1",
+      "status": "SUCCESS",
+      "response_length": 4247,
+      "assessment": "Good - Substantive research on accounting/governance concerns with clear sections, sources cited, and comprehensive coverage of auditor opinions, revenue changes, related party transactions, insider selling, short interest, and SEC comment letters"
+    },
+    {
+      "rq_id": "RQ2",
+      "status": "SUCCESS",
+      "response_length": 1076,
+      "assessment": "Poor - Contains internal reasoning/chain-of-thought artifacts instead of clean research output. Shows debugging traces like 'I made a mistake and called a tool that is not available' and '[... truncated internal reasoning ...]'. Content quality severely compromised"
+    },
+    {
+      "rq_id": "RQ3",
+      "status": "SUCCESS",
+      "response_length": 9378,
+      "assessment": "Good - Very substantive research on historical precedents (9000+ chars noted). Appears to contain detailed historical analysis though full content not shown in excerpt"
+    },
+    {
+      "rq_id": "RQ4",
+      "status": "SUCCESS",
+      "response_length": 1956,
+      "assessment": "Truncated - Response appears to cut off mid-content. Ends with incomplete table data and '2\\n' suggesting abrupt termination. Contains substantive content on MTM/MAU growth rates but incomplete"
+    },
+    {
+      "rq_id": "RQ5",
+      "status": "SUCCESS",
+      "response_length": 5000,
+      "assessment": "Good - Substantive research on unit economics with tables on credit metrics, management commentary, regulatory view, and fintech credit performance (5000+ chars noted)"
+    },
+    {
+      "rq_id": "RQ6",
+      "status": "SUCCESS",
+      "response_length": 1258,
+      "assessment": "Severely Truncated - Only ~200 chars of actual content before abrupt cutoff at 'A comparison of operating and EBITDA margins for the specified companies reveals a'. Appears to have started margin comparison but response was cut off"
+    }
+  ],
+  "summary": "6/6 queries reported SUCCESS status, but 3 queries have significant content quality issues: RQ2 contains debugging artifacts instead of clean research, RQ4 appears truncated mid-response, and RQ6 is severely truncated with only ~200 chars of content. RQ1, RQ3, and RQ5 appear substantive and usable. Without knowing which RQs map to which mandatory allocations (M-1/M-2/M-3), full coverage assessment cannot be completed.",
+  "recommendation": "REVIEW"
+}

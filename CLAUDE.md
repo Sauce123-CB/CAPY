@@ -1,15 +1,61 @@
 # CAPY - Mono-Repo Root
 
-> **Version:** 1.0.0
-> **Last reviewed:** 2024-12-17
+> **Version:** 1.1.0
+> **Last reviewed:** 2024-12-18
 
 This repository contains the complete CAPY (Company Analysis PYthon) system for fundamental equity research.
 
 ---
 
-## Workspace Routing
+## MANDATORY AUTO-ROUTING (FIRST TURN)
 
-This mono-repo has three workspaces, each with its own CLAUDE.md:
+**ON THE VERY FIRST USER MESSAGE, YOU MUST:**
+
+1. **Classify** the user's intent into one of three workspaces
+2. **Read** that workspace's CLAUDE.md file immediately
+3. **Execute** the user's request using the workspace context
+
+**DO NOT** ask the user which workspace they want. **DO NOT** describe the routing system. Just route silently and execute.
+
+---
+
+## Routing Classification
+
+Classify the user's first message and route accordingly:
+
+### → Route to `workshop/` when the user mentions:
+- "DEV:" commands (DEV: STATUS, DEV: APPLY PATCH, etc.)
+- Prompt development, editing, iteration, or fixing
+- Smoke tests or testing prompts
+- Patch application or patch development
+- Keywords: "develop", "patch", "iterate", "fix prompt", "edit prompt", "prompt", "kernel", "process", "workflow design"
+
+**Action:** Read `workshop/CLAUDE.md`, then execute the request.
+
+### → Route to `production/` when the user mentions:
+- "CAPY:" commands (CAPY: RUN, CAPY: T1, etc.)
+- "SOURCE:" commands (SOURCE: UPLOAD, SOURCE: LIST)
+- Running analysis on a specific company or ticker
+- Keywords: "analyze", "run analysis", "run on", ticker symbols (AAPL, MSFT, etc.), company names
+
+**Action:** Read `production/CLAUDE.md`, then execute the request.
+
+### → Route to `archive/` when the user mentions:
+- "ARCHIVE:" commands (ARCHIVE: LIST, ARCHIVE: RETRIEVE)
+- Retrieving old versions or historical data
+- Keywords: "old version", "historical", "archive", "retrieve", "find old"
+
+**Action:** Read `archive/CLAUDE.md`, then execute the request.
+
+### → Stay at root if:
+- The request is about the mono-repo structure itself
+- The request is about this CLAUDE.md file
+- The request explicitly asks about routing
+- The intent is genuinely ambiguous (ask for clarification only then)
+
+---
+
+## Workspaces Overview
 
 | Workspace | Purpose | CLAUDE.md |
 |-----------|---------|-----------|
@@ -19,41 +65,7 @@ This mono-repo has three workspaces, each with its own CLAUDE.md:
 
 ---
 
-## Auto-Routing Rules
-
-When the user's request matches these patterns, navigate to the appropriate workspace:
-
-### Use `workshop/` for:
-- "DEV:" commands (DEV: STATUS, DEV: APPLY PATCH, etc.)
-- Prompt development, editing, or iteration
-- Smoke tests
-- Patch application
-- "develop", "patch", "iterate", "fix prompt"
-
-### Use `production/` for:
-- "CAPY:" commands (CAPY: RUN, CAPY: T1, etc.)
-- "SOURCE:" commands (SOURCE: UPLOAD, SOURCE: LIST)
-- Running analysis on a company/ticker
-- "analyze {TICKER}", "run analysis"
-
-### Use `archive/` for:
-- "ARCHIVE:" commands (ARCHIVE: LIST, ARCHIVE: RETRIEVE)
-- Retrieving old versions
-- "find old version", "historical"
-
----
-
-## Quick Start Commands
-
-### Switch Workspace Context
-
-```
-/workshop    - Enter Workshop mode (prompt development)
-/production  - Enter Production mode (analysis runs)
-/archive     - Enter Archive mode (retrieval)
-```
-
-### Common Operations
+## Quick Reference Commands
 
 | Task | Workspace | Command |
 |------|-----------|---------|
@@ -178,4 +190,5 @@ cd CAPY
 
 | Version | Date | Change |
 |---------|------|--------|
+| 1.1.0 | 2024-12-18 | Made auto-routing mandatory and explicit on first turn |
 | 1.0.0 | 2024-12-17 | Initial mono-repo migration from 3 separate repos |

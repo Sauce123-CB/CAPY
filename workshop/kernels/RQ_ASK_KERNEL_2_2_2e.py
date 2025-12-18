@@ -38,8 +38,10 @@ logger = logging.getLogger("RQ_ASK")
 # CONFIGURATION
 # ============================================================================
 
-# Deep Research model - preview as of Dec 2024
-DEEP_RESEARCH_MODEL = "gemini-2.0-flash-thinking-exp"  # or "deep-research-pro-preview-12-2025"
+# Deep Research model - updated Dec 2025
+# Note: "gemini-2.0-flash-thinking-exp" was deprecated
+# Using gemini-2.5-pro which supports web search grounding
+DEEP_RESEARCH_MODEL = "gemini-2.5-pro"
 
 # Gemini CLI path (set by npm global install)
 GEMINI_CLI_PATH = os.path.expanduser("~/.npm-global/bin/gemini")

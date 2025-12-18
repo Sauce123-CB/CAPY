@@ -295,6 +295,125 @@ To manage context effectively:
 
 ---
 
+## RQ Stage Orchestration (RQ_GEN → RQ_ASK)
+
+The RQ (Research Question) stage bridges BASE analysis and ENRICH/SCENARIO stages by executing external research queries via Gemini Deep Research.
+
+### Stage Flow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 1. RQ_GEN (Opus Subagent)                                   │
+│    Input:  {TICKER}_BASE_T1.md + {TICKER}_BASE_REFINE.md +  │
+│            {TICKER}_BASE_T2.md + RQ_Gen_2_2_2e.md           │
+│    Output: A.8_RESEARCH_STRATEGY_MAP (JSON)                 │
+│    Save:   04_RQ/{TICKER}_A8_RESEARCH_PLAN.json             │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 2. A.8 VALIDATOR (Opus Subagent)                            │
+│    Prompt: validators/A8_VALIDATOR.md                       │
+│    Check:  Schema, 6 RQs, mandatory coverage, retrieval-    │
+│            only verbs                                       │
+│    Output: PASS/FAIL + issues                               │
+└──────────────────────┬──────────────────────────────────────┘
+                       │ (proceed only if PASS)
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 3. RQ_ASK (Python via Bash)                                 │
+│    Script: kernels/run_rq_ask.py                            │
+│    Execute: 6 parallel Gemini Deep Research queries         │
+│    Output: A.9_RESEARCH_RESULTS (JSON)                      │
+│    Save:   04_RQ/{TICKER}_A9_RESEARCH_RESULTS_{TS}.json     │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 4. A.9 VALIDATOR (Opus Subagent)                            │
+│    Prompt: validators/A9_VALIDATOR.md                       │
+│    Check:  Success rate, response length, content quality   │
+│    Output: PASS/WARN/FAIL + recommendation                  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Directory Structure
+
+RQ outputs go in the analysis folder's `04_RQ/` subdirectory:
+```
+production/analyses/{TICKER}_CAPY_{TIMESTAMP}/
+├── 01_T1/
+├── 02_REFINE/
+├── 03_T2/
+├── 04_RQ/                           ← RQ stage outputs
+│   ├── {TICKER}_A8_RESEARCH_PLAN.json
+│   ├── {TICKER}_A8_validation.json
+│   ├── {TICKER}_A9_RESEARCH_RESULTS_{TS}.json
+│   └── {TICKER}_A9_validation.json
+├── 05_ENRICH/                       ← Next stage
+└── pipeline_state.json
+```
+
+### Execution Commands
+
+**Step 1: Generate A.8 (RQ_GEN)**
+```
+Spawn Opus subagent with:
+- orchestration/RQ_Gen_2_2_2e.md (prompt)
+- {analysis_dir}/01_T1/{TICKER}_BASE_T1.md
+- {analysis_dir}/02_REFINE/{TICKER}_BASE_REFINE.md
+- {analysis_dir}/03_T2/{TICKER}_BASE_T2.md
+
+Instruct: "Generate A.8_RESEARCH_STRATEGY_MAP for {TICKER}. Output pure JSON."
+```
+
+**Step 2: Validate A.8**
+```
+Spawn Opus subagent with:
+- validators/A8_VALIDATOR.md
+- The A.8 JSON from step 1
+
+Instruct: "Validate this A.8 artifact."
+```
+
+**Step 3: Execute RQ_ASK**
+```bash
+python workshop/kernels/run_rq_ask.py \
+    {analysis_dir}/04_RQ/{TICKER}_A8_RESEARCH_PLAN.json \
+    {analysis_dir}/04_RQ \
+    {TICKER}
+```
+
+**Step 4: Validate A.9**
+```
+Spawn Opus subagent with:
+- validators/A9_VALIDATOR.md
+- The A.9 JSON from step 3
+
+Instruct: "Validate this A.9 artifact."
+```
+
+### RQ Stage Files
+
+| File | Location | Purpose |
+|------|----------|---------|
+| RQ_Gen_2_2_2e.md | orchestration/ | RQ generation prompt (6×GDR) |
+| RQ_ASK_KERNEL_2_2_2e.py | kernels/ | Async Gemini executor |
+| run_rq_ask.py | kernels/ | CLI wrapper for RQ_ASK |
+| A8_VALIDATOR.md | validators/ | A.8 schema/semantic validator |
+| A9_VALIDATOR.md | validators/ | A.9 completeness validator |
+
+### Gemini CLI Configuration
+
+The RQ_ASK kernel uses Gemini CLI with OAuth authentication:
+- **CLI Path:** `~/.npm-global/bin/gemini`
+- **Model:** `gemini-2.0-flash-thinking-exp`
+- **Auth:** OAuth via `~/.gemini/` (Google Ultra subscription)
+- **Concurrency:** 6 parallel queries
+- **Timeout:** 10 minutes per query
+
+---
+
 ## Monthly Cleanup Protocol
 
 Run on the 1st of each month:
@@ -345,7 +464,9 @@ Run on the 1st of each month:
 
 | Component | File | Status | Smoke Test |
 |-----------|------|--------|------------|
-| Research Question Gen | RQ_Gen_2_2_2e.md | CANONICAL | DAVE_20241210 |
+| Research Question Gen | RQ_Gen_2_2_2e.md | EXPERIMENTAL | - |
+| RQ Executor | RQ_ASK_KERNEL_2_2_2e.py | EXPERIMENTAL | - |
+| RQ Executor CLI | run_rq_ask.py | EXPERIMENTAL | - |
 | Silicon Council | G3_SILICON_COUNCIL_2.2.1e.md | CANONICAL | DAVE_20241210 |
 | HITL Audit | HITL_DIALECTIC_AUDIT_1_0_Goldilocks.md | CANONICAL | DAVE_20241210 |
 
@@ -355,6 +476,8 @@ Run on the 1st of each month:
 |-----------|------|--------|------------|
 | Pipeline Validator | CAPY_PIPELINE_VALIDATOR_2_2e.md | CANONICAL | DAVE_20241210 |
 | Inter-turn Validator | CAPY_VALIDATOR_2_2e.md | CANONICAL | DAVE_20241210 |
+| A.8 Validator | A8_VALIDATOR.md | EXPERIMENTAL | - |
+| A.9 Validator | A9_VALIDATOR.md | EXPERIMENTAL | - |
 
 ### BASE Stage Atomized Files (EXPERIMENTAL)
 
