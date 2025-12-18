@@ -1,6 +1,6 @@
 # CAPY 2.2.2e Patch Tracker
 
-Last updated: 2024-12-17
+Last updated: 2024-12-18
 
 ## Summary
 
@@ -74,6 +74,7 @@ These require kernel code changes before prompts will work correctly:
 | 2024-12-14 | 8 | Initial | Success | CLAUDE.md created |
 | 2024-12-14 | 9 | Initial | Success | DAVE smoke test complete |
 | 2024-12-15 | 13 | Initial | Success | Three-folder architecture |
+| 2024-12-18 | N/A | Claude | Success | RQ_GEN 6×GDR routing + Gemini CLI setup |
 | | | | | |
 
 ---

@@ -1,7 +1,7 @@
 # CAPY Workshop - Master TODO
 
-> **Last updated:** 2024-12-17
-> **Structure version:** 0.2 (added One-Click Pipeline architecture)
+> **Last updated:** 2024-12-18
+> **Structure version:** 0.3 (Stage 3 RQ Fan-out implemented)
 
 ---
 
@@ -170,10 +170,18 @@
 |-------|--------|---------|
 | 1. Document Sourcing | ✅ Working | None |
 | 2. BASE Pipeline | 🔴 Blocked | #17 G3BASE atomization, #16 REFINE v1_2 |
-| 3. RQ Fan-out | 🟡 Spec only | Need Gemini API integration |
+| 3. RQ Fan-out | 🟢 Implemented | Pending smoke test |
 | 4. ENRICH→IRR | 🟡 Prompts exist | Need smoke test after BASE works |
-| 5. Silicon Council | 🟡 Spec only | Need Gemini API integration |
+| 5. Silicon Council | 🟡 Spec only | Need Gemini Extended Thinking integration |
 | 6. HITL Audit | ✅ Prompt exists | None |
+
+### Stage 3 Details (Updated 2024-12-18)
+
+- **Gemini CLI:** v0.21.2 installed at `~/.npm-global/bin/gemini`
+- **Authentication:** OAuth with Google Ultra account (`redsox12278@gmail.com`)
+- **RQ_GEN:** Updated to 6×GDR routing (removed AlphaSense)
+- **RQ_ASK:** Executor script at `kernels/RQ_ASK_KERNEL_2_2_2e.py`
+- **Next:** Smoke test on DAVE ticker
 
 ### API Requirements
 

@@ -55,32 +55,26 @@ You receive the complete MRC State 1 artifact package from BASE:
 ranking), Model Notes (epistemic flags), and A.1\'s Investment Thesis
 (risks, catalysts) are your primary signals for dynamic allocation.
 
-### **B. Platform Architecture (The 3×3 Constraint)**
+### **B. Platform Architecture (6×GDR)**
 
-Research execution is constrained by platform concurrency limits. You
-must allocate exactly 6 RQs across two platform types:
+All research queries are executed via **Gemini Deep Research (GDR)**, which
+provides comprehensive web synthesis across hundreds of sources including
+financial filings, analyst reports, news, and industry data.
 
   --------------------------------------------------------------------------
   **Platform**   **Strengths**                **Best For**
   -------------- ---------------------------- ------------------------------
-  AlphaSense     Structured financial corpus: Company-specific documented
-  (AS)           filings, transcripts,        record, regulatory/legal
-                 analyst reports, expert      history, enforcement
-                 calls. Audit-quality         precedents, peer metrics
-                 citations.                   
-
-  Deep Research  Broad web synthesis:         Industry trajectory, macro
-  (GDR)          hundreds of sources,         scenarios, cross-company
-                 industry context,            analogues, emerging risks,
-                 competitive dynamics, macro  sentiment synthesis
-                 trends.                      
+  Gemini Deep    Comprehensive web synthesis: All research queries - company
+  Research       filings, transcripts,        fundamentals, regulatory/legal
+  (GDR)          analyst reports, news,       history, industry context,
+                 industry context, macro      competitive dynamics, macro
+                 trends. Up to 6 concurrent.  scenarios, analogues.
   --------------------------------------------------------------------------
 
-**The 3×3 Mandate:** Allocate exactly 3 RQs to AlphaSense and exactly 3
-RQs to Deep Research platforms (Gemini DR, GPT+DR, Claude, or
-equivalent). This constraint halves wall-clock execution time
-(concurrent 3-query limit per platform type) and ensures complementary
-information topology.
+**The 6×GDR Mandate:** All 6 RQs route to Gemini Deep Research for
+execution. GDR handles both company-specific retrieval (filings,
+transcripts) and broad synthesis (industry context, analogues). This
+unified routing enables 6 concurrent queries for maximum parallelism.
 
 ### **C. Downstream Dependencies**
 
@@ -142,48 +136,45 @@ This structure enables SCENARIO stage to apply Bayesian probability
 estimation (Prior from base rate → Posterior via company-specific
 evidence).
 
-### **P3. Platform Routing Heuristics**
+### **P3. Query Design Heuristics**
 
-You have routing discretion for each RQ. Use these heuristics:
+All queries route to GDR. Design queries to leverage GDR's comprehensive
+synthesis capabilities:
 
   -----------------------------------------------------------------------
-  **Information Type**       **Preferred   **Rationale**
-                             Platform**    
-  -------------------------- ------------- ------------------------------
-  Regulatory/enforcement     AlphaSense    Legal corpus, enforcement
-  history                                  data, settlement specifics
+  **Information Type**       **Query Design Notes**
+  -------------------------- --------------------------------------------
+  Regulatory/enforcement     Request specific filing references, case
+  history                    numbers, settlement amounts from public record
 
-  M&A precedents, deal terms AlphaSense    Deal announcements, analyst
-                                           commentary, peer valuations
+  M&A precedents, deal terms Ask for comparable transactions, multiples,
+                             deal announcements from news and filings
 
-  Company-specific metrics,  AlphaSense    Filings, transcripts, investor
-  guidance                                 presentations
+  Company-specific metrics,  Reference SEC filings, earnings call
+  guidance                   transcripts, investor presentations
 
-  Forensic/governance red    AlphaSense    Insider activity, related
-  flags                                    party transactions, audit
-                                           opinions
+  Forensic/governance red    Request insider transactions, audit opinions,
+  flags                      related party disclosures from public filings
 
-  Short thesis, bear         AlphaSense    Short reports, critical
-  arguments                                analyst coverage
+  Short thesis, bear         Ask for short reports, critical analyst
+  arguments                  coverage, known bear cases from public sources
 
-  Industry structure,        Deep Research Cross-source synthesis,
-  TAM/CAGR                                 third-party forecasts
+  Industry structure,        Request third-party forecasts, TAM estimates,
+  TAM/CAGR                   market research from multiple sources
 
-  Macro scenarios, recession Deep Research Broad economic context,
-  impact                                   cross-industry patterns
+  Macro scenarios, recession Ask for cross-industry patterns, historical
+  impact                     precedents, economic indicator correlations
 
-  Technology disruption,     Deep Research Competitive dynamics,
-  emerging threats                         substitute identification
+  Technology disruption,     Request competitive analysis, substitute
+  emerging threats           identification, innovation timelines
 
-  Cross-company historical   Deep Research Multi-company synthesis for
-  analogues                                base rates
+  Cross-company historical   Ask for analogues with specific metrics,
+  analogues                  base rates, outcome data
   -----------------------------------------------------------------------
 
-**Routing Flexibility:** These are heuristics, not mandates. If
-company-specific context suggests a different routing (e.g., AlphaSense
-has strong expert call coverage for a particular scenario type),
-exercise judgment. Document your rationale in the Platform_Rationale
-field.
+**Query Optimization:** GDR synthesizes across hundreds of sources.
+Structure queries to maximize signal density by requesting specific
+metrics, time ranges, and citation requirements.
 
 ## **IV. THE 6-SLOT ALLOCATION FRAMEWORK**
 
@@ -193,7 +184,7 @@ Three of six slots are reserved for mandatory coverage objectives. These
 ensure epistemic completeness regardless of the company-specific
 uncertainty structure.
 
-#### **M-1: Integrity Check (Platform: AlphaSense)**
+#### **M-1: Integrity Check (Platform: GDR)**
 
 **Objective:** Retrieve forensic accounting and governance risk
 indicators that may not surface in sensitivity analysis.
@@ -204,9 +195,10 @@ they\'re not modeled. This is a non-negotiable gatekeeper function.
 
 **Required Coverage:** Auditor flags, revenue recognition changes,
 insider selling patterns, related party transactions, short interest
-trends, accounting policy changes.
+trends, accounting policy changes. Request citations from SEC filings
+and proxy statements.
 
-#### **M-2: Adversarial Synthesis (Platform: Model Discretion)**
+#### **M-2: Adversarial Synthesis (Platform: GDR)**
 
 **Objective:** Retrieve the strongest existing arguments across the full
 sentiment spectrum (Bull Case, Bear Case, Short Thesis).
@@ -217,9 +209,10 @@ might otherwise miss.
 
 **Required Coverage:** Top 3 bear/short arguments with specific
 citations, top 3 bull arguments, active litigation or regulatory
-investigations, key debates among analysts.
+investigations, key debates among analysts. GDR excels at synthesizing
+diverse viewpoints across analyst reports, news, and commentary.
 
-#### **M-3: Scenario H.A.D. (Platform: Model Discretion)**
+#### **M-3: Scenario H.A.D. (Platform: GDR)**
 
 **Objective:** Retrieve Historical Analogue Data for discrete scenarios
 identified in A.7 Model Notes and A.1 Investment Thesis.
@@ -280,23 +273,21 @@ sensitivity, additional scenario H.A.D. if multiple materially different
 scenario types exist, custom fact retrieval for company-specific
 uncertainties.
 
-### **C. Platform Balance Constraint**
+### **C. Platform Allocation Summary**
 
-After allocating all 6 slots, verify the 3×3 platform balance:
+All 6 slots route to Gemini Deep Research (GDR):
 
   -----------------------------------------------------------------------
-  **AlphaSense (3 slots)**     **Deep Research (3 slots)**
-  ---------------------------- ------------------------------------------
-  M-1 (Integrity) --- Fixed    Flexible allocation from M-2, M-3, and
-                               dynamic slots
-
-  Remaining slots based on     Prioritize industry context, macro
-  routing heuristics           scenarios, cross-company analogues
+  **Slot**          **Coverage Type**         **GDR Optimization**
+  ----------------- ------------------------- ---------------------------
+  M-1               Integrity Check           Request SEC filing citations
+  M-2               Adversarial Synthesis     Multi-source sentiment
+  M-3               Scenario H.A.D.           Cross-company analogues
+  D-1, D-2, D-3     Lynchpin/Dynamic          Tailored to uncertainty
   -----------------------------------------------------------------------
 
-If initial allocation is imbalanced (e.g., 4 AS + 2 GDR), adjust routing
-for one dynamic slot to restore balance. Document the adjustment
-rationale.
+**Concurrency:** All 6 queries execute in parallel via the RQ_ASK kernel.
+Expected wall-clock time: 2-5 minutes total (limited by slowest query).
 
 ## **V. QUERY CONSTRUCTION STANDARDS**
 
@@ -318,53 +309,76 @@ rationale.
 
 ### **B. Effective Query Patterns**
 
-These patterns have proven effective for retrieval. You may draw on
-them, adapt them, or construct free-form queries---they are a toolkit,
-not a mandate.
+These patterns are optimized for Gemini Deep Research's web synthesis
+capabilities. GDR excels at comprehensive research across diverse
+sources—frame queries as open-ended research questions rather than
+database searches.
 
 #### **Pattern: Integrity Check**
 
-> \"Search the last 3 years of 10-K/10-Q filings, proxy statements, and
-> audit opinions for {TICKER}. Extract: (1) Auditor opinion language and
-> any emphasis-of-matter paragraphs; (2) Changes to critical accounting
-> policies or revenue recognition; (3) Related party transactions and
-> their dollar amounts; (4) Insider selling patterns (last 10
-> officer/director transactions); (5) Short interest as % of float
-> (current and 12-month trend).\"
+> "Research accounting and governance concerns for {COMPANY_NAME}
+> ({TICKER}). I need to understand:
+>
+> (1) Any auditor concerns, qualified opinions, or emphasis-of-matter
+> items in recent years
+> (2) Significant changes to revenue recognition or accounting policies
+> (3) Related party transactions or conflicts of interest involving
+> management
+> (4) Recent insider selling activity by executives and directors
+> (5) Current short interest levels and whether they've been increasing
+>
+> Focus on the last 3 years. Cite specific sources."
 
 #### **Pattern: Adversarial Synthesis**
 
-> \"Act as a neutral synthesizer of market sentiment. Search for
-> \'Strong Buy\', \'Bull Case\', \'Short Report\', \'Sell Rating\', and
-> \'Bear Case\' research and commentary for {TICKER} in the last 24
-> months. Retrieve: (1) The top 3 arguments cited by short-sellers or
-> highly critical analysts, with specific evidence cited; (2) The top 3
-> arguments cited by highly optimistic analysts, with specific evidence
-> cited; (3) Summaries of any active litigation, regulatory
-> investigations, or material legal disputes.\"
+> "What are the strongest bull and bear arguments for {COMPANY_NAME}
+> ({TICKER}) stock?
+>
+> (1) Identify the top 3 concerns raised by skeptics, short-sellers, or
+> bearish analysts—what specific evidence do they cite?
+> (2) Identify the top 3 arguments made by bulls or optimistic
+> analysts—what evidence supports their view?
+> (3) Are there any active lawsuits, regulatory investigations, or
+> material legal disputes?
+>
+> I want the actual arguments being made in the market, not your own
+> analysis. Cite sources."
 
 #### **Pattern: Scenario H.A.D. (Consolidated)**
 
-> \"Identify Historical Analogue Data for discrete scenarios affecting
-> {TICKER} in {INDUSTRY}:
+> "I'm researching historical precedents for potential scenarios
+> affecting {COMPANY_NAME} ({TICKER}) in the {INDUSTRY} industry:
 >
-> **MAINLINE SCENARIOS:** Scenario A: {DESCRIPTION} --- Retrieve 3-5
-> historical analogues, base rate/frequency of occurrence, and financial
-> impact (revenue, margins, stock price) in the 12 months following the
-> event. Scenario B: {DESCRIPTION} --- \[Same structure\]
+> **MAINLINE SCENARIOS:**
+> - Scenario A: {DESCRIPTION} — Find 3-5 comparable situations at other
+> companies. What was the base rate of occurrence? What were the
+> financial impacts (revenue, margins, stock price) in the 12 months
+> after?
+> - Scenario B: {DESCRIPTION} — Same structure.
 >
-> **TAIL RISKS:** Black Swan: {DESCRIPTION} --- Retrieve 2-3 analogues
-> of catastrophic outcomes, peak-to-trough impact, timeline of
-> deterioration. Blue Sky: {DESCRIPTION} --- Retrieve 2-3 analogues of
-> transformative success, 5-year CAGR achieved, margin expansion.\"
+> **TAIL RISKS:**
+> - Downside: {DESCRIPTION} — Find 2-3 examples of severe negative
+> outcomes in this industry. What was the peak-to-trough impact and
+> timeline?
+> - Upside: {DESCRIPTION} — Find 2-3 examples of breakthrough success.
+> What growth rates and margin improvements were achieved?
+>
+> I need specific historical data points, not general commentary."
 
 #### **Pattern: Lynchpin Fact-Finding**
 
-> \"Search filings, transcripts, and investor presentations for {TICKER}
-> and competitors {COMPETITOR_LIST}. Extract data for: (1) {METRIC_1}
-> comparison (most recent quarter and 3-year trend); (2) {METRIC_2}
-> comparison; (3) Pricing data or fee schedules for core products; (4)
-> Management commentary on {SPECIFIC_UNCERTAINTY}.\"
+> "Research {SPECIFIC_UNCERTAINTY} for {COMPANY_NAME} ({TICKER}) and its
+> competitors ({COMPETITOR_LIST}):
+>
+> (1) Compare {METRIC_1} across these companies—most recent data and
+> 3-year trends
+> (2) Compare {METRIC_2} across these companies
+> (3) What are the current pricing levels or fee structures for core
+> products?
+> (4) What has management said recently about {SPECIFIC_UNCERTAINTY}?
+>
+> Prioritize recent earnings calls, investor presentations, and industry
+> reports. Cite sources."
 
 ## **VI. OUTPUT SCHEMA (A.8_RESEARCH_STRATEGY_MAP)**
 
@@ -413,7 +427,7 @@ dynamic allocation.\",
 
 \"Coverage_Objective\": \"string (M-1/M-2/M-3 or Lynchpin ID)\",
 
-\"Platform\": \"AS \| GDR\",
+\"Platform\": \"GDR\",
 
 \"Platform_Rationale\": \"string (why this platform for this query)\",
 
@@ -428,12 +442,11 @@ Thesis risk)\",
 
 \"Platform_Summary\": {
 
-\"AS_Count\": 3,
+\"GDR_Count\": 6,
 
-\"GDR_Count\": 3,
+\"Execution_Mode\": \"parallel\",
 
-\"Balance_Adjustment\": \"string \| null (if any routing was adjusted to
-restore balance)\"
+\"Expected_Duration_Seconds\": \"120-300\"
 
 }
 
@@ -452,18 +465,16 @@ restore balance)\"
 3.  **Identify Scenarios:** Extract discrete events from Model Notes,
     > Thesis, and context for M-3.
 
-4.  **Allocate Mandatory Slots:** Assign M-1 (Integrity/AS), M-2
-    > (Adversarial), M-3 (Scenario H.A.D.).
+4.  **Allocate Mandatory Slots:** Assign M-1 (Integrity), M-2
+    > (Adversarial), M-3 (Scenario H.A.D.) - all to GDR.
 
 5.  **Allocate Dynamic Slots:** Assign D-1, D-2, D-3 to Lynchpins and
-    > remaining uncertainties.
+    > remaining uncertainties - all to GDR.
 
-6.  **Verify Platform Balance:** Confirm 3 AS + 3 GDR. Adjust if
-    > necessary.
+6.  **Construct Queries:** Write self-contained, retrieval-only prompts
+    > optimized for GDR synthesis.
 
-7.  **Construct Queries:** Write self-contained, retrieval-only prompts
-    > using effective patterns.
-
-8.  **Emit A.8:** Output complete RESEARCH_STRATEGY_MAP artifact.
+7.  **Emit A.8:** Output complete RESEARCH_STRATEGY_MAP artifact for
+    > RQ_ASK kernel execution.
 
 **--- END OF PROMPT ---**
