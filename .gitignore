@@ -37,6 +37,9 @@ __pycache__/
 Thumbs.db
 desktop.ini
 
+# Environment config (personal settings)
+.env
+
 # Temporary files
 *.tmp
 *.temp
