@@ -74,11 +74,7 @@ DEFAULT_MODEL = "gemini-2.5-pro"
 DEFAULT_THINKING_MODEL = "gemini-3-flash-preview"
 
 # Initialize MCP server
-mcp = FastMCP(
-    name="Gemini MCP Server",
-    version="1.0.0",
-    description="Provides Claude Code access to Gemini APIs for Deep Research and generation"
-)
+mcp = FastMCP("Gemini MCP Server")
 
 
 # ============================================================================
