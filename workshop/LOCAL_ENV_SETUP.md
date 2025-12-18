@@ -179,6 +179,38 @@ Ensure `/Users/Benjamin/Dev/CAPY/.env` exists with required variables.
 
 ---
 
+## Git / GitHub
+
+### Authentication
+
+**Method:** Personal Access Token (PAT) via credential store
+
+| File | Purpose |
+|------|---------|
+| `~/.git-credentials` | Stored PAT (permissions 600) |
+
+**Credential helper:** `git config --global credential.helper store`
+
+### Repository
+
+| Item | Value |
+|------|-------|
+| Remote | `https://github.com/Sauce123-CB/CAPY.git` |
+| Main branch | `master` |
+| Dev worktree | `~/.claude-worktrees/CAPY/intelligent-tharp` |
+
+### Usage
+
+```bash
+# Push works automatically (credential stored)
+git push origin branch-name
+
+# If credential expires, regenerate PAT at:
+# https://github.com/settings/tokens/new?description=CAPY-Claude-Code&scopes=repo
+```
+
+---
+
 ## Session Notes
 
 ### 2024-12-18
@@ -186,3 +218,4 @@ Ensure `/Users/Benjamin/Dev/CAPY/.env` exists with required variables.
 - OAuth configured with Ultra account
 - Verified working with test queries
 - Created RQ_ASK executor script
+- GitHub PAT configured for automated push
