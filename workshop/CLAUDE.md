@@ -1,6 +1,6 @@
 # CAPY Workshop - Prompt Development Environment
 
-> **Version:** 0.6.0
+> **Version:** 0.7.0
 > **Last reviewed:** 2024-12-19
 > **Review cadence:** Weekly during active development, monthly otherwise
 
@@ -292,6 +292,52 @@ To manage context effectively:
 2. **For patch work:** Spawn Task subagent with only the patch spec + target file(s)
 3. **For smoke tests:** Spawn Task subagent with prompt + kernel + source docs
 4. **Orchestrator only reads summaries**, not full analytical outputs (unless user requests otherwise)
+
+---
+
+## Development Protocols
+
+### Checkpoint Protocol (CRITICAL)
+
+**Default behavior: Checkpoint before making changes.**
+
+When assigned a prompt development task:
+1. **Read** all relevant files (prompts, patches, documentation)
+2. **Analyze** the scope of changes required
+3. **Present** a summary of proposed changes to the user:
+   - Files to be modified
+   - Nature of each change
+   - Downstream compatibility considerations
+4. **Wait** for user sign-off before editing files
+5. **Execute** changes after approval
+6. **Checkpoint again** before committing
+
+**Do NOT:**
+- Start editing files immediately upon receiving a task
+- Assume you understand the full scope without analysis
+- Skip the checkpoint even for "simple" changes
+
+**Rationale:** Prompt engineering changes often have cascading effects across the pipeline. A few minutes of checkpoint discussion prevents hours of rework.
+
+### Forward Compatibility Protocol
+
+**Before modifying any stage prompt:**
+
+1. **Identify consumers:** Which downstream stages use this stage's output?
+2. **Check compatibility:** Review downstream prompts for:
+   - Artifact references (e.g., "RQ Outputs (1-6)" → "(1-7)")
+   - Slot architecture assumptions
+   - File delivery expectations
+3. **Update downstream:** Propagate changes before smoke testing
+4. **Document:** Note compatibility updates in commit message
+
+**Pipeline dependencies:**
+| If you change... | Check these downstream stages... |
+|------------------|----------------------------------|
+| BASE | RQ_GEN, ENRICH, SCENARIO, all |
+| RQ_GEN | ENRICH (RQ slot references) |
+| ENRICH | SCENARIO, INTEGRATION |
+| SCENARIO | INTEGRATION, IRR |
 
 ---
 

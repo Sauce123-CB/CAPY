@@ -1,6 +1,6 @@
 # CAPY Production - Analysis Execution Environment
 
-> **Version:** 0.3.0
+> **Version:** 0.4.0
 > **Last reviewed:** 2024-12-19
 > **Review cadence:** Weekly during active development, monthly otherwise
 
@@ -41,6 +41,20 @@ Orchestrator                              Subagent
     │                                        ├─ Subagent writes output
     ◄────────────────────────────────────────┤ Returns completion
 ```
+
+---
+
+## Checkpoint Protocol
+
+**Default behavior: Checkpoint before making changes.**
+
+When performing production operations:
+1. **Verify prerequisites** before running any stage
+2. **Report plan** to user before executing multi-stage pipelines
+3. **Checkpoint after each stage** if running in checkpoint mode
+4. **Confirm before committing** any results or state changes
+
+**Rationale:** Production runs consume significant compute resources. Verification checkpoints catch issues early.
 
 ---
 

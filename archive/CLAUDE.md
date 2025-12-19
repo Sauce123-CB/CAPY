@@ -1,7 +1,7 @@
 # CAPY Archive - Cold Storage
 
-> **Version:** 0.1.0
-> **Last reviewed:** 2024-12-15
+> **Version:** 0.2.0
+> **Last reviewed:** 2024-12-19
 > **Review cadence:** Monthly
 
 This workspace stores **old versions** of prompts, kernels, smoke tests, and analyses.
@@ -61,3 +61,14 @@ Files are moved here during monthly cleanup:
 - Archive is git-tracked for history
 - Large binary files (PDFs, images) may be gitignored
 - If Archive grows too large, consider offloading to cloud storage
+
+---
+
+## Checkpoint Protocol
+
+**Default behavior: Checkpoint before retrieval or deletion.**
+
+When performing archive operations:
+1. **Confirm file identity** before retrieving (show metadata)
+2. **Verify destination** before copying files
+3. **Never delete** without explicit user confirmation

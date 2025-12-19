@@ -1,7 +1,7 @@
 # CAPY - Mono-Repo Root
 
-> **Version:** 1.1.0
-> **Last reviewed:** 2024-12-18
+> **Version:** 1.2.0
+> **Last reviewed:** 2024-12-19
 
 This repository contains the complete CAPY (Company Analysis PYthon) system for fundamental equity research.
 
@@ -163,6 +163,50 @@ Within the mono-repo, use relative paths:
 
 ---
 
+## Pipeline Development Protocols
+
+### Forward Compatibility Protocol
+
+**Before promoting any stage prompt to CANONICAL or moving to the next pipeline stage:**
+
+1. **Audit downstream stages:** Identify all pipeline stages that consume output from the changed stage
+2. **Check compatibility:** Verify downstream prompts are compatible with:
+   - New artifact schemas
+   - New slot architectures (e.g., 6-slot → 7-slot)
+   - New file delivery patterns (e.g., atomized prompts)
+   - New tool calls (e.g., WebSearch for market prices)
+3. **Update downstream prompts:** Propagate changes before running the next stage
+4. **Document in commit message:** Note which downstream stages were updated for compatibility
+
+**Pipeline dependency chain:**
+```
+BASE → RQ_GEN → ENRICH → SCENARIO → INTEGRATION → IRR
+              ↘ SC/HITL ↗
+```
+
+**Common forward compatibility issues:**
+- Slot architecture changes (M-1/M-2/M-3 vs M-1/M-2/M-3a/M-3b)
+- Artifact schema changes (new fields, renamed keys)
+- File delivery pattern changes (single file vs atomized files)
+- Tool dependency changes (WebSearch availability)
+
+### Checkpoint Protocol
+
+**Default behavior: Checkpoint before making changes.**
+
+When given a multi-step task:
+1. **Analyze** the task and identify all files/changes involved
+2. **Present** a summary of proposed changes to the user
+3. **Wait** for user approval before executing
+4. **Execute** changes only after explicit go-ahead
+5. **Checkpoint again** before committing
+
+**Rationale:** Complex prompt engineering tasks often have non-obvious dependencies. Checkpointing prevents wasted effort from incorrect assumptions and ensures changes are precise and complete.
+
+**Exception:** Trivial changes (typos, formatting) may proceed without checkpoint if explicitly scoped by the user.
+
+---
+
 ## For Collaborators
 
 ### Clone and Setup
@@ -190,5 +234,6 @@ cd CAPY
 
 | Version | Date | Change |
 |---------|------|--------|
+| 1.2.0 | 2024-12-19 | Added Pipeline Development Protocols (Forward Compatibility, Checkpoint) |
 | 1.1.0 | 2024-12-18 | Made auto-routing mandatory and explicit on first turn |
 | 1.0.0 | 2024-12-17 | Initial mono-repo migration from 3 separate repos |
