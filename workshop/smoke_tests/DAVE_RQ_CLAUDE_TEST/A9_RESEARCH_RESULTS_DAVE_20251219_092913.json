@@ -1,0 +1,20 @@
+{
+  "ticker": "DAVE",
+  "execution_timestamp": "2025-12-19T09:29:13.236831",
+  "total_queries": 1,
+  "successful_queries": 0,
+  "failed_queries": 1,
+  "results": [
+    {
+      "rq_id": "RQ1",
+      "status": "ERROR",
+      "query_text": "Research accounting and governance concerns for Dave Inc. (NYSE: DAVE), a fintech neobank company. I need to understand:\n\n(1) Any auditor concerns, qualified opinions, or emphasis-of-matter items in Dave's 10-K filings from 2022-2025\n(2) Any significant changes to revenue recognition policies, particularly for ExtraCash processing fees and tip income\n(3) Related party transactions or conflicts of interest involving management, especially founder/CEO Jason Wilk and CFO Kyle Beilman\n(4) Insider selling activity by executives and directors over the past 24 months - quantities, timing relative to earnings, and any 10b5-1 plan modifications\n(5) Current short interest levels, short interest ratio trends over the past 12 months, and whether any activist short-sellers have published reports on Dave\n(6) Any SEC comment letters or inquiries related to Dave's financial reporting\n\nFocus on the period 2022-2025. Cite specific SEC filings, proxy statements, and news sources.",
+      "response_text": "",
+      "sources": [],
+      "execution_time_seconds": 0.003538,
+      "timestamp": "2025-12-19T09:29:13.236682",
+      "error_message": "[Errno 2] No such file or directory: 'claude'"
+    }
+  ],
+  "execution_time_seconds": 0.003777
+}

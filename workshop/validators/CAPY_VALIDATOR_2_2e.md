@@ -69,8 +69,8 @@ Check the output just produced:
 | BASE T1 | A.1, A.2, A.3, A.5, A.6 |
 | BASE REFINE | A.1–A.6 (corrected or validated), DR re-derivation with X_T1, X_REFINE, X_final |
 | BASE T2 | A.1–A.7 |
-| RQ_GEN | A.8 (exactly 6 RQs: 3 AS, 3 GDR) |
-| RQ_ASK | 6 research responses compiled |
+| RQ_GEN | A.8 (exactly 7 RQs: M-1, M-2, M-3a, M-3b, D-1, D-2, D-3) |
+| RQ_ASK | 7 research responses compiled |
 | ENRICH T1 | A.9 changelog, GIM amendments documented |
 | ENRICH T2 | Updated A.7 with post-enrichment IVPS |
 | SCENARIO T1 | 4 scenarios (S1–S4) with P, M estimates |
@@ -123,9 +123,10 @@ Quick reasonableness (not analytical audit):
 - Y0 calibration confirmed within ~5% of source financials?
 
 #### RQ_GEN
-- Exactly 6 RQs?
-- 3 AS + 3 GDR platform split?
-- M-1, M-2, M-3 mandatory slots covered?
+- Exactly 7 RQs?
+- All platform values CLAUDE or GDR?
+- M-1, M-2, M-3a, M-3b mandatory slots covered?
+- Scenario_Candidates: 4 mainline + 2 Blue Sky + 2 Black Swan?
 
 #### SC
 - execution_context populated?

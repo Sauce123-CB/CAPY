@@ -45,7 +45,7 @@ Verify required artifacts exist as headers or JSON blocks:
 | IRR_T1 | A.13 (CR derivation, τ estimates) |
 | IRR_T2 | A.14 (E[IRR], P(IRR > Hurdle)) |
 | SC | A.11 (findings, Pipeline Fit grade, execution_context) |
-| RQ_GEN | A.8 (exactly 6 RQs: 3 AS, 3 GDR) |
+| RQ_GEN | A.8 (exactly 7 RQs: M-1, M-2, M-3a, M-3b, D-1, D-2, D-3) |
 
 ### Check 3: JSON Validity
 

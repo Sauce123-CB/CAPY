@@ -12,7 +12,7 @@ In a fresh conversation:
 2. Attach the README (`CAPY_2_2e_README_Clean.md`) as canonical specification
 3. Attach three .zip bundles:
    - **prompts.zip** — All stage prompts used (G3BASE, BASE_T1_REFINE, RQ_Gen, G3ENRICH, G3_SCENARIO, G3_SILICON_COUNCIL, G3_INTEGRATION, G3_IRR, kernels)
-   - **data.zip** — Financials, RQ outputs (1–6), SC outputs
+   - **data.zip** — Financials, RQ outputs (1–7), SC outputs
    - **outputs.zip** — All pipeline outputs (BASE T1/REFINE/T2, RQ_GEN, ENRICH T1/T2, SCENARIO T1/T2, INT T1/T2/T3, IRR T1/T2)
 4. Type: `/validate_pipeline {TICKER}`
 
@@ -51,7 +51,7 @@ Verify required artifacts present in each output:
 | BASE T1 | A.1, A.2, A.3, A.5, A.6 |
 | BASE REFINE | A.1–A.6 (corrected or validated), DR re-derivation with X_T1, X_REFINE, X_final |
 | BASE T2 | A.1–A.7 |
-| RQ_GEN | A.8 (exactly 6 RQs: 3 AS, 3 GDR, M-1/M-2/M-3 mandatory slots covered) |
+| RQ_GEN | A.8 (exactly 7 RQs: M-1/M-2/M-3a/M-3b mandatory + D-1/D-2/D-3 dynamic) |
 | ENRICH T1 | A.9 changelog, GIM amendments documented |
 | ENRICH T2 | Updated A.7 with post-enrichment IVPS |
 | SCENARIO T1 | 4 scenarios (S1–S4) with P, M estimates |
@@ -89,7 +89,7 @@ Verify each stage received correct inputs per README Section 6 (Attachment Cheat
 **"Complete BASE outputs"** = REFINE output (A.1–A.6) + T2 output (A.7). If T2 consolidates everything, use T2 alone. If T2 only emits A.7, need both REFINE and T2 (not original T1 unless needed for something missing).
 
 **2.3 ENRICH Chain**
-- [ ] T1 received: Prompt (G3ENRICH_2.2.1e.md), Complete BASE outputs, A.8, Research bundle (6 RQ responses)
+- [ ] T1 received: Prompt (G3ENRICH_2.2.1e.md), Complete BASE outputs, A.8, Research bundle (7 RQ responses)
 - [ ] T2 received: Prompt (G3ENRICH_2.2.1e.md), ENRICH T1, Kernel
 
 **2.4 SCENARIO Chain**
@@ -97,12 +97,12 @@ Verify each stage received correct inputs per README Section 6 (Attachment Cheat
 - [ ] T2 received: Prompt (G3_SCENARIO_2_2_1e.md), SCEN T1, Complete ENRICH outputs (fresh), Kernel
 
 **2.5 SC Chain (Epistemic Parity)**
-- [ ] Each SC instance received: Prompt (G3_SILICON_COUNCIL_2.2.1e.md), Financials bundle (.zip), RQ outputs (1–6), Complete ENRICH/SCENARIO outputs
+- [ ] Each SC instance received: Prompt (G3_SILICON_COUNCIL_2.2.1e.md), Financials bundle (.zip), RQ outputs (1–7), Complete ENRICH/SCENARIO outputs
 - [ ] SC did NOT receive: BASE outputs (removed to avoid confusion)
 - [ ] SC did NOT receive: Stage prompts for other stages (audits execution, not methodology)
 
 **2.6 INT Chain (Epistemic Parity)**
-- [ ] T1 received: Prompt (G3_INTEGRATION_2_2_2e.md), Financials bundle, RQ outputs (1–6), Complete ENRICH/SCENARIO outputs, All SC outputs
+- [ ] T1 received: Prompt (G3_INTEGRATION_2_2_2e.md), Financials bundle, RQ outputs (1–7), Complete ENRICH/SCENARIO outputs, All SC outputs
 - [ ] T2 received: Prompt (G3_INTEGRATION_2_2_2e.md), INT T1, Complete ENRICH/SCENARIO outputs (fresh), Kernel
 - [ ] T3 received: Prompt (G3_INTEGRATION_2_2_2e.md), INT T1, INT T2, Complete ENRICH outputs, Complete SCENARIO outputs
 - [ ] T3 did NOT receive: SC outputs (already adjudicated in T1), Financials, RQs
@@ -227,9 +227,10 @@ Flag: Undocumented changes, SC findings without INT disposition.
 
 **6.3 RQ Coverage**
 
-- [ ] A.8 contains exactly 6 RQs (3 AS, 3 GDR)
-- [ ] M-1, M-2, M-3 mandatory slots covered
-- [ ] All 6 RQs have corresponding responses in data.zip
+- [ ] A.8 contains exactly 7 RQs (4 mandatory + 3 dynamic)
+- [ ] M-1, M-2, M-3a, M-3b mandatory slots covered
+- [ ] Scenario_Candidates: 4 mainline + 2 Blue Sky + 2 Black Swan
+- [ ] All 7 RQs have corresponding responses in data.zip
 - [ ] RQ responses substantive (not "no results found")
 
 ---

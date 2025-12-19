@@ -1,7 +1,7 @@
 # CAPY Production - Analysis Execution Environment
 
-> **Version:** 0.2.2
-> **Last reviewed:** 2024-12-16
+> **Version:** 0.3.0
+> **Last reviewed:** 2024-12-19
 > **Review cadence:** Weekly during active development, monthly otherwise
 
 This workspace is for **running production analyses** on companies.
@@ -418,8 +418,187 @@ Key Outputs:
 IVPS: ${value} (from A.7)
 
 Next steps:
-- CAPY: RUN RQ_GEN (generates research questions)
+- CAPY: RUN RQ_STAGE (generates and executes research questions)
 - Or manually proceed to ENRICH stage
+```
+
+---
+
+### CAPY: RUN RQ_STAGE
+
+**Executes the full RQ pipeline (RQ_GEN → A.8 Validation → RQ_ASK) with parallel research subagents.**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  CAPY: RUN RQ_STAGE                                          │
+├─────────────────────────────────────────────────────────────┤
+│  1. RQ_GEN (Opus subagent)                                   │
+│     └── Generate A.8_RESEARCH_STRATEGY_MAP                   │
+│                                                              │
+│  2. A.8 VALIDATOR (Haiku subagent)                           │
+│     └── FAIL? Stop. PASS? ↓                                  │
+│                                                              │
+│  3. RQ_ASK (7 Parallel Opus subagents)                       │
+│     └── Execute research queries with WebSearch              │
+│     └── Each subagent writes directly to disk                │
+│                                                              │
+│  4. Generate A.9_RESEARCH_RESULTS summary                    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Prerequisites:**
+- BASE_PIPELINE complete (`completed_turns` includes T1, REFINE, T2)
+- A.7 artifact exists in `03_T2/{TICKER}_BASE_T2.md`
+
+---
+
+#### Stage 1: RQ_GEN
+
+1. **Orchestrator reads:**
+   - `prompts/rq_gen/RQ_Gen_2_2_3e.md` (7-slot RQ generation prompt)
+   - `01_T1/{TICKER}_BASE_T1.md` (for A.1-A.6 artifacts)
+   - `02_REFINE/{TICKER}_BASE_REFINE.md` (for refined artifacts)
+   - `03_T2/{TICKER}_BASE_T2.md` (for A.7 with Tornado/Model Notes)
+
+2. **Spawn Opus subagent:**
+   ```
+   You are executing CAPY RQ_GEN.
+
+   === RQ_GEN PROMPT (FOLLOW THIS EXACTLY) ===
+   [FULL contents of RQ_Gen_2_2_3e.md - orchestrator embeds this]
+
+   === BASE ARTIFACTS ===
+   [FULL contents of T1, REFINE, T2 outputs - orchestrator embeds]
+
+   === TRIGGER ===
+   Generate A.8_RESEARCH_STRATEGY_MAP for {COMPANY_NAME} ({TICKER})
+
+   === OUTPUT INSTRUCTION ===
+   Write your complete A.8 JSON artifact to:
+   analyses/{RUN_ID}/04_RQ/{TICKER}_A8_RESEARCH_PLAN.json
+   ```
+
+3. **Wait for subagent completion**
+
+---
+
+#### Stage 2: A.8 Validation
+
+1. **Spawn Haiku validator:**
+   - Use `validators/A8_VALIDATOR.md`
+   - Validate the A.8 JSON artifact
+
+2. **Process validation:**
+   - If FAIL: Stop pipeline, report issues
+   - If PASS: Continue to RQ_ASK
+
+---
+
+#### Stage 3: RQ_ASK (7 Parallel Subagents)
+
+**CRITICAL: Launch all 7 subagents in parallel using direct-write protocol.**
+
+1. **Parse A.8** to extract 7 research queries:
+   - M-1: Integrity Check (forensic accounting, governance)
+   - M-2: Adversarial Synthesis (bull/bear arguments)
+   - M-3a: Mainline Scenario H.A.D. (4 mainline scenarios)
+   - M-3b: Tail Scenario H.A.D. (4 tail scenarios: 2 Blue Sky + 2 Black Swan)
+   - D-1, D-2, D-3: Dynamic Lynchpin coverage
+
+2. **Launch 7 parallel Task subagents** (one message with 7 Task tool calls):
+
+   For each RQ (1-7):
+   ```
+   You are a Deep Research Agent executing {RQ_ID} for CAPY analysis.
+
+   === RESEARCH QUESTION ===
+   {Prompt_Text from A.8}
+
+   === CITATION REQUIREMENTS ===
+   - Every factual claim MUST include an inline citation
+   - Use format: [Source Name, Date] or [SEC Filing Type, Date]
+   - Include specific page numbers when available
+
+   === OUTPUT STRUCTURE ===
+   ## Executive Summary
+   ## Detailed Findings
+   ## Key Uncertainties
+   ## Sources
+
+   === OUTPUT INSTRUCTION ===
+   After completing your research, use the Write tool to save your report to:
+   analyses/{RUN_ID}/04_RQ/RQ{N}_{Topic}.md
+
+   Return only a confirmation with the filepath.
+   ```
+
+3. **Wait for all 7 subagents** via TaskOutput (blocking)
+
+4. **Verify output files exist:**
+   ```
+   04_RQ/
+   ├── {TICKER}_A8_RESEARCH_PLAN.json
+   ├── RQ1_Accounting_Governance.md       (M-1)
+   ├── RQ2_Bull_Bear_Arguments.md         (M-2)
+   ├── RQ3a_Mainline_Scenarios.md         (M-3a)
+   ├── RQ3b_Tail_Scenarios.md             (M-3b)
+   ├── RQ4_{Lynchpin_Topic}.md            (D-1)
+   ├── RQ5_{Lynchpin_Topic}.md            (D-2)
+   └── RQ6_{Lynchpin_Topic}.md            (D-3)
+   ```
+
+5. **Generate A.9_RESEARCH_RESULTS:**
+   ```json
+   {
+     "ticker": "{TICKER}",
+     "execution_timestamp": "ISO-8601",
+     "executor": "claude",
+     "total_queries": 7,
+     "successful_queries": 7,
+     "results": [
+       {
+         "rq_id": "RQ1",
+         "status": "SUCCESS",
+         "coverage_objective": "M-1 Integrity Check",
+         "output_file": "RQ1_Accounting_Governance.md",
+         "word_count": 5800
+       }
+     ]
+   }
+   ```
+   Write to: `04_RQ/{TICKER}_A9_RESEARCH_RESULTS.json`
+
+---
+
+#### RQ Stage Completion
+
+Report summary to user:
+
+```
+RQ_STAGE complete for {TICKER}
+
+Run ID: {RUN_ID}
+
+Stage Results:
+├── RQ_GEN:   PASS (7 queries generated)
+├── A.8:      PASS (schema valid)
+└── RQ_ASK:   7/7 SUCCESS
+
+Research Outputs:
+├── 04_RQ/RQ1_Accounting_Governance.md      (M-1)
+├── 04_RQ/RQ2_Bull_Bear_Arguments.md        (M-2)
+├── 04_RQ/RQ3a_Mainline_Scenarios.md        (M-3a, 4 scenarios)
+├── 04_RQ/RQ3b_Tail_Scenarios.md            (M-3b, 4 scenarios)
+├── 04_RQ/RQ4_{Topic}.md                    (D-1)
+├── 04_RQ/RQ5_{Topic}.md                    (D-2)
+└── 04_RQ/RQ6_{Topic}.md                    (D-3)
+
+Total: ~{N}K words of research across 8 scenarios
+
+Next steps:
+- Review research outputs
+- CAPY: RUN ENRICH (Bayesian synthesis)
+- Or manually proceed to SCENARIO stage
 ```
 
 ---
@@ -647,9 +826,9 @@ Last deployment: [Check VERSION.md]
 
 ## Maturity Status
 
-> **This CLAUDE.md is v0.2.2 (DRAFT)**
+> **This CLAUDE.md is v0.3.0 (DRAFT)**
 
-Current status: BASE_PIPELINE smoke-tested 2024-12-16. T1 and REFINE work via subagent dispatch. T2 requires orchestrator-direct kernel execution (subagents fabricate results).
+Current status: BASE_PIPELINE and RQ_STAGE smoke-tested. T1 and REFINE work via subagent dispatch. T2 requires orchestrator-direct kernel execution (subagents fabricate results). RQ_STAGE uses 7 parallel Claude Opus subagents with direct-write protocol.
 
 Before v1.0:
 - [x] Full smoke test of CC-enabled CAPY production run (2024-12-16, DAVE)
@@ -657,9 +836,11 @@ Before v1.0:
 - [x] Document inter-turn validator integration
 - [x] Validate subagent dispatch patterns work end-to-end (T1, REFINE: yes; T2: no)
 - [x] Document error handling and recovery procedures
+- [x] Document RQ_STAGE with 7-slot architecture (2024-12-19)
+- [x] RQ_STAGE smoke test (DAVE, 7 parallel subagents, ~220K words output)
 - [ ] Test COMPARE RUNS functionality
 - [ ] Add remaining pipeline stages (ENRICH, SCENARIO, INT, IRR)
-- [ ] Document RQ_GEN, SC, HITL pause points
+- [ ] Document SC, HITL pause points
 
 **Smoke Test Findings (2024-12-16):**
 - T1: Opus subagent works correctly

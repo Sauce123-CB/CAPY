@@ -1,7 +1,7 @@
 # CAPY Workshop - Prompt Development Environment
 
-> **Version:** 0.5.0
-> **Last reviewed:** 2024-12-17
+> **Version:** 0.6.0
+> **Last reviewed:** 2024-12-19
 > **Review cadence:** Weekly during active development, monthly otherwise
 
 This workspace is for **developing, testing, and iterating** on CAPY prompts and kernels.
@@ -297,7 +297,23 @@ To manage context effectively:
 
 ## RQ Stage Orchestration (RQ_GEN → RQ_ASK)
 
-The RQ (Research Question) stage bridges BASE analysis and ENRICH/SCENARIO stages by executing external research queries via Gemini Deep Research.
+The RQ (Research Question) stage bridges BASE analysis and ENRICH/SCENARIO stages by executing external research queries via parallel subagents.
+
+### Architecture (v2.2.3)
+
+**7-Slot Framework:**
+- 4 Mandatory slots (M-1, M-2, M-3a, M-3b)
+- 3 Dynamic slots (D-1, D-2, D-3 for Lynchpin coverage)
+
+**Mandatory Coverage:**
+| Slot | Coverage | Purpose |
+|------|----------|---------|
+| M-1 | Integrity Check | Forensic accounting, governance flags |
+| M-2 | Adversarial Synthesis | Bull/bear arguments, litigation |
+| M-3a | Mainline Scenario H.A.D. | 4 mainline scenarios (products, M&A, regulatory, strategy) |
+| M-3b | Tail Scenario H.A.D. | 4 tail scenarios (2 Blue Sky + 2 Black Swan) |
+
+**Scenario Coverage:** 8 total scenarios researched (4 mainline + 4 tail) to ensure SCENARIO stage has sufficient candidates.
 
 ### Stage Flow
 
@@ -305,7 +321,7 @@ The RQ (Research Question) stage bridges BASE analysis and ENRICH/SCENARIO stage
 ┌─────────────────────────────────────────────────────────────┐
 │ 1. RQ_GEN (Opus Subagent)                                   │
 │    Input:  {TICKER}_BASE_T1.md + {TICKER}_BASE_REFINE.md +  │
-│            {TICKER}_BASE_T2.md + RQ_Gen_2_2_2e.md           │
+│            {TICKER}_BASE_T2.md + RQ_Gen_2_2_3e.md           │
 │    Output: A.8_RESEARCH_STRATEGY_MAP (JSON)                 │
 │    Save:   04_RQ/{TICKER}_A8_RESEARCH_PLAN.json             │
 └──────────────────────┬──────────────────────────────────────┘
@@ -314,18 +330,19 @@ The RQ (Research Question) stage bridges BASE analysis and ENRICH/SCENARIO stage
 ┌─────────────────────────────────────────────────────────────┐
 │ 2. A.8 VALIDATOR (Opus Subagent)                            │
 │    Prompt: validators/A8_VALIDATOR.md                       │
-│    Check:  Schema, 6 RQs, mandatory coverage, retrieval-    │
-│            only verbs                                       │
+│    Check:  Schema, 7 RQs, M-1/M-2/M-3a/M-3b coverage,       │
+│            8 scenario candidates, retrieval-only verbs      │
 │    Output: PASS/FAIL + issues                               │
 └──────────────────────┬──────────────────────────────────────┘
                        │ (proceed only if PASS)
                        ▼
 ┌─────────────────────────────────────────────────────────────┐
-│ 3. RQ_ASK (Python via Bash)                                 │
-│    Script: kernels/run_rq_ask.py                            │
-│    Execute: 6 parallel Gemini Deep Research queries         │
-│    Output: A.9_RESEARCH_RESULTS (JSON)                      │
-│    Save:   04_RQ/{TICKER}_A9_RESEARCH_RESULTS_{TS}.json     │
+│ 3. RQ_ASK (7 Parallel Subagents)                            │
+│    Kernel: kernels/RQ_ASK_KERNEL_2_2_3e.py                  │
+│    Execute: 7 parallel Claude/Gemini research subagents     │
+│    Each subagent writes output directly to disk             │
+│    Output: A.9_RESEARCH_RESULTS (JSON) + 7 markdown files   │
+│    Save:   04_RQ/{TICKER}_A9_*.json + RQ1-RQ7_*.md          │
 └──────────────────────┬──────────────────────────────────────┘
                        │
                        ▼
@@ -397,20 +414,33 @@ Instruct: "Validate this A.9 artifact."
 
 | File | Location | Purpose |
 |------|----------|---------|
-| RQ_Gen_2_2_2e.md | orchestration/ | RQ generation prompt (6×GDR) |
-| RQ_ASK_KERNEL_2_2_2e.py | kernels/ | Async Gemini executor |
+| RQ_Gen_2_2_3e.md | orchestration/ | RQ generation prompt (7-slot, 8 scenarios) |
+| RQ_ASK_KERNEL_2_2_3e.py | kernels/ | Async parallel subagent executor |
 | run_rq_ask.py | kernels/ | CLI wrapper for RQ_ASK |
-| A8_VALIDATOR.md | validators/ | A.8 schema/semantic validator |
+| A8_VALIDATOR.md | validators/ | A.8 schema/semantic validator (7-slot) |
 | A9_VALIDATOR.md | validators/ | A.9 completeness validator |
 
-### Gemini CLI Configuration
+### Execution Configuration
 
-The RQ_ASK kernel uses Gemini CLI with OAuth authentication:
-- **CLI Path:** `~/.npm-global/bin/gemini`
-- **Model:** `gemini-2.0-flash-thinking-exp`
-- **Auth:** OAuth via `~/.gemini/` (Google Ultra subscription)
-- **Concurrency:** 6 parallel queries
+**Subagent Options:**
+- **Claude Opus:** Via Task tool with WebSearch/WebFetch permissions (recommended)
+- **Gemini Deep Research:** Via CLI with OAuth authentication
+
+**Execution Parameters:**
+- **Concurrency:** 7 parallel subagents
 - **Timeout:** 10 minutes per query
+- **Output:** Each subagent writes directly to disk (no orchestrator transcription)
+
+### Critical: Subagent Direct-Write Protocol
+
+To avoid orchestrator bottleneck, subagents MUST write their output directly to disk:
+
+1. Subagent prompt includes output path: `{output_dir}/RQ{N}_{topic}.md`
+2. Subagent uses Write tool to save research report before returning
+3. Subagent returns only confirmation + filepath
+4. Orchestrator verifies files exist, reports to user
+
+**This eliminates the 3-6x time overhead from orchestrator transcription.**
 
 ---
 
@@ -464,8 +494,9 @@ Run on the 1st of each month:
 
 | Component | File | Status | Smoke Test |
 |-----------|------|--------|------------|
-| Research Question Gen | RQ_Gen_2_2_2e.md | EXPERIMENTAL | - |
-| RQ Executor | RQ_ASK_KERNEL_2_2_2e.py | EXPERIMENTAL | - |
+| Research Question Gen | RQ_Gen_2_2_3e.md | EXPERIMENTAL | DAVE_RQ_CLAUDE_TEST |
+| Research Question Gen (legacy) | RQ_Gen_2_2_2e.md | HISTORICAL | - |
+| RQ Executor | RQ_ASK_KERNEL_2_2_3e.py | EXPERIMENTAL | DAVE_RQ_CLAUDE_TEST |
 | RQ Executor CLI | run_rq_ask.py | EXPERIMENTAL | - |
 | Silicon Council | G3_SILICON_COUNCIL_2.2.1e.md | CANONICAL | DAVE_20241210 |
 | HITL Audit | HITL_DIALECTIC_AUDIT_1_0_Goldilocks.md | CANONICAL | DAVE_20241210 |
