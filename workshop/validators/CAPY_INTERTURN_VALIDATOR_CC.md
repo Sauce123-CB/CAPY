@@ -1,8 +1,8 @@
 # CAPY Inter-Turn Validator (Claude Code Edition)
 
-> **Version:** 1.0.0
+> **Version:** 1.0.1
 > **Purpose:** Fast gate-check between pipeline stages
-> **Model:** Haiku (optimized for speed/cost)
+> **Model:** Opus (consistency with analytical subagents)
 
 Run as subagent after each analytical turn. Structural validation only—not analytical audit.
 

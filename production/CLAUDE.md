@@ -1,6 +1,6 @@
 # CAPY Production - Analysis Execution Environment
 
-> **Version:** 0.4.0
+> **Version:** 0.5.0
 > **Last reviewed:** 2024-12-19
 > **Review cadence:** Weekly during active development, monthly otherwise
 
@@ -44,17 +44,23 @@ Orchestrator                              Subagent
 
 ---
 
-## Checkpoint Protocol
+## Checkpoint Protocol (MANDATORY)
 
-**Default behavior: Checkpoint before making changes.**
+**ALWAYS checkpoint before modifying ANY file.**
 
-When performing production operations:
-1. **Verify prerequisites** before running any stage
-2. **Report plan** to user before executing multi-stage pipelines
-3. **Checkpoint after each stage** if running in checkpoint mode
-4. **Confirm before committing** any results or state changes
+This is non-negotiable. Do NOT edit, write, or modify files without explicit user approval.
 
-**Rationale:** Production runs consume significant compute resources. Verification checkpoints catch issues early.
+**Before ANY file modification:**
+1. **State** exactly which file(s) you intend to modify
+2. **Show** the specific changes you plan to make (old → new)
+3. **Wait** for explicit user approval ("yes", "proceed", "do it", etc.)
+4. **Only then** execute the edit
+
+**Rationale:** Unchecked edits cause catastrophic errors. Reading files is fine. Modifying files requires approval.
+
+**No exceptions.** Even "trivial" changes require checkpoint. If you're uncertain whether something counts as a modification, checkpoint anyway.
+
+**Violations:** If you modify a file without checkpointing, immediately revert the change and apologize.
 
 ---
 
@@ -212,13 +218,13 @@ This is the preferred command for production runs. Use individual stage commands
 │  CAPY: RUN BASE_PIPELINE                                │
 ├─────────────────────────────────────────────────────────┤
 │  1. BASE_T1 (Opus subagent)                             │
-│     └── Validate (Haiku) → FAIL? Stop. PASS/WARN? ↓    │
+│     └── Validate (Opus) → FAIL? Stop. PASS/WARN? ↓     │
 │                                                         │
 │  2. BASE_REFINE (Opus subagent)                         │
-│     └── Validate (Haiku) → FAIL? Stop. PASS/WARN? ↓    │
+│     └── Validate (Opus) → FAIL? Stop. PASS/WARN? ↓     │
 │                                                         │
 │  3. BASE_T2 (Kernel execution + formatting)             │
-│     └── Validate (Haiku) → Report final status          │
+│     └── Validate (Opus) → Report final status           │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -266,7 +272,7 @@ This is the preferred command for production runs. Use individual stage commands
 
 3. **Wait for subagent completion**
 
-4. **Run validator** (Task tool, subagent_type: "general-purpose", model: haiku):
+4. **Run validator** (Task tool, subagent_type: "general-purpose", model: opus):
    ```
    You are the CAPY inter-turn validator.
 
@@ -402,7 +408,7 @@ T2 MUST be executed by the orchestrator directly via Bash.
    - Format as markdown with A.7 artifact
    - Write to: `03_T2/{TICKER}_BASE_T2.md`
 
-5. **Run validator** (stage="BASE_T2", **model: opus** - Haiku misses fabrication)
+5. **Run validator** (stage="BASE_T2", model: opus)
 
 6. **Process validation result:**
    - Write to: `03_T2/{TICKER}_T2_validation.json`
@@ -449,7 +455,7 @@ Next steps:
 │  1. RQ_GEN (Opus subagent)                                   │
 │     └── Generate A.8_RESEARCH_STRATEGY_MAP                   │
 │                                                              │
-│  2. A.8 VALIDATOR (Haiku subagent)                           │
+│  2. A.8 VALIDATOR (Opus subagent)                            │
 │     └── FAIL? Stop. PASS? ↓                                  │
 │                                                              │
 │  3. RQ_ASK (7 Parallel Opus subagents)                       │
@@ -498,7 +504,7 @@ Next steps:
 
 #### Stage 2: A.8 Validation
 
-1. **Spawn Haiku validator:**
+1. **Spawn Opus validator:**
    - Use `validators/A8_VALIDATOR.md`
    - Validate the A.8 JSON artifact
 
@@ -611,8 +617,291 @@ Total: ~{N}K words of research across 8 scenarios
 
 Next steps:
 - Review research outputs
-- CAPY: RUN ENRICH (Bayesian synthesis)
+- CAPY: RUN ENRICH_STAGE (Bayesian synthesis)
 - Or manually proceed to SCENARIO stage
+```
+
+---
+
+### CAPY: RUN ENRICH_STAGE
+
+**Executes the full ENRICH pipeline (T1 → Validation → T2 → Validation) for Bayesian synthesis of research results.**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  CAPY: RUN ENRICH_STAGE                                      │
+├─────────────────────────────────────────────────────────────┤
+│  1. ENRICH_T1 (Opus subagent)                                │
+│     └── Synthesize RQ evidence into GIM refinements          │
+│     └── Validate (Opus) → FAIL? Stop. PASS/WARN? ↓          │
+│                                                              │
+│  2. ENRICH_T2 (Opus subagent with Bash kernel execution)     │
+│     └── Extract artifacts, execute kernel via Bash           │
+│     └── Validate (Opus) → Report final status                │
+│                                                              │
+│  3. Package outputs to 05_ENRICH/                            │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Prerequisites:**
+- BASE_PIPELINE complete (`completed_turns` includes T1, REFINE, T2)
+- RQ_STAGE complete (A.8 + 7 RQ outputs exist in `04_RQ/`: RQ1, RQ2, RQ3a, RQ3b, RQ4, RQ5, RQ6)
+- A.7 artifact exists with State 1 IVPS
+
+---
+
+#### Stage 1: ENRICH_T1
+
+**CRITICAL: Orchestrator MUST embed all required artifacts. Subagent reads RQ outputs from disk.**
+
+The T1 subagent performs Bayesian synthesis of research evidence to refine the GIM. It does NOT compute IVPS (that's kernel work in T2).
+
+1. **Create output directory:**
+   ```
+   mkdir -p analyses/{RUN_ID}/05_ENRICH/
+   ```
+
+2. **Orchestrator reads and embeds these files:**
+   - `prompts/enrich/G3ENRICH_2.2.2e_PROMPT.md` (core instructions)
+   - `prompts/enrich/G3ENRICH_2.2.2e_SCHEMAS.md` (JSON schemas)
+   - `prompts/enrich/G3ENRICH_2.2.2e_NORMDEFS.md` (DSL definitions)
+   - `kernels/CVR_KERNEL_ENRICH_2.2.2e.py` (kernel - T1 uses for reference context, T2 executes via Bash)
+   - `02_REFINE/{TICKER}_BASE_REFINE.md` (contains A.1-A.6 with complete GIM/DAG - THE SOURCE OF TRUTH)
+   - `03_T2/{TICKER}_BASE_T2.md` (contains A.7 with State 1 IVPS)
+   - `04_RQ/{TICKER}_A8_RESEARCH_PLAN.json` (research strategy map)
+
+3. **Spawn Opus subagent** (Task tool, subagent_type: "general-purpose"):
+   ```
+   You are executing CAPY ENRICHMENT Turn 1.
+
+   === G3ENRICH PROMPT (FOLLOW THIS EXACTLY) ===
+   [FULL contents of G3ENRICH_2.2.2e_PROMPT.md - orchestrator embeds]
+
+   === SCHEMAS (APPENDIX A) ===
+   [FULL contents of G3ENRICH_2.2.2e_SCHEMAS.md - orchestrator embeds]
+
+   === NORMATIVE DEFINITIONS (APPENDIX B) ===
+   [FULL contents of G3ENRICH_2.2.2e_NORMDEFS.md - orchestrator embeds]
+
+   === BASE ARTIFACTS (A.1-A.6, Complete GIM/DAG) ===
+   [FULL contents of 02_REFINE/{TICKER}_BASE_REFINE.md - orchestrator embeds]
+   ^^^ THIS IS THE SOURCE OF TRUTH FOR ALL DRIVERS ^^^
+
+   === BASE A.7 (State 1 IVPS) ===
+   [FULL contents of 03_T2/{TICKER}_BASE_T2.md - orchestrator embeds]
+   ^^^ USE THIS FOR STATE 1 IVPS BASELINE ^^^
+
+   === A.8 RESEARCH STRATEGY MAP ===
+   [FULL contents of 04_RQ/{TICKER}_A8_RESEARCH_PLAN.json - orchestrator embeds]
+
+   === RQ RESEARCH OUTPUTS ===
+   Read ALL research output files from: analyses/{RUN_ID}/04_RQ/RQ*.md
+   Use the Read tool to load each file yourself. These contain:
+   - RQ1 (M-1): Integrity Check
+   - RQ2 (M-2): Adversarial Synthesis
+   - RQ3a (M-3a): Mainline Scenarios H.A.D.
+   - RQ3b (M-3b): Tail Scenarios H.A.D.
+   - RQ4 (D-1): Lynchpin L1 deep dive
+   - RQ5 (D-2): Lynchpin L2 deep dive
+   - RQ6 (D-3): Lynchpin L3 deep dive
+
+   === TRIGGER ===
+   Execute ENRICHMENT Turn 1 for {COMPANY_NAME} ({TICKER}).
+   Synthesize research evidence into GIM refinements per the protocol.
+
+   === OUTPUT INSTRUCTION ===
+   Write your complete output to: analyses/{RUN_ID}/05_ENRICH/{TICKER}_ENRICH_T1.md
+
+   Your output MUST include:
+   1. Narratives N1-N5 (Investment Thesis, IC Modeling, Economic Governor, Risk Assessment, Enrichment Synthesis)
+   2. JSON artifacts A.1, A.2, A.3, A.5, A.6 (updated or pass-through with valid JSON)
+   3. A.9_ENRICHMENT_TRACE (full audit trail of refinements)
+
+   DO NOT compute IVPS. That happens in Turn 2 via kernel execution.
+   DO NOT emit A.7 - that is T2's responsibility.
+   ```
+
+4. **Wait for subagent completion**
+
+5. **Run validator** (Task tool, subagent_type: "general-purpose", model: **opus**):
+   ```
+   You are the CAPY inter-turn validator.
+
+   === VALIDATOR PROMPT ===
+   [FULL contents of validators/CAPY_INTERTURN_VALIDATOR_CC.md]
+
+   === STAGE ===
+   ENRICH_T1
+
+   === OUTPUT TO VALIDATE ===
+   [FULL contents of 05_ENRICH/{TICKER}_ENRICH_T1.md]
+
+   Return ONLY the JSON validation result.
+   ```
+
+6. **Process validation result:**
+   - Write to: `05_ENRICH/{TICKER}_ENRICH_T1_validation.json`
+   - If `"proceed": false` → **HALT pipeline**, report issues to user
+   - If `"proceed": true` → Continue to Stage 2
+
+7. **Update state:**
+   - Add "ENRICH_T1" to `completed_turns`
+   - Set `current_turn: "ENRICH_T2"`
+
+---
+
+#### Stage 2: ENRICH_T2
+
+**CRITICAL: Subagent MUST execute kernel via Bash. DO NOT compute IVPS manually.**
+
+The T2 subagent extracts artifacts from T1, runs the Python kernel via Bash, and formats the output. This pattern provides context isolation while ensuring deterministic kernel execution.
+
+1. **Spawn Opus subagent** (Task tool, subagent_type: "general-purpose"):
+   ```
+   You are executing CAPY ENRICHMENT Turn 2.
+
+   YOUR JOB IS KERNEL EXECUTION, NOT ANALYSIS.
+
+   === STEP 1: READ T1 OUTPUT ===
+   Read: analyses/{RUN_ID}/05_ENRICH/{TICKER}_ENRICH_T1.md
+
+   === STEP 2: EXTRACT ARTIFACTS ===
+   Extract these JSON blocks from T1 and save to individual files:
+   - A.2_ANALYTIC_KG → analyses/{RUN_ID}/05_ENRICH/A2_ANALYTIC_KG.json
+   - A.3_CAUSAL_DAG → analyses/{RUN_ID}/05_ENRICH/A3_CAUSAL_DAG.json
+   - A.5_GESTALT_IMPACT_MAP → analyses/{RUN_ID}/05_ENRICH/A5_GESTALT_IMPACT_MAP.json
+   - A.6_DR_DERIVATION_TRACE → analyses/{RUN_ID}/05_ENRICH/A6_DR_DERIVATION_TRACE.json
+
+   Use the Write tool to save each JSON file.
+
+   === STEP 3: EXECUTE KERNEL VIA BASH ===
+   **YOU MUST USE THE BASH TOOL. DO NOT COMPUTE IVPS YOURSELF.**
+
+   Run this command:
+   python -c "
+   import json
+   import importlib.util
+
+   spec = importlib.util.spec_from_file_location(
+       'kernel', 'kernels/CVR_KERNEL_ENRICH_2.2.2e.py')
+   kernel = importlib.util.module_from_spec(spec)
+   spec.loader.exec_module(kernel)
+
+   kg = json.load(open('analyses/{RUN_ID}/05_ENRICH/A2_ANALYTIC_KG.json'))
+   dag = json.load(open('analyses/{RUN_ID}/05_ENRICH/A3_CAUSAL_DAG.json'))
+   gim = json.load(open('analyses/{RUN_ID}/05_ENRICH/A5_GESTALT_IMPACT_MAP.json'))
+   dr = json.load(open('analyses/{RUN_ID}/05_ENRICH/A6_DR_DERIVATION_TRACE.json'))
+
+   result = kernel.execute_cvr_workflow(kg, dag, gim, dr, [
+       {'driver': 'MTM_Growth_Rate', 'low': -0.20, 'high': 0.20},
+       {'driver': 'Gross_Profit_Margin', 'low': -0.10, 'high': 0.10},
+       {'driver': 'ARPU_Growth_Rate', 'low': -0.20, 'high': 0.20},
+       {'driver': 'Opex_ex_Variable_Pct', 'low': -0.10, 'high': 0.10},
+       {'driver': 'Discount_Rate', 'low': -0.01, 'high': 0.01}
+   ])
+
+   json.dump(result, open('analyses/{RUN_ID}/05_ENRICH/A7_kernel_output.json', 'w'), indent=2)
+   print(json.dumps(result, indent=2))
+   "
+
+   === STEP 4: FORMAT T2 OUTPUT ===
+   Read the kernel output JSON. Create T2 markdown document with:
+   - Execution summary (kernel version, status)
+   - State 1 vs State 2 IVPS comparison table
+   - Sensitivity analysis (tornado chart from kernel output)
+   - Terminal driver values
+   - A.7_LIGHTWEIGHT_VALUATION_SUMMARY (embed the full JSON)
+
+   Write to: analyses/{RUN_ID}/05_ENRICH/{TICKER}_ENRICH_T2.md
+
+   === PROHIBITED ===
+   - DO NOT calculate IVPS yourself
+   - DO NOT invent kernel output
+   - If Bash fails, report the error - do not fabricate results
+   ```
+
+2. **Wait for subagent completion**
+
+3. **Run validator** (Task tool, subagent_type: "general-purpose", model: **opus**):
+   ```
+   You are the CAPY inter-turn validator.
+
+   === VALIDATOR PROMPT ===
+   [FULL contents of validators/CAPY_INTERTURN_VALIDATOR_CC.md]
+
+   === STAGE ===
+   ENRICH_T2
+
+   === OUTPUT TO VALIDATE ===
+   [FULL contents of 05_ENRICH/{TICKER}_ENRICH_T2.md]
+
+   === KERNEL OUTPUT ===
+   [FULL contents of 05_ENRICH/A7_kernel_output.json]
+
+   Verify:
+   1. A.7 exists with valid IVPS
+   2. Terminal g < DR
+   3. IVPS > 0 and reasonable
+   4. Kernel output matches T2 document
+
+   Return ONLY the JSON validation result.
+   ```
+
+4. **Process validation result:**
+   - Write to: `05_ENRICH/{TICKER}_ENRICH_T2_validation.json`
+   - If `"proceed": false` → **HALT pipeline**, report issues to user
+   - If `"proceed": true` → Continue to completion
+
+5. **Update state:**
+   - Add "ENRICH_T2" to `completed_turns`
+   - Record State 2 IVPS in pipeline_state.json:
+     ```json
+     {
+       "enrich_results": {
+         "state_1_ivps": <from BASE>,
+         "state_2_ivps": <from kernel>,
+         "delta_percent": <calculated>
+       }
+     }
+     ```
+
+---
+
+#### ENRICH Stage Completion
+
+Report summary to user:
+
+```
+ENRICH_STAGE complete for {TICKER}
+
+Run ID: {RUN_ID}
+
+Stage Results:
+├── ENRICH_T1: {PASS/WARN/FAIL}
+└── ENRICH_T2: {PASS/WARN/FAIL}
+
+Valuation Summary:
+├── State 1 IVPS (BASE):   ${base_ivps}
+├── State 2 IVPS (ENRICH): ${enrich_ivps}
+└── Delta:                 {percentage}%
+
+Key GIM Refinements:
+├── {Driver 1}: {prior} → {posterior} ({direction})
+├── {Driver 2}: {prior} → {posterior} ({direction})
+└── {Driver 3}: {prior} → {posterior} ({direction})
+
+DR Status: {CONFIRMED at X% | REVISED from X% to Y%}
+
+Outputs:
+├── 05_ENRICH/{TICKER}_ENRICH_T1.md
+├── 05_ENRICH/{TICKER}_ENRICH_T2.md
+├── 05_ENRICH/{TICKER}_ENRICH_kernel_output.json
+└── 05_ENRICH/{TICKER}_A9_ENRICHMENT_TRACE.json
+
+Next steps:
+- Review ENRICH outputs and A.9 trace
+- CAPY: RUN SCENARIO_STAGE (discrete scenario modeling)
+- Or proceed to Silicon Council deliberation
 ```
 
 ---
@@ -673,7 +962,7 @@ Next steps:
 
 4. Wait for Task completion
 
-5. **RUN VALIDATOR** (subagent_type: "general-purpose", model: haiku):
+5. **RUN VALIDATOR** (subagent_type: "general-purpose", model: opus):
    - Validate output at `01_T1/{TICKER}_BASE_T1.md`
    - Write result to `01_T1/{TICKER}_T1_validation.json`
    - If FAIL: Stop and report errors
@@ -810,8 +1099,7 @@ After EVERY analytical turn, spawn a validation subagent using `validators/CAPY_
 **Validator prompt file:** `validators/CAPY_INTERTURN_VALIDATOR_CC.md`
 
 **Model selection:**
-- T1, REFINE: Use **Haiku** (cost-effective, sufficient for structure checks)
-- T2: Use **Opus** (Haiku cannot reliably detect fabrication vs real kernel output)
+- All stages: Use **Opus** (consistency with analytical subagents; Haiku misses subtle fabrication issues)
 
 **Checks performed:**
 1. **Output Structure:** Non-empty, has headers, not truncated
@@ -840,9 +1128,9 @@ Last deployment: [Check VERSION.md]
 
 ## Maturity Status
 
-> **This CLAUDE.md is v0.3.0 (DRAFT)**
+> **This CLAUDE.md is v0.5.0 (DRAFT)**
 
-Current status: BASE_PIPELINE and RQ_STAGE smoke-tested. T1 and REFINE work via subagent dispatch. T2 requires orchestrator-direct kernel execution (subagents fabricate results). RQ_STAGE uses 7 parallel Claude Opus subagents with direct-write protocol.
+Current status: BASE_PIPELINE, RQ_STAGE, and ENRICH_STAGE documented. T1 stages work via Opus subagent dispatch. T2 stages require orchestrator-direct kernel execution (subagents fabricate results). RQ_STAGE uses 7 parallel Claude Opus subagents with direct-write protocol. All validators use Opus for consistency.
 
 Before v1.0:
 - [x] Full smoke test of CC-enabled CAPY production run (2024-12-16, DAVE)
@@ -852,8 +1140,10 @@ Before v1.0:
 - [x] Document error handling and recovery procedures
 - [x] Document RQ_STAGE with 7-slot architecture (2024-12-19)
 - [x] RQ_STAGE smoke test (DAVE, 7 parallel subagents, ~220K words output)
+- [x] Document ENRICH_STAGE with 4-file atomization (2024-12-19)
+- [ ] ENRICH_STAGE smoke test
 - [ ] Test COMPARE RUNS functionality
-- [ ] Add remaining pipeline stages (ENRICH, SCENARIO, INT, IRR)
+- [ ] Add remaining pipeline stages (SCENARIO, INT, IRR)
 - [ ] Document SC, HITL pause points
 
 **Smoke Test Findings (2024-12-16):**

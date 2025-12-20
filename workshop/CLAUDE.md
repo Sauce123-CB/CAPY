@@ -1,6 +1,6 @@
 # CAPY Workshop - Prompt Development Environment
 
-> **Version:** 0.7.0
+> **Version:** 0.8.0
 > **Last reviewed:** 2024-12-19
 > **Review cadence:** Weekly during active development, monthly otherwise
 
@@ -297,27 +297,23 @@ To manage context effectively:
 
 ## Development Protocols
 
-### Checkpoint Protocol (CRITICAL)
+### Checkpoint Protocol (MANDATORY)
 
-**Default behavior: Checkpoint before making changes.**
+**ALWAYS checkpoint before modifying ANY file.**
 
-When assigned a prompt development task:
-1. **Read** all relevant files (prompts, patches, documentation)
-2. **Analyze** the scope of changes required
-3. **Present** a summary of proposed changes to the user:
-   - Files to be modified
-   - Nature of each change
-   - Downstream compatibility considerations
-4. **Wait** for user sign-off before editing files
-5. **Execute** changes after approval
-6. **Checkpoint again** before committing
+This is non-negotiable. Do NOT edit, write, or modify files without explicit user approval.
 
-**Do NOT:**
-- Start editing files immediately upon receiving a task
-- Assume you understand the full scope without analysis
-- Skip the checkpoint even for "simple" changes
+**Before ANY file modification:**
+1. **State** exactly which file(s) you intend to modify
+2. **Show** the specific changes you plan to make (old → new)
+3. **Wait** for explicit user approval ("yes", "proceed", "do it", etc.)
+4. **Only then** execute the edit
 
-**Rationale:** Prompt engineering changes often have cascading effects across the pipeline. A few minutes of checkpoint discussion prevents hours of rework.
+**Rationale:** Unchecked edits cause catastrophic errors. Reading files is fine. Modifying files requires approval.
+
+**No exceptions.** Even "trivial" changes require checkpoint. If you're uncertain whether something counts as a modification, checkpoint anyway.
+
+**Violations:** If you modify a file without checkpointing, immediately revert the change and apologize.
 
 ### Forward Compatibility Protocol
 
@@ -532,6 +528,7 @@ Run on the 1st of each month:
 | REFINE | BASE_T1_REFINE_v1_1.md | CANONICAL | DAVE_20241210 | - |
 | REFINE | BASE_T1_REFINE_v1_2.md | EXPERIMENTAL | - | - |
 | ENRICH | G3ENRICH_2.2.1e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_ENRICH_2.2.1e.py |
+| ENRICH | G3ENRICH_2.2.2e_*.md (atomized) | EXPERIMENTAL | - | CVR_KERNEL_ENRICH_2.2.2e.py |
 | SCENARIO | G3_SCENARIO_2_2_1e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_SCEN_2_2_1e.py |
 | INTEGRATION | G3_INTEGRATION_2_2_2e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_INT_2_2_2e.py |
 | IRR | G3_IRR_2_2_4e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_IRR_2_2_4e.py |
@@ -569,3 +566,23 @@ The BASE prompt v2.2.2e is split into 3 atomic files for improved context manage
 **Status:** EXPERIMENTAL - awaiting smoke test. Once promoted to CANONICAL, G3BASE_2.2.1e.md moves to Archive.
 
 **Subagent loading:** Load all 3 files + kernel. The embedded kernel (old Appendix C) has been removed.
+
+### ENRICH Stage Atomized Files (EXPERIMENTAL)
+
+The ENRICH prompt v2.2.2e is split into 3 atomic files plus kernel, mirroring the BASE pattern:
+
+| File | Purpose | Est. Lines |
+|------|---------|------------|
+| `G3ENRICH_2.2.2e_PROMPT.md` | Core instructions (Sections I-V) | ~450 |
+| `G3ENRICH_2.2.2e_SCHEMAS.md` | JSON schemas (Appendix A) | ~350 |
+| `G3ENRICH_2.2.2e_NORMDEFS.md` | DSL & financial definitions (Appendix B) | ~300 |
+| `CVR_KERNEL_ENRICH_2.2.2e.py` | Valuation kernel | ~900 |
+
+**Key updates from 2.2.1e:**
+- 7-slot RQ architecture references (M-1, M-2, M-3a, M-3b, D-1, D-2, D-3)
+- 4-file atomization for context management
+- Version refs updated to G3_2.2.2e
+
+**Status:** EXPERIMENTAL - awaiting smoke test.
+
+**Subagent loading:** Load all 3 prompt files. Kernel executed via Bash in T2 (not embedded in subagent context).

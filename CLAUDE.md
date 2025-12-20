@@ -1,7 +1,7 @@
 # CAPY - Mono-Repo Root
 
-> **Version:** 1.2.0
-> **Last reviewed:** 2024-12-19
+> **Version:** 1.3.0
+> **Last reviewed:** 2024-12-20
 
 This repository contains the complete CAPY (Company Analysis PYthon) system for fundamental equity research.
 
@@ -190,20 +190,23 @@ BASE → RQ_GEN → ENRICH → SCENARIO → INTEGRATION → IRR
 - File delivery pattern changes (single file vs atomized files)
 - Tool dependency changes (WebSearch availability)
 
-### Checkpoint Protocol
+### Checkpoint Protocol (MANDATORY)
 
-**Default behavior: Checkpoint before making changes.**
+**ALWAYS checkpoint before modifying ANY file.**
 
-When given a multi-step task:
-1. **Analyze** the task and identify all files/changes involved
-2. **Present** a summary of proposed changes to the user
-3. **Wait** for user approval before executing
-4. **Execute** changes only after explicit go-ahead
-5. **Checkpoint again** before committing
+This is non-negotiable. Do NOT edit, write, or modify files without explicit user approval.
 
-**Rationale:** Complex prompt engineering tasks often have non-obvious dependencies. Checkpointing prevents wasted effort from incorrect assumptions and ensures changes are precise and complete.
+**Before ANY file modification:**
+1. **State** exactly which file(s) you intend to modify
+2. **Show** the specific changes you plan to make (old → new)
+3. **Wait** for explicit user approval ("yes", "proceed", "do it", etc.)
+4. **Only then** execute the edit
 
-**Exception:** Trivial changes (typos, formatting) may proceed without checkpoint if explicitly scoped by the user.
+**Rationale:** Unchecked edits cause catastrophic errors. Reading files is fine. Modifying files requires approval.
+
+**No exceptions.** Even "trivial" changes require checkpoint. If you're uncertain whether something counts as a modification, checkpoint anyway.
+
+**Violations:** If you modify a file without checkpointing, immediately revert the change and apologize.
 
 ---
 
