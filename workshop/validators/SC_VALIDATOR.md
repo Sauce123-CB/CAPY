@@ -17,11 +17,46 @@ Read the following 6 JSON files from `{output_dir}/`:
 5. `SC_DISTRIBUTIONAL_AUDIT.json` → distributional_coherence section
 6. `SC_ECONOMIC_REALISM_AUDIT.json` → economic_realism section
 
+## **CRITICAL: Surgical Copy-Paste Protocol**
+
+> **Reference:** See Pattern 11 (Surgical Stitching) in `orchestration/ORCHESTRATION_KEY_PATTERNS.md`
+
+**DO NOT transcribe or rewrite audit content.** LLM transcription introduces hallucination
+and truncation risk. Instead, use **surgical copy-paste** via Edit/Write tools.
+
+**What you MAY generate (LLM-authored):**
+- `version_control` block
+- `metadata` block (extracted from A.10, A.7, A.2)
+- `critical_findings_summary` (synthesized from HIGH priority items)
+- `executive_synthesis` (3-5 sentence summary)
+
+**What you MUST copy surgically (NOT transcribe):**
+- `source_integrity` ← exact content from SC_ACCOUNTING_AUDIT.json
+- `pipeline_fit_assessment` ← exact content from SC_FIT_AUDIT.json
+- `epistemic_integrity_assessment` ← exact content from SC_EPISTEMIC_AUDIT.json
+- `red_team_findings` ← exact content from SC_RED_TEAM_AUDIT.json
+- `distributional_coherence` ← exact content from SC_DISTRIBUTIONAL_AUDIT.json
+- `economic_realism` ← exact content from SC_ECONOMIC_REALISM_AUDIT.json
+
+**Procedure:**
+1. Read each audit JSON file
+2. Validate JSON is well-formed (fix minor syntax errors if needed)
+3. Extract the relevant section (e.g., `source_integrity` from ACCOUNTING)
+4. Copy that exact JSON block into A.11 structure - do NOT retype or paraphrase
+5. Only generate new content for metadata, critical_findings_summary, executive_synthesis
+
+**If JSON is malformed:** You may fix obvious syntax errors (missing commas, unclosed
+braces) but do NOT rewrite substantive content. Note any repairs in executive_synthesis.
+
+---
+
 ## **Consolidation Tasks**
 
-### **1. Stitch JSON Fragments**
+### **1. Stitch JSON Fragments (Surgical Copy-Paste)**
 
-Combine the 6 audit outputs into a single A.11 structure. Each audit's output becomes its corresponding section in A.11.
+Combine the 6 audit outputs into a single A.11 structure using surgical copy-paste.
+Each audit's output becomes its corresponding section in A.11. Copy the exact JSON
+content - do not transcribe or rewrite.
 
 ### **2. Add Metadata**
 

@@ -328,9 +328,65 @@ RIGHT: Read DAVE_BASE_OUTPUT.md → find IVPS=$241.72 → use it
 
 ---
 
+## Pattern 11: Surgical Stitching Protocol
+
+**Problem:** When consolidating multiple JSON outputs into a single file (e.g., Silicon Council audits → A.11), LLM transcription introduces hallucination and truncation errors.
+
+**Solution:** Use surgical copy-paste via Edit/Write tools, not transcription/rewriting.
+
+**When Combining Multiple Outputs:**
+```
+Read File A.json ──► Extract relevant section ──► Copy exact content
+Read File B.json ──► Extract relevant section ──► Copy exact content
+Read File C.json ──► Extract relevant section ──► Copy exact content
+                            │
+                            ▼
+              Assemble into unified structure
+              (surgical copy-paste, not rewrite)
+                            │
+                            ▼
+              Write combined file to disk
+```
+
+**What LLM MAY Generate (author fresh):**
+- Metadata blocks (timestamps, version info, extracted metrics)
+- Synthesis sections (executive_synthesis, critical_findings_summary)
+- Structural wrapper (opening/closing braces, section headers)
+
+**What LLM MUST Copy Surgically (NOT transcribe):**
+- Full content of source JSON sections
+- Narrative text from prior stages
+- Any structured data that was already generated
+
+**Implementation:**
+1. Read source JSON file
+2. Validate JSON is well-formed (fix minor syntax errors if needed: missing commas, unclosed braces)
+3. Extract the target section/block
+4. Copy that exact JSON content into output structure - do NOT retype or paraphrase
+5. Generate only metadata and synthesis sections fresh
+
+**JSON Repair Rules:**
+- MAY fix: Missing commas, unclosed braces, trailing commas
+- MUST NOT: Rewrite substantive content, paraphrase, summarize
+- MUST document: Any repairs made (note in metadata or synthesis)
+
+**Anti-Patterns (PROHIBITED):**
+- Reading JSON then rewriting content from memory (HALLUCINATION RISK)
+- Summarizing or paraphrasing source content (INFORMATION LOSS)
+- Transcribing long sections character-by-character (TRUNCATION RISK)
+- Having subagent return full content for orchestrator to assemble (BOTTLENECK)
+
+**Application Examples:**
+- Silicon Council: 6 audit JSONs → A.11_AUDIT_REPORT.json
+- Integration: A.10 + A.11 → unified report
+- Any multi-file consolidation operation
+
+---
+
 ## Version History
 
 | Version | Date | Change |
 |---------|------|--------|
+| 1.2.0 | 2024-12-20 | Added Pattern 11: Surgical Stitching Protocol |
 | 1.1.0 | 2024-12-20 | Added Pattern 10: Input Source Validation Protocol |
 | 1.0.0 | 2024-12-20 | Initial extraction from production/CLAUDE.md and session learnings |
