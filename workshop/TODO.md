@@ -1,7 +1,7 @@
 # CAPY Workshop - Master TODO
 
-> **Last updated:** 2024-12-18
-> **Structure version:** 0.3 (Stage 3 RQ Fan-out implemented)
+> **Last updated:** 2024-12-20
+> **Structure version:** 0.4 (Atomized prompts CANONICAL through ENRICH)
 
 ---
 
@@ -18,12 +18,7 @@
 
 ### Blocking Issues (Do First)
 
-| # | Item | Type | Complexity | Status |
-|---|------|------|------------|--------|
-| 17 | **G3BASE atomization** - split into 4 files | Prompt | **High** | 🔴 Pending |
-| 16 | **REFINE v1_2** - trajectory calibration | Prompt | **High** | 🟡 Created, needs deploy |
-
-*These prompt issues cause context loss and schema drift - must fix before smoke test.*
+*No blocking issues - atomization complete through ENRICH.*
 
 ### Kernel Bugs (Evaluate After Prompt Fixes)
 
@@ -61,6 +56,11 @@
 | 8 | Claude Code orchestrator | Orchestrator | 2024-12-14 | Initial CLAUDE.md |
 | 9 | Smoke test (DAVE) | Testing | 2024-12-14 | Baseline established |
 | 13 | Folder organization | Infrastructure | 2024-12-15 | Three-folder architecture |
+| 17 | **G3BASE atomization** - 4-file split | Prompt | 2024-12-20 | CANONICAL (PROMPT/SCHEMAS/NORMDEFS + kernel) |
+| 16 | **REFINE v1_2** - trajectory calibration | Prompt | 2024-12-20 | CANONICAL |
+| 18 | RQ 7-slot architecture (M-3a/M-3b) | Prompt | 2024-12-19 | CANONICAL |
+| 19 | Claude Opus subagent RQ_ASK | Kernel | 2024-12-19 | Direct-write protocol |
+| 20 | ENRICH atomization + smoke test | Prompt | 2024-12-20 | CANONICAL (4-file split) |
 
 ---
 
@@ -169,11 +169,12 @@
 | Stage | Status | Blocker |
 |-------|--------|---------|
 | 1. Document Sourcing | ✅ Working | None |
-| 2. BASE Pipeline | 🔴 Blocked | #17 G3BASE atomization, #16 REFINE v1_2 |
-| 3. RQ Fan-out | 🟢 Implemented | Pending smoke test |
-| 4. ENRICH→IRR | 🟡 Prompts exist | Need smoke test after BASE works |
-| 5. Silicon Council | 🟡 Spec only | Need Gemini Extended Thinking integration |
-| 6. HITL Audit | ✅ Prompt exists | None |
+| 2. BASE Pipeline | ✅ Working | Atomized prompts CANONICAL |
+| 3. RQ Fan-out | ✅ Working | 7-slot architecture, Claude Opus subagents |
+| 4. ENRICH | ✅ Working | Atomized prompts CANONICAL |
+| 5. SCENARIO→IRR | 🟡 Prompts exist | Need smoke test (next) |
+| 6. Silicon Council | 🟡 Spec only | Need Gemini Extended Thinking integration |
+| 7. HITL Audit | ✅ Prompt exists | None |
 
 ### Stage 3 Details (Updated 2024-12-18)
 

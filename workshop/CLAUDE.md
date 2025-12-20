@@ -1,7 +1,7 @@
 # CAPY Workshop - Prompt Development Environment
 
-> **Version:** 0.8.0
-> **Last reviewed:** 2024-12-19
+> **Version:** 0.9.0
+> **Last reviewed:** 2024-12-20
 > **Review cadence:** Weekly during active development, monthly otherwise
 
 This workspace is for **developing, testing, and iterating** on CAPY prompts and kernels.
@@ -555,12 +555,12 @@ Run on the 1st of each month:
 
 | Stage | Prompt | Status | Smoke Test | Kernel |
 |-------|--------|--------|------------|--------|
-| BASE | G3BASE_2.2.1e.md | CANONICAL | DAVE_20241210 | BASE_CVR_KERNEL_2.2.1e.py |
-| BASE | G3BASE_2.2.2e_*.md (atomized) | EXPERIMENTAL | - | BASE_CVR_KERNEL_2.2.2e.py |
-| REFINE | BASE_T1_REFINE_v1_1.md | CANONICAL | DAVE_20241210 | - |
-| REFINE | BASE_T1_REFINE_v1_2.md | EXPERIMENTAL | - | - |
-| ENRICH | G3ENRICH_2.2.1e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_ENRICH_2.2.1e.py |
-| ENRICH | G3ENRICH_2.2.2e_*.md (atomized) | EXPERIMENTAL | - | CVR_KERNEL_ENRICH_2.2.2e.py |
+| BASE | G3BASE_2.2.2e_*.md (atomized) | CANONICAL | DAVE_20241220 | BASE_CVR_KERNEL_2.2.2e.py |
+| BASE | G3BASE_2.2.1e.md | HISTORICAL | DAVE_20241210 | BASE_CVR_KERNEL_2.2.1e.py |
+| REFINE | BASE_T1_REFINE_v1_2.md | CANONICAL | DAVE_20241220 | - |
+| REFINE | BASE_T1_REFINE_v1_1.md | HISTORICAL | DAVE_20241210 | - |
+| ENRICH | G3ENRICH_2.2.2e_*.md (atomized) | CANONICAL | DAVE_ENRICH_20241220 | CVR_KERNEL_ENRICH_2.2.2e.py |
+| ENRICH | G3ENRICH_2.2.1e.md | HISTORICAL | DAVE_20241210 | CVR_KERNEL_ENRICH_2.2.1e.py |
 | SCENARIO | G3_SCENARIO_2_2_1e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_SCEN_2_2_1e.py |
 | INTEGRATION | G3_INTEGRATION_2_2_2e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_INT_2_2_2e.py |
 | IRR | G3_IRR_2_2_4e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_IRR_2_2_4e.py |
@@ -569,10 +569,10 @@ Run on the 1st of each month:
 
 | Component | File | Status | Smoke Test |
 |-----------|------|--------|------------|
-| Research Question Gen | RQ_Gen_2_2_3e.md | EXPERIMENTAL | DAVE_RQ_CLAUDE_TEST |
+| Research Question Gen | RQ_Gen_2_2_3e.md | CANONICAL | DAVE_RQ_CLAUDE_TEST |
 | Research Question Gen (legacy) | RQ_Gen_2_2_2e.md | HISTORICAL | - |
-| RQ Executor | RQ_ASK_KERNEL_2_2_3e.py | EXPERIMENTAL | DAVE_RQ_CLAUDE_TEST |
-| RQ Executor CLI | run_rq_ask.py | EXPERIMENTAL | - |
+| RQ Executor | RQ_ASK_KERNEL_2_2_3e.py | CANONICAL | DAVE_RQ_CLAUDE_TEST |
+| RQ Executor CLI | run_rq_ask.py | CANONICAL | DAVE_RQ_CLAUDE_TEST |
 | Silicon Council | G3_SILICON_COUNCIL_2.2.1e.md | CANONICAL | DAVE_20241210 |
 | HITL Audit | HITL_DIALECTIC_AUDIT_1_0_Goldilocks.md | CANONICAL | DAVE_20241210 |
 
@@ -585,36 +585,37 @@ Run on the 1st of each month:
 | A.8 Validator | A8_VALIDATOR.md | EXPERIMENTAL | - |
 | A.9 Validator | A9_VALIDATOR.md | EXPERIMENTAL | - |
 
-### BASE Stage Atomized Files (EXPERIMENTAL)
+### BASE Stage Atomized Files (CANONICAL)
 
 The BASE prompt v2.2.2e is split into 3 atomic files for improved context management:
 
-| File | Purpose | Est. Lines |
-|------|---------|------------|
-| `G3BASE_2.2.2e_PROMPT.md` | Core instructions (Sections I-V) | ~500 |
-| `G3BASE_2.2.2e_SCHEMAS.md` | JSON schemas (Appendix A) | ~200 |
-| `G3BASE_2.2.2e_NORMDEFS.md` | DSL definitions (Appendix B) | ~150 |
+| File | Purpose | Size |
+|------|---------|------|
+| `G3BASE_2.2.2e_PROMPT.md` | Core instructions (Sections I-V) | 16KB |
+| `G3BASE_2.2.2e_SCHEMAS.md` | JSON schemas (Appendix A) | 9KB |
+| `G3BASE_2.2.2e_NORMDEFS.md` | DSL definitions (Appendix B) | 5KB |
+| `BASE_CVR_KERNEL_2.2.2e.py` | Valuation kernel | 32KB |
 
-**Status:** EXPERIMENTAL - awaiting smoke test. Once promoted to CANONICAL, G3BASE_2.2.1e.md moves to Archive.
+**Status:** CANONICAL - smoke tested 2024-12-20. G3BASE_2.2.1e.md is HISTORICAL.
 
-**Subagent loading:** Load all 3 files + kernel. The embedded kernel (old Appendix C) has been removed.
+**Subagent loading:** Load all 3 prompt files + kernel reference. The embedded kernel (old Appendix C) has been removed.
 
-### ENRICH Stage Atomized Files (EXPERIMENTAL)
+### ENRICH Stage Atomized Files (CANONICAL)
 
 The ENRICH prompt v2.2.2e is split into 3 atomic files plus kernel, mirroring the BASE pattern:
 
-| File | Purpose | Est. Lines |
-|------|---------|------------|
-| `G3ENRICH_2.2.2e_PROMPT.md` | Core instructions (Sections I-V) | ~450 |
-| `G3ENRICH_2.2.2e_SCHEMAS.md` | JSON schemas (Appendix A) | ~350 |
-| `G3ENRICH_2.2.2e_NORMDEFS.md` | DSL & financial definitions (Appendix B) | ~300 |
-| `CVR_KERNEL_ENRICH_2.2.2e.py` | Valuation kernel | ~900 |
+| File | Purpose | Size |
+|------|---------|------|
+| `G3ENRICH_2.2.2e_PROMPT.md` | Core instructions (Sections I-V) | 22KB |
+| `G3ENRICH_2.2.2e_SCHEMAS.md` | JSON schemas (Appendix A) | 16KB |
+| `G3ENRICH_2.2.2e_NORMDEFS.md` | DSL & financial definitions (Appendix B) | 13KB |
+| `CVR_KERNEL_ENRICH_2.2.2e.py` | Valuation kernel | 39KB |
 
 **Key updates from 2.2.1e:**
 - 7-slot RQ architecture references (M-1, M-2, M-3a, M-3b, D-1, D-2, D-3)
 - 4-file atomization for context management
 - Version refs updated to G3_2.2.2e
 
-**Status:** EXPERIMENTAL - awaiting smoke test.
+**Status:** CANONICAL - smoke tested 2024-12-20. G3ENRICH_2.2.1e.md is HISTORICAL.
 
 **Subagent loading:** Load all 3 prompt files. Kernel executed via Bash in T2 (not embedded in subagent context).
