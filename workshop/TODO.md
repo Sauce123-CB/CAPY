@@ -1,7 +1,7 @@
 # CAPY Workshop - Master TODO
 
 > **Last updated:** 2024-12-20
-> **Structure version:** 0.5 (SCENARIO smoke test complete, Silicon Council next)
+> **Structure version:** 0.6 (Silicon Council complete, INTEGRATION atomized, ready for smoke test)
 
 ---
 
@@ -64,6 +64,7 @@
 | 21 | **SCENARIO smoke test (DAVE)** | Testing | 2024-12-20 | E[IVPS]=$206.34, 4 scenarios, SSE 16 states |
 | 22 | Validator model guidance | Orchestrator | 2024-12-20 | CLAUDE.md: ALWAYS use Opus for validators |
 | 23 | Acquisition premium lump sum | Prompt | 2024-12-20 | Added to SCENARIO prompt |
+| 27 | **INTEGRATION atomization + orchestration** | Prompt | 2024-12-20 | EXPERIMENTAL (3-file split + full Stage Flow docs) |
 
 ---
 
