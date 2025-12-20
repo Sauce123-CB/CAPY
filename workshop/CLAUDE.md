@@ -707,11 +707,26 @@ production/analyses/{TICKER}_CAPY_{TIMESTAMP}/
 └── pipeline_state.json
 ```
 
-### Execution Commands (DEV: SMOKE TEST SCENARIO)
+### Execution Commands (DEV: SMOKE TEST SCENARIO {TICKER})
+
+**Step 0: Locate Most Recent ENRICH Output (Auto-Discovery)**
+```
+1. Search for ENRICH smoke test folders:
+   ls -t workshop/smoke_tests/*ENRICH*{TICKER}* | head -5
+
+2. If none found in workshop, check production:
+   ls -t production/analyses/{TICKER}_*/05_ENRICH/ | head -5
+
+3. Select the most recent folder with complete ENRICH output
+   (must contain A7_kernel_output.json with State 2 IVPS)
+
+4. Set {analysis_dir} to the parent of 05_ENRICH/
+   Example: workshop/smoke_tests/{TICKER}_ENRICH_SMOKE_{TIMESTAMP}/
+```
 
 **Step 1: Validate Input (Pattern 10 - MANDATORY)**
 ```
-READ files in 05_ENRICH/ to verify:
+READ files in {analysis_dir}/05_ENRICH/ to verify:
 - A7_kernel_output.json exists with State 2 IVPS
 - Extract and log: base_ivps, dr_static, terminal_g, terminal_roic
 - Verify IVPS consistency: markdown must match kernel output JSON
