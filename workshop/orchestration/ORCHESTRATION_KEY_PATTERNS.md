@@ -262,8 +262,47 @@ print(json.dumps(result, indent=2))
 
 ---
 
+## Pattern 10: Input Source Validation Protocol
+
+**Problem:** Orchestrator uses stale or incorrect artifacts due to assumptions from filenames or folder structure.
+
+**Solution:** Always READ and validate source files before using them.
+
+**When Bridge Prompt Specifies Source Folder:**
+1. READ files in that folder (not just `ls`)
+2. Extract key metrics (IVPS, DR, timestamp) to verify correctness
+3. Use those files as inputs
+
+**When No Folder Specified OR Folder Incomplete:**
+1. Search for ALL runs of target ticker: `find ... -name "*{TICKER}*"`
+2. Sort by timestamp (most recent first)
+3. Identify most recent COMPLETE run (has T2/kernel output)
+4. Use most recent complete run
+
+**Validation Checklist (Before Stage Execution):**
+- [ ] State 1 IVPS extracted and logged
+- [ ] IVPS in markdown matches IVPS in kernel output JSON
+- [ ] Source folder is most recent unless user specified otherwise
+- [ ] Key artifacts (REFINE, T2, A.8, RQ*.md) all present
+
+**Anti-Patterns:**
+- Assuming file contents from filenames
+- Using `ls` without `Read`
+- Going to alternate folders without reading specified folder first
+- Proceeding with mismatched IVPS values
+
+**Failure Mode Example:**
+```
+Bridge prompt: "Use artifacts from DAVE_20241214/"
+WRONG: ls → see 2 files → assume "only T1" → search elsewhere
+RIGHT: Read DAVE_BASE_OUTPUT.md → find IVPS=$241.72 → use it
+```
+
+---
+
 ## Version History
 
 | Version | Date | Change |
 |---------|------|--------|
+| 1.1.0 | 2024-12-20 | Added Pattern 10: Input Source Validation Protocol |
 | 1.0.0 | 2024-12-20 | Initial extraction from production/CLAUDE.md and session learnings |

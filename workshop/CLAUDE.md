@@ -141,6 +141,15 @@ Run a quick validation of the current CANONICAL prompts:
    - `../../production/analyses/{TICKER}_*/00_source/` (preferred - reuse existing)
    - User-provided path
    - WebSearch for recent filings (if user approves, saves time)
+
+**Input Source Validation (Pattern 10 - MANDATORY):**
+When smoke test requires prior-stage artifacts (e.g., ENRICH needs BASE outputs):
+- READ files in specified folder to verify contents (not just `ls`)
+- Extract and log State N IVPS before proceeding
+- Never assume file contents from filenames
+- If folder incomplete, search for most recent complete run
+- Verify IVPS consistency: markdown must match kernel output JSON
+
 4. Use Task subagent to run BASE T1 with:
    - Current canonical `prompts/base/G3BASE_*.md`
    - Current canonical `kernels/BASE_CVR_KERNEL_*.py`

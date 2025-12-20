@@ -661,6 +661,17 @@ Next steps:
 - RQ_STAGE complete (A.8 + 7 RQ outputs exist in `04_RQ/`: RQ1, RQ2, RQ3a, RQ3b, RQ4, RQ5, RQ6)
 - A.7 artifact exists with State 1 IVPS
 
+**Input Validation (MANDATORY - Pattern 10):**
+Before spawning ENRICH_T1, orchestrator MUST:
+1. READ (not just list) the source files for State 1 baseline
+2. Extract State 1 IVPS from kernel output or A.7
+3. Verify IVPS consistency across markdown and JSON
+4. Log State 1 IVPS value before proceeding: "State 1 IVPS: ${value}"
+
+If bridge prompt specifies source folder, use that folder.
+If not specified, find most recent complete run for ticker.
+Never assume file contents from filenames - always READ.
+
 ---
 
 #### Stage 1: ENRICH_T1
