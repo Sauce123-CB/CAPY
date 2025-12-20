@@ -1,7 +1,7 @@
 # CAPY Workshop - Master TODO
 
 > **Last updated:** 2024-12-20
-> **Structure version:** 0.5 (SCENARIO smoke test complete, INTEGRATION next)
+> **Structure version:** 0.5 (SCENARIO smoke test complete, Silicon Council next)
 
 ---
 

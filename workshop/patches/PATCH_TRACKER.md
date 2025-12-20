@@ -22,7 +22,8 @@ Last updated: 2024-12-20
 | RQ | ✅ Complete | `DAVE_RQ_CLAUDE_TEST/` | 7-slot with Claude Opus subagents |
 | ENRICH | ✅ Complete | `DAVE_ENRICH_SMOKE_20251220_120936/` | State 1→2: $241.72→$199.25 |
 | SCENARIO | ✅ Complete | `DAVE_ENRICH_SMOKE_20251220_120936/06_SCENARIO/` | E[IVPS]=$206.34, 4 scenarios, SSE 16 states |
-| INTEGRATION | ⏳ Pending | - | After SCENARIO |
+| SILICON COUNCIL | ⏳ Pending | - | Next smoke test |
+| INTEGRATION | ⏳ Pending | - | After Silicon Council |
 | IRR | ⏳ Pending | - | Final stage |
 
 **Goal:** Full autonomous CAPY (all stages chain without human intervention)
