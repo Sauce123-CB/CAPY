@@ -1,0 +1,768 @@
+{
+  "schema_version": "G3_2.2.2eS_A10",
+  "generation_timestamp": "2025-12-20T12:00:00Z",
+  "metadata": {
+    "company_name": "Dave Inc.",
+    "ticker": "DAVE",
+    "valuation_date": "2025-12-20",
+    "base_case_reference": {
+      "source_stage": "G3_ENRICHMENT_2.2.2e",
+      "state_2_ivps": 199.25,
+      "dr_static": 0.1325,
+      "terminal_g": 0.0425,
+      "terminal_roic": 0.409,
+      "shares_outstanding": null
+    }
+  },
+  "scenario_results": [
+    {
+      "scenario_id": "S1_REG_SETTLEMENT",
+      "p_posterior": 0.73,
+      "ivps_impact": -52.29279271959493,
+      "ivps_scenario": 146.9574034062443,
+      "terminal_g": 0.0425,
+      "terminal_roic": 0.3832721845890156,
+      "p2_status": "PASS",
+      "p2_message": "Economic Governor satisfied.",
+      "dr_used": 0.1325,
+      "fundamentals_y1_intervened": {
+        "revenue": 839.7749781473683,
+        "ebit": 250.7328149039999,
+        "ebit_margin": 0.2985714285714285,
+        "nopat": 188.0496111779999,
+        "fcf_unlevered": 137.08379073951818
+      }
+    },
+    {
+      "scenario_id": "S2_BNPL_SUCCESS",
+      "p_posterior": 0.16,
+      "ivps_impact": 30.594032805968112,
+      "ivps_scenario": 229.84422893180735,
+      "terminal_g": 0.03963735167675786,
+      "terminal_roic": 0.4173255120487103,
+      "p2_status": "PASS",
+      "p2_message": "Economic Governor satisfied.",
+      "dr_used": 0.1325,
+      "fundamentals_y1_intervened": {
+        "revenue": 1020.0696389333335,
+        "ebit": 324.8474401038223,
+        "ebit_margin": 0.3184561403508772,
+        "nopat": 243.63558007786673,
+        "fcf_unlevered": 138.2531104611233
+      }
+    },
+    {
+      "scenario_id": "S3_BANK_TRANSITION",
+      "p_posterior": 0.76,
+      "ivps_impact": 42.58970276060862,
+      "ivps_scenario": 241.83989888644786,
+      "terminal_g": 0.04041587074362522,
+      "terminal_roic": 0.43056505726626115,
+      "p2_status": "PASS",
+      "p2_message": "Economic Governor satisfied.",
+      "dr_used": 0.1325,
+      "fundamentals_y1_intervened": {
+        "revenue": 972.6777326933337,
+        "ebit": 302.0420327837194,
+        "ebit_margin": 0.31052631578947365,
+        "nopat": 226.53152458778953,
+        "fcf_unlevered": 141.7253342224547
+      }
+    },
+    {
+      "scenario_id": "S4_ACQUISITION",
+      "p_posterior": 0.2,
+      "ivps_impact": 40.0,
+      "ivps_scenario": 239.25019612583924,
+      "terminal_g": 0.0425,
+      "terminal_roic": 0.4092299625664982,
+      "p2_status": "PASS",
+      "p2_message": "Economic Governor satisfied.",
+      "dr_used": 0.1325,
+      "fundamentals_y1_intervened": {
+        "revenue": 1020.0696389333335,
+        "ebit": 284.74515349653325,
+        "ebit_margin": 0.279142857142857,
+        "nopat": 213.55886512239994,
+        "fcf_unlevered": 116.6932783129149
+      }
+    }
+  ],
+  "sse_result": {
+    "states": [
+      {
+        "state_id": "BASE",
+        "scenarios_active": [],
+        "binary_mask": 0,
+        "p_initial": 0.043545600000000004,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.043545600000000004,
+        "ivps_raw": 199.25019612583924,
+        "ivps_final": 199.25019612583924,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.6847776
+      },
+      {
+        "state_id": "S1_REG_SETTLEMENT",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT"
+        ],
+        "binary_mask": 1,
+        "p_initial": 0.1177344,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.1177344,
+        "ivps_raw": 146.9574034062443,
+        "ivps_final": 146.9574034062443,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.1177344
+      },
+      {
+        "state_id": "S2_BNPL_SUCCESS",
+        "scenarios_active": [
+          "S2_BNPL_SUCCESS"
+        ],
+        "binary_mask": 2,
+        "p_initial": 0.0082944,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.0082944,
+        "ivps_raw": 229.84422893180735,
+        "ivps_final": 229.84422893180735,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.7927264
+      },
+      {
+        "state_id": "S1_REG_SETTLEMENT_S2_BNPL_SUCCESS",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT",
+          "S2_BNPL_SUCCESS"
+        ],
+        "binary_mask": 3,
+        "p_initial": 0.0224256,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.0224256,
+        "ivps_raw": 177.55143621221242,
+        "ivps_final": 177.55143621221242,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.16959359999999998
+      },
+      {
+        "state_id": "S3_BANK_TRANSITION",
+        "scenarios_active": [
+          "S3_BANK_TRANSITION"
+        ],
+        "binary_mask": 4,
+        "p_initial": 0.1378944,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.1378944,
+        "ivps_raw": 241.83989888644786,
+        "ivps_final": 241.83989888644786,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.9326944
+      },
+      {
+        "state_id": "S1_REG_SETTLEMENT_S3_BANK_TRANSITION",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT",
+          "S3_BANK_TRANSITION"
+        ],
+        "binary_mask": 5,
+        "p_initial": 0.37282560000000003,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.37282560000000003,
+        "ivps_raw": 189.54710616685293,
+        "ivps_final": 189.54710616685293,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.5480256
+      },
+      {
+        "state_id": "S2_BNPL_SUCCESS_S3_BANK_TRANSITION",
+        "scenarios_active": [
+          "S2_BNPL_SUCCESS",
+          "S3_BANK_TRANSITION"
+        ],
+        "binary_mask": 6,
+        "p_initial": 0.0262656,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.0262656,
+        "ivps_raw": 272.43393169241597,
+        "ivps_final": 272.43393169241597,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.9934336
+      },
+      {
+        "state_id": "S1_REG_SETTLEMENT_S2_BNPL_SUCCESS_S3_BANK_TRANSITION",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT",
+          "S2_BNPL_SUCCESS",
+          "S3_BANK_TRANSITION"
+        ],
+        "binary_mask": 7,
+        "p_initial": 0.0710144,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.0710144,
+        "ivps_raw": 220.14113897282104,
+        "ivps_final": 220.14113897282104,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.7666784
+      },
+      {
+        "state_id": "S4_ACQUISITION",
+        "scenarios_active": [
+          "S4_ACQUISITION"
+        ],
+        "binary_mask": 8,
+        "p_initial": 0.010886400000000001,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.010886400000000001,
+        "ivps_raw": 239.25019612583924,
+        "ivps_final": 239.25019612583924,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.695664
+      },
+      {
+        "state_id": "S1_REG_SETTLEMENT_S4_ACQUISITION",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT",
+          "S4_ACQUISITION"
+        ],
+        "binary_mask": 9,
+        "p_initial": 0.0294336,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.0294336,
+        "ivps_raw": 186.9574034062443,
+        "ivps_final": 186.9574034062443,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.147168
+      },
+      {
+        "state_id": "S2_BNPL_SUCCESS_S4_ACQUISITION",
+        "scenarios_active": [
+          "S2_BNPL_SUCCESS",
+          "S4_ACQUISITION"
+        ],
+        "binary_mask": 10,
+        "p_initial": 0.0020736,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.0020736,
+        "ivps_raw": 269.84422893180735,
+        "ivps_final": 269.84422893180735,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.7948000000000001
+      },
+      {
+        "state_id": "S1_REG_SETTLEMENT_S2_BNPL_SUCCESS_S4_ACQUISITION",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT",
+          "S2_BNPL_SUCCESS",
+          "S4_ACQUISITION"
+        ],
+        "binary_mask": 11,
+        "p_initial": 0.0056064,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.0056064,
+        "ivps_raw": 217.55143621221242,
+        "ivps_final": 217.55143621221242,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.1752
+      },
+      {
+        "state_id": "S3_BANK_TRANSITION_S4_ACQUISITION",
+        "scenarios_active": [
+          "S3_BANK_TRANSITION",
+          "S4_ACQUISITION"
+        ],
+        "binary_mask": 12,
+        "p_initial": 0.0344736,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.0344736,
+        "ivps_raw": 281.83989888644786,
+        "ivps_final": 281.83989888644786,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.967168
+      },
+      {
+        "state_id": "S1_REG_SETTLEMENT_S3_BANK_TRANSITION_S4_ACQUISITION",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT",
+          "S3_BANK_TRANSITION",
+          "S4_ACQUISITION"
+        ],
+        "binary_mask": 13,
+        "p_initial": 0.09320640000000001,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.09320640000000001,
+        "ivps_raw": 229.54710616685293,
+        "ivps_final": 229.54710616685293,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.641232
+      },
+      {
+        "state_id": "S2_BNPL_SUCCESS_S3_BANK_TRANSITION_S4_ACQUISITION",
+        "scenarios_active": [
+          "S2_BNPL_SUCCESS",
+          "S3_BANK_TRANSITION",
+          "S4_ACQUISITION"
+        ],
+        "binary_mask": 14,
+        "p_initial": 0.0065664,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.0065664,
+        "ivps_raw": 312.43393169241597,
+        "ivps_final": 312.43393169241597,
+        "limited_liability_applied": false,
+        "cumulative_probability": 1.0
+      },
+      {
+        "state_id": "S1_REG_SETTLEMENT_S2_BNPL_SUCCESS_S3_BANK_TRANSITION_S4_ACQUISITION",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT",
+          "S2_BNPL_SUCCESS",
+          "S3_BANK_TRANSITION",
+          "S4_ACQUISITION"
+        ],
+        "binary_mask": 15,
+        "p_initial": 0.0177536,
+        "feasibility_status": "FEASIBLE",
+        "constraint_violated": null,
+        "p_final": 0.0177536,
+        "ivps_raw": 260.14113897282104,
+        "ivps_final": 260.14113897282104,
+        "limited_liability_applied": false,
+        "cumulative_probability": 0.784432
+      }
+    ],
+    "e_ivps": 206.3396767875524,
+    "distribution_stats": {
+      "e_ivps": 206.3396767875524,
+      "median_p50": 188.0018816785839,
+      "p10": 146.9574034062443,
+      "p25": 179.95812747109355,
+      "p75": 215.23470448658867,
+      "p90": 238.99575705208042,
+      "min_ivps": 146.9574034062443,
+      "max_ivps": 312.43393169241597,
+      "range": 165.47652828617166,
+      "standard_deviation": 31.55355773015522,
+      "variance": 995.6270054302381,
+      "coefficient_of_variation": 0.15908848013276328,
+      "skewness": "RIGHT",
+      "modality": "MULTIMODAL",
+      "base_ivps_reference": 199.25019612583924,
+      "sorted_states": [
+        {
+          "state_id": "S1_REG_SETTLEMENT",
+          "scenarios_active": [
+            "S1_REG_SETTLEMENT"
+          ],
+          "binary_mask": 1,
+          "p_initial": 0.1177344,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.1177344,
+          "ivps_raw": 146.9574034062443,
+          "ivps_final": 146.9574034062443,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.1177344
+        },
+        {
+          "state_id": "S1_REG_SETTLEMENT_S4_ACQUISITION",
+          "scenarios_active": [
+            "S1_REG_SETTLEMENT",
+            "S4_ACQUISITION"
+          ],
+          "binary_mask": 9,
+          "p_initial": 0.0294336,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.0294336,
+          "ivps_raw": 186.9574034062443,
+          "ivps_final": 186.9574034062443,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.147168
+        },
+        {
+          "state_id": "S1_REG_SETTLEMENT_S2_BNPL_SUCCESS",
+          "scenarios_active": [
+            "S1_REG_SETTLEMENT",
+            "S2_BNPL_SUCCESS"
+          ],
+          "binary_mask": 3,
+          "p_initial": 0.0224256,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.0224256,
+          "ivps_raw": 177.55143621221242,
+          "ivps_final": 177.55143621221242,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.16959359999999998
+        },
+        {
+          "state_id": "S1_REG_SETTLEMENT_S2_BNPL_SUCCESS_S4_ACQUISITION",
+          "scenarios_active": [
+            "S1_REG_SETTLEMENT",
+            "S2_BNPL_SUCCESS",
+            "S4_ACQUISITION"
+          ],
+          "binary_mask": 11,
+          "p_initial": 0.0056064,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.0056064,
+          "ivps_raw": 217.55143621221242,
+          "ivps_final": 217.55143621221242,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.1752
+        },
+        {
+          "state_id": "S1_REG_SETTLEMENT_S3_BANK_TRANSITION",
+          "scenarios_active": [
+            "S1_REG_SETTLEMENT",
+            "S3_BANK_TRANSITION"
+          ],
+          "binary_mask": 5,
+          "p_initial": 0.37282560000000003,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.37282560000000003,
+          "ivps_raw": 189.54710616685293,
+          "ivps_final": 189.54710616685293,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.5480256
+        },
+        {
+          "state_id": "S1_REG_SETTLEMENT_S3_BANK_TRANSITION_S4_ACQUISITION",
+          "scenarios_active": [
+            "S1_REG_SETTLEMENT",
+            "S3_BANK_TRANSITION",
+            "S4_ACQUISITION"
+          ],
+          "binary_mask": 13,
+          "p_initial": 0.09320640000000001,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.09320640000000001,
+          "ivps_raw": 229.54710616685293,
+          "ivps_final": 229.54710616685293,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.641232
+        },
+        {
+          "state_id": "BASE",
+          "scenarios_active": [],
+          "binary_mask": 0,
+          "p_initial": 0.043545600000000004,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.043545600000000004,
+          "ivps_raw": 199.25019612583924,
+          "ivps_final": 199.25019612583924,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.6847776
+        },
+        {
+          "state_id": "S4_ACQUISITION",
+          "scenarios_active": [
+            "S4_ACQUISITION"
+          ],
+          "binary_mask": 8,
+          "p_initial": 0.010886400000000001,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.010886400000000001,
+          "ivps_raw": 239.25019612583924,
+          "ivps_final": 239.25019612583924,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.695664
+        },
+        {
+          "state_id": "S1_REG_SETTLEMENT_S2_BNPL_SUCCESS_S3_BANK_TRANSITION",
+          "scenarios_active": [
+            "S1_REG_SETTLEMENT",
+            "S2_BNPL_SUCCESS",
+            "S3_BANK_TRANSITION"
+          ],
+          "binary_mask": 7,
+          "p_initial": 0.0710144,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.0710144,
+          "ivps_raw": 220.14113897282104,
+          "ivps_final": 220.14113897282104,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.7666784
+        },
+        {
+          "state_id": "S1_REG_SETTLEMENT_S2_BNPL_SUCCESS_S3_BANK_TRANSITION_S4_ACQUISITION",
+          "scenarios_active": [
+            "S1_REG_SETTLEMENT",
+            "S2_BNPL_SUCCESS",
+            "S3_BANK_TRANSITION",
+            "S4_ACQUISITION"
+          ],
+          "binary_mask": 15,
+          "p_initial": 0.0177536,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.0177536,
+          "ivps_raw": 260.14113897282104,
+          "ivps_final": 260.14113897282104,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.784432
+        },
+        {
+          "state_id": "S2_BNPL_SUCCESS",
+          "scenarios_active": [
+            "S2_BNPL_SUCCESS"
+          ],
+          "binary_mask": 2,
+          "p_initial": 0.0082944,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.0082944,
+          "ivps_raw": 229.84422893180735,
+          "ivps_final": 229.84422893180735,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.7927264
+        },
+        {
+          "state_id": "S2_BNPL_SUCCESS_S4_ACQUISITION",
+          "scenarios_active": [
+            "S2_BNPL_SUCCESS",
+            "S4_ACQUISITION"
+          ],
+          "binary_mask": 10,
+          "p_initial": 0.0020736,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.0020736,
+          "ivps_raw": 269.84422893180735,
+          "ivps_final": 269.84422893180735,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.7948000000000001
+        },
+        {
+          "state_id": "S3_BANK_TRANSITION",
+          "scenarios_active": [
+            "S3_BANK_TRANSITION"
+          ],
+          "binary_mask": 4,
+          "p_initial": 0.1378944,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.1378944,
+          "ivps_raw": 241.83989888644786,
+          "ivps_final": 241.83989888644786,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.9326944
+        },
+        {
+          "state_id": "S3_BANK_TRANSITION_S4_ACQUISITION",
+          "scenarios_active": [
+            "S3_BANK_TRANSITION",
+            "S4_ACQUISITION"
+          ],
+          "binary_mask": 12,
+          "p_initial": 0.0344736,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.0344736,
+          "ivps_raw": 281.83989888644786,
+          "ivps_final": 281.83989888644786,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.967168
+        },
+        {
+          "state_id": "S2_BNPL_SUCCESS_S3_BANK_TRANSITION",
+          "scenarios_active": [
+            "S2_BNPL_SUCCESS",
+            "S3_BANK_TRANSITION"
+          ],
+          "binary_mask": 6,
+          "p_initial": 0.0262656,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.0262656,
+          "ivps_raw": 272.43393169241597,
+          "ivps_final": 272.43393169241597,
+          "limited_liability_applied": false,
+          "cumulative_probability": 0.9934336
+        },
+        {
+          "state_id": "S2_BNPL_SUCCESS_S3_BANK_TRANSITION_S4_ACQUISITION",
+          "scenarios_active": [
+            "S2_BNPL_SUCCESS",
+            "S3_BANK_TRANSITION",
+            "S4_ACQUISITION"
+          ],
+          "binary_mask": 14,
+          "p_initial": 0.0065664,
+          "feasibility_status": "FEASIBLE",
+          "constraint_violated": null,
+          "p_final": 0.0065664,
+          "ivps_raw": 312.43393169241597,
+          "ivps_final": 312.43393169241597,
+          "limited_liability_applied": false,
+          "cumulative_probability": 1.0
+        }
+      ]
+    },
+    "renormalization_factor": 1.0,
+    "feasible_state_count": 16,
+    "total_state_count": 16,
+    "probability_sum_validation": 1.0
+  },
+  "probability_sensitivities": [
+    {
+      "scenario_id": "S1_REG_SETTLEMENT",
+      "original_p": 0.73,
+      "delta_p": 0.09999999999999998,
+      "delta_e_ivps": -5.2292792719595695,
+      "sensitivity_ratio": -52.29279271959571,
+      "interpretation": "+10% probability &#8594; $-5.23 E[IVPS]"
+    },
+    {
+      "scenario_id": "S3_BANK_TRANSITION",
+      "original_p": 0.76,
+      "delta_p": 0.09999999999999998,
+      "delta_e_ivps": 4.258970276060836,
+      "sensitivity_ratio": 42.58970276060837,
+      "interpretation": "+10% probability &#8594; $+4.26 E[IVPS]"
+    },
+    {
+      "scenario_id": "S2_BNPL_SUCCESS",
+      "original_p": 0.16,
+      "delta_p": 0.1,
+      "delta_e_ivps": 3.0594032805968254,
+      "sensitivity_ratio": 30.594032805968254,
+      "interpretation": "+10% probability &#8594; $+3.06 E[IVPS]"
+    },
+    {
+      "scenario_id": "S4_ACQUISITION",
+      "original_p": 0.2,
+      "delta_p": 0.10000000000000003,
+      "delta_e_ivps": 4.0,
+      "sensitivity_ratio": 40.0,
+      "interpretation": "+10% probability &#8594; $+4.00 E[IVPS]"
+    }
+  ],
+  "summary": {
+    "schema_version": "G3_2.2.1eS",
+    "primary_output": {
+      "e_ivps": 206.3396767875524,
+      "e_ivps_derivation": "Sum of P(State) &#215; IVPS(State) across 16 feasible states"
+    },
+    "distribution_statistics": {
+      "median_p50": 188.0018816785839,
+      "p10": 146.9574034062443,
+      "p25": 179.95812747109355,
+      "p75": 215.23470448658867,
+      "p90": 238.99575705208042,
+      "min_ivps": 146.9574034062443,
+      "max_ivps": 312.43393169241597,
+      "range": 165.47652828617166,
+      "standard_deviation": 31.55355773015522,
+      "coefficient_of_variation": 0.15908848013276328
+    },
+    "distribution_shape": {
+      "skewness": "RIGHT",
+      "modality": "MULTIMODAL"
+    },
+    "distribution_visualization": {
+      "ascii_representation": "IVPS Distribution (Probability Mass)\n\n$147-160     | &#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; (14.7%) \n$160-172     |  (0.0%) \n$172-185     | &#9608;&#9608; (2.8%) \n$185-197     | &#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; (46.6%) \n$197-210     | &#9608;&#9608;&#9608;&#9608; (5.4%) &#8592; E[IVPS]\n$210-222     | &#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; (8.9%) \n$222-235     |  (1.0%) \n$235-247     | &#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; (17.2%) \n$247-260     |  (0.0%) \n$260-272     | &#9608;&#9608; (3.3%) \n\nE[IVPS]: $198.34 | Median: $188.00 | P10: $146.96 | P90: $239.00",
+      "structured_data": [
+        {
+          "ivps_bucket_label": "$147-160",
+          "ivps_bucket_midpoint": 153.2312298205529,
+          "probability_mass": 0.147168,
+          "cumulative_probability": 0.147168
+        },
+        {
+          "ivps_bucket_label": "$160-172",
+          "ivps_bucket_midpoint": 165.77888264917007,
+          "probability_mass": 0.0,
+          "cumulative_probability": 0.147168
+        },
+        {
+          "ivps_bucket_label": "$172-185",
+          "ivps_bucket_midpoint": 178.32653547778722,
+          "probability_mass": 0.028032,
+          "cumulative_probability": 0.1752
+        },
+        {
+          "ivps_bucket_label": "$185-197",
+          "ivps_bucket_midpoint": 190.8741883064044,
+          "probability_mass": 0.46603200000000006,
+          "cumulative_probability": 0.641232
+        },
+        {
+          "ivps_bucket_label": "$197-210",
+          "ivps_bucket_midpoint": 203.42184113502157,
+          "probability_mass": 0.05443200000000001,
+          "cumulative_probability": 0.6956640000000001
+        },
+        {
+          "ivps_bucket_label": "$210-222",
+          "ivps_bucket_midpoint": 215.96949396363874,
+          "probability_mass": 0.08876800000000001,
+          "cumulative_probability": 0.784432
+        },
+        {
+          "ivps_bucket_label": "$222-235",
+          "ivps_bucket_midpoint": 228.5171467922559,
+          "probability_mass": 0.010368,
+          "cumulative_probability": 0.7948000000000001
+        },
+        {
+          "ivps_bucket_label": "$235-247",
+          "ivps_bucket_midpoint": 241.06479962087306,
+          "probability_mass": 0.172368,
+          "cumulative_probability": 0.967168
+        },
+        {
+          "ivps_bucket_label": "$247-260",
+          "ivps_bucket_midpoint": 253.6124524494902,
+          "probability_mass": 0.0,
+          "cumulative_probability": 0.967168
+        },
+        {
+          "ivps_bucket_label": "$260-272",
+          "ivps_bucket_midpoint": 266.1601052781074,
+          "probability_mass": 0.032832,
+          "cumulative_probability": 1.0
+        }
+      ]
+    },
+    "cvr_state_bridge": {
+      "state_2_ivps_deterministic": 199.25019612583924,
+      "state_3_e_ivps_probabilistic": 206.3396767875524,
+      "delta": 7.0894806617131678,
+      "delta_percent": 3.55850279071772
+    },
+    "risk_metrics": {
+      "downside_probability": 0.641232,
+      "upside_probability": 0.032832,
+      "limited_liability_states": 0
+    },
+    "sse_metadata": {
+      "total_states": 16,
+      "feasible_states": 16,
+      "renormalization_factor": 1.0,
+      "probability_sum_validation": 1.0
+    }
+  }
+}

@@ -200,7 +200,7 @@ adding a new driver node).
 \* Hybrid: Combination of Parametric and Structural modifications.
 
 \* Lump Sum Handling (Simplified): One-time cash flow events (e.g.,
-litigation settlement, asset sale proceeds, acquisition costs) should be
+litigation settlement, asset sale proceeds, acquisition costs, acquisition premiums) should be
 modeled via GIM overlay using an EXPLICIT_SCHEDULE DSL on an
 \"FCF_Adjustment\" or equivalent driver. Complex structural
 interventions for lump sums are NOT required under the Simplified APV

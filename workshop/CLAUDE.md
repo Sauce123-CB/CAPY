@@ -325,6 +325,20 @@ To manage context effectively:
 3. **For smoke tests:** Spawn Task subagent with prompt + kernel + source docs
 4. **Orchestrator only reads summaries**, not full analytical outputs (unless user requests otherwise)
 
+### Validator Subagent Model: ALWAYS Opus
+
+**Do NOT use haiku for validators.** Validators appear simple but require nuanced reasoning (e.g., detecting internal contradictions between prose and JSON, catching $0 impact for scenarios that claim +$50 magnitude). The cost savings from haiku are not worth the missed errors.
+
+---
+
+## Common Orchestration Mistakes
+
+| Mistake | Why It Happens | Fix |
+|---------|----------------|-----|
+| Using haiku for validators | Task tool says "prefer haiku for quick tasks" | Validators are NOT quick tasks - always use Opus |
+| Empty gim_overlay for acquisition scenarios | Treating acquisition as "structural" rather than lump sum | Acquisition premiums ARE lump sums - use EXPLICIT_SCHEDULE |
+| Not re-reading CLAUDE.md mid-session | Context window pressure | Re-check before validator and T2 calls |
+
 ---
 
 ## Development Protocols
