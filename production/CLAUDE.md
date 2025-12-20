@@ -261,18 +261,23 @@ This is the preferred command for production runs. Use individual stage commands
    === TRIGGER ===
    Do Turn 1: {COMPANY_NAME}, {EXCHANGE}:{TICKER}, As of {DATE}
 
-   === OUTPUT INSTRUCTION ===
-   Write your complete output to: analyses/{RUN_ID}/01_T1/{TICKER}_BASE_T1.md
+   === OUTPUT INSTRUCTION (Direct-Write Protocol) ===
+   Use the Write tool to save your complete output to: analyses/{RUN_ID}/01_T1/{TICKER}_BASE_T1.md
 
    Your output MUST include:
    1. Four analytical narratives (I-IV) as specified in G3BASE
    2. JSON artifacts A.1 through A.6 with EXACT schema from G3BASE
    3. All Y0 data points needed for kernel execution
+
+   After writing the file, return ONLY: "Complete. File: analyses/{RUN_ID}/01_T1/{TICKER}_BASE_T1.md"
+   DO NOT return the file contents.
    ```
 
-3. **Wait for subagent completion**
+3. **Wait for subagent completion** - subagent returns confirmation + filepath only
 
-4. **Run validator** (Task tool, subagent_type: "general-purpose", model: opus):
+4. **Verify file exists:** `ls -la analyses/{RUN_ID}/01_T1/{TICKER}_BASE_T1.md`
+
+5. **Run validator** (Task tool, subagent_type: "general-purpose", model: opus):
    ```
    You are the CAPY inter-turn validator.
 
@@ -288,13 +293,13 @@ This is the preferred command for production runs. Use individual stage commands
    Return ONLY the JSON validation result.
    ```
 
-5. **Process validation result:**
+6. **Process validation result:**
    - Parse JSON response
    - Write to: `01_T1/{TICKER}_T1_validation.json`
    - If `"proceed": false` → **HALT pipeline**, report issues to user
    - If `"proceed": true` → Continue to Stage 2
 
-6. **Update state:**
+7. **Update state:**
    - Add "T1" to `completed_turns`
    - Set `current_turn: "REFINE"`
 
@@ -330,20 +335,25 @@ This is the preferred command for production runs. Use individual stage commands
    === TRIGGER ===
    Do REFINE
 
-   === OUTPUT INSTRUCTION ===
-   Write your complete output to: analyses/{RUN_ID}/02_REFINE/{TICKER}_BASE_REFINE.md
+   === OUTPUT INSTRUCTION (Direct-Write Protocol) ===
+   Use the Write tool to save your complete output to: analyses/{RUN_ID}/02_REFINE/{TICKER}_BASE_REFINE.md
+
+   After writing the file, return ONLY: "Complete. File: analyses/{RUN_ID}/02_REFINE/{TICKER}_BASE_REFINE.md"
+   DO NOT return the file contents.
    ```
 
-3. **Wait for subagent completion**
+3. **Wait for subagent completion** - subagent returns confirmation + filepath only
 
-4. **Run validator** (same pattern as Stage 1, with stage="BASE_REFINE")
+4. **Verify file exists:** `ls -la analyses/{RUN_ID}/02_REFINE/{TICKER}_BASE_REFINE.md`
 
-5. **Process validation result:**
+5. **Run validator** (same pattern as Stage 1, with stage="BASE_REFINE")
+
+6. **Process validation result:**
    - Write to: `02_REFINE/{TICKER}_REFINE_validation.json`
    - If `"proceed": false` → **HALT pipeline**, report issues
    - If `"proceed": true` → Continue to Stage 3
 
-6. **Update state:**
+7. **Update state:**
    - Add "REFINE" to `completed_turns`
    - Set `current_turn: "T2"`
 
@@ -400,10 +410,11 @@ This is the preferred command for production runs. Use individual stage commands
    - Sensitivity analysis results
    - Terminal driver values
 
-   Write to: analyses/{RUN_ID}/03_T2/{TICKER}_BASE_T2.md
+   Use the Write tool to save to: analyses/{RUN_ID}/03_T2/{TICKER}_BASE_T2.md
 
    === STEP 5: RETURN CONFIRMATION ===
    Return ONLY: "Complete. File: analyses/{RUN_ID}/03_T2/{TICKER}_BASE_T2.md"
+   DO NOT return the file contents.
 
    === PROHIBITED ===
    - DO NOT calculate IVPS yourself
@@ -411,9 +422,9 @@ This is the preferred command for production runs. Use individual stage commands
    - If Bash fails, report the error - do not fabricate results
    ```
 
-2. **Wait for subagent completion**
+2. **Wait for subagent completion** - subagent returns confirmation + filepath only
 
-3. **Verify output file exists**
+3. **Verify output file exists:** `ls -la analyses/{RUN_ID}/03_T2/{TICKER}_BASE_T2.md`
 
 4. **Run validator** (Task tool, subagent_type: "general-purpose", model: opus):
    - Validate output at `03_T2/{TICKER}_BASE_T2.md`
@@ -506,12 +517,17 @@ Next steps:
    === TRIGGER ===
    Generate A.8_RESEARCH_STRATEGY_MAP for {COMPANY_NAME} ({TICKER})
 
-   === OUTPUT INSTRUCTION ===
-   Write your complete A.8 JSON artifact to:
+   === OUTPUT INSTRUCTION (Direct-Write Protocol) ===
+   Use the Write tool to save your complete A.8 JSON artifact to:
    analyses/{RUN_ID}/04_RQ/{TICKER}_A8_RESEARCH_PLAN.json
+
+   After writing the file, return ONLY: "Complete. File: analyses/{RUN_ID}/04_RQ/{TICKER}_A8_RESEARCH_PLAN.json"
+   DO NOT return the file contents.
    ```
 
 3. **Wait for subagent completion**
+
+4. **Verify output file exists:** `ls -la analyses/{RUN_ID}/04_RQ/{TICKER}_A8_RESEARCH_PLAN.json`
 
 ---
 
@@ -558,11 +574,12 @@ Next steps:
    ## Key Uncertainties
    ## Sources
 
-   === OUTPUT INSTRUCTION ===
+   === OUTPUT INSTRUCTION (Direct-Write Protocol) ===
    After completing your research, use the Write tool to save your report to:
    analyses/{RUN_ID}/04_RQ/RQ{N}_{Topic}.md
 
-   Return only a confirmation with the filepath.
+   After writing the file, return ONLY: "Complete. File: analyses/{RUN_ID}/04_RQ/RQ{N}_{Topic}.md"
+   DO NOT return the file contents.
    ```
 
 3. **Wait for all 7 subagents** via TaskOutput (blocking)
@@ -733,8 +750,9 @@ The T1 subagent performs Bayesian synthesis of research evidence to refine the G
    Execute ENRICHMENT Turn 1 for {COMPANY_NAME} ({TICKER}).
    Synthesize research evidence into GIM refinements per the protocol.
 
-   === OUTPUT INSTRUCTION ===
-   Write your complete output to: analyses/{RUN_ID}/05_ENRICH/{TICKER}_ENRICH_T1.md
+   === OUTPUT INSTRUCTION (Direct-Write Protocol) ===
+   Use the Write tool to save your complete output to:
+   analyses/{RUN_ID}/05_ENRICH/{TICKER}_ENRICH_T1.md
 
    Your output MUST include:
    1. Narratives N1-N5 (Investment Thesis, IC Modeling, Economic Governor, Risk Assessment, Enrichment Synthesis)
@@ -743,11 +761,16 @@ The T1 subagent performs Bayesian synthesis of research evidence to refine the G
 
    DO NOT compute IVPS. That happens in Turn 2 via kernel execution.
    DO NOT emit A.7 - that is T2's responsibility.
+
+   After writing the file, return ONLY: "Complete. File: analyses/{RUN_ID}/05_ENRICH/{TICKER}_ENRICH_T1.md"
+   DO NOT return the file contents.
    ```
 
-4. **Wait for subagent completion**
+4. **Wait for subagent completion** - subagent returns confirmation + filepath only
 
-5. **Run validator** (Task tool, subagent_type: "general-purpose", model: **opus**):
+5. **Verify output file exists:** `ls -la analyses/{RUN_ID}/05_ENRICH/{TICKER}_ENRICH_T1.md`
+
+6. **Run validator** (Task tool, subagent_type: "general-purpose", model: **opus**):
    ```
    You are the CAPY inter-turn validator.
 
@@ -763,12 +786,12 @@ The T1 subagent performs Bayesian synthesis of research evidence to refine the G
    Return ONLY the JSON validation result.
    ```
 
-6. **Process validation result:**
+7. **Process validation result:**
    - Write to: `05_ENRICH/{TICKER}_ENRICH_T1_validation.json`
    - If `"proceed": false` → **HALT pipeline**, report issues to user
    - If `"proceed": true` → Continue to Stage 2
 
-7. **Update state:**
+8. **Update state:**
    - Add "ENRICH_T1" to `completed_turns`
    - Set `current_turn: "ENRICH_T2"`
 
@@ -836,7 +859,10 @@ The T2 subagent extracts artifacts from T1, runs the Python kernel via Bash, and
    - Terminal driver values
    - A.7_LIGHTWEIGHT_VALUATION_SUMMARY (embed the full JSON)
 
-   Write to: analyses/{RUN_ID}/05_ENRICH/{TICKER}_ENRICH_T2.md
+   Use the Write tool to save to: analyses/{RUN_ID}/05_ENRICH/{TICKER}_ENRICH_T2.md
+
+   === STEP 5: RETURN CONFIRMATION ===
+   Return ONLY: "Complete. File: analyses/{RUN_ID}/05_ENRICH/{TICKER}_ENRICH_T2.md"
 
    === PROHIBITED ===
    - DO NOT calculate IVPS yourself
@@ -844,9 +870,11 @@ The T2 subagent extracts artifacts from T1, runs the Python kernel via Bash, and
    - If Bash fails, report the error - do not fabricate results
    ```
 
-2. **Wait for subagent completion**
+2. **Wait for subagent completion** - subagent returns confirmation + filepath only
 
-3. **Run validator** (Task tool, subagent_type: "general-purpose", model: **opus**):
+3. **Verify output file exists:** `ls -la analyses/{RUN_ID}/05_ENRICH/{TICKER}_ENRICH_T2.md`
+
+4. **Run validator** (Task tool, subagent_type: "general-purpose", model: **opus**):
    ```
    You are the CAPY inter-turn validator.
 
@@ -871,12 +899,12 @@ The T2 subagent extracts artifacts from T1, runs the Python kernel via Bash, and
    Return ONLY the JSON validation result.
    ```
 
-4. **Process validation result:**
+5. **Process validation result:**
    - Write to: `05_ENRICH/{TICKER}_ENRICH_T2_validation.json`
    - If `"proceed": false` → **HALT pipeline**, report issues to user
    - If `"proceed": true` → Continue to completion
 
-5. **Update state:**
+6. **Update state:**
    - Add "ENRICH_T2" to `completed_turns`
    - Record State 2 IVPS in pipeline_state.json:
      ```json

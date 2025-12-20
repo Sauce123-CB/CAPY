@@ -22,7 +22,8 @@ Orchestrator                              Subagent
     │                                        ├─ Writes output to disk (Write tool)
     │                                        ├─ Returns: "Complete. File: {path}"
     ◄────────────────────────────────────────┤
-    ├─ Verifies file exists
+    ├─ Verifies file exists (ls -la)
+    ├─ Reads file for validation if needed
     ├─ Reports to user
 ```
 
@@ -30,7 +31,34 @@ Orchestrator                              Subagent
 - Subagent prompt MUST include explicit output path
 - Subagent MUST use Write tool before returning
 - Subagent returns confirmation + filepath only (not full content)
-- Orchestrator verifies file exists after completion
+- Orchestrator verifies file exists after completion (ls -la)
+- Orchestrator uses Read tool only for validation, not transcription
+
+**Anti-Patterns (PROHIBITED):**
+- Subagent returns full content → Orchestrator writes with Write tool (TRUNCATION RISK)
+- Orchestrator manually transcribes subagent output (ERROR RISK)
+- Orchestrator embeds subagent output in next prompt without reading from disk
+
+**Plan Documentation Standard:**
+When describing subagent tasks in plans or documentation, always specify:
+1. **Tool used:** "Subagent uses Write tool to save to {path}"
+2. **Return format:** "Returns confirmation + filepath only"
+3. **Verification step:** "Orchestrator verifies with `ls -la`, reads with Read tool if validation needed"
+
+Example (correct):
+```
+Subagent:
+- Uses Write tool to save output to 05_ENRICH/DAVE_ENRICH_T1.md
+- Returns ONLY: "Complete. File: {path}"
+Orchestrator:
+- Verifies file exists with ls -la
+- Reads file with Read tool for validation
+```
+
+Example (incorrect):
+```
+Subagent writes DAVE_ENRICH_T1.md  ← Too vague, mechanism unclear
+```
 
 ---
 
