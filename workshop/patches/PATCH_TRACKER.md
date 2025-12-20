@@ -6,11 +6,11 @@ Last updated: 2024-12-20
 
 | Status | Count |
 |--------|-------|
-| Complete | 15 |
+| Complete | 16 |
 | Pending | 11 |
-| **Total** | **26** |
+| **Total** | **27** |
 
-**Completion: 58%**
+**Completion: 59%**
 
 ---
 
@@ -23,7 +23,7 @@ Last updated: 2024-12-20
 | ENRICH | ✅ Complete | `DAVE_ENRICH_SMOKE_20251220_120936/` | State 1→2: $241.72→$199.25 |
 | SCENARIO | ✅ Complete | `DAVE_ENRICH_SMOKE_20251220_120936/06_SCENARIO/` | E[IVPS]=$206.34, 4 scenarios, SSE 16 states |
 | SILICON COUNCIL | ✅ Complete | `DAVE_ENRICH_SMOKE_20251220_120936/07_SILICON_COUNCIL/` | 6 parallel audits, A11 consolidated, prompts CANONICAL |
-| INTEGRATION | 🟡 Atomized | - | Prompts atomized, orchestration docs complete, awaiting smoke test |
+| INTEGRATION | 🟡 Validators Ready | - | Prompts atomized, INT_T1/T2/T3_VALIDATOR.md created, awaiting smoke test |
 | IRR | ⏳ Pending | - | Final stage |
 
 **Goal:** Full autonomous CAPY (all stages chain without human intervention)
@@ -46,6 +46,7 @@ Last updated: 2024-12-20
 | 25 | SC smoke test + State 2/3 fix | Testing | `DAVE_ENRICH_SMOKE_20251220/07_SILICON_COUNCIL/` |
 | 26 | Pattern 11 Surgical Stitching | Orchestrator | `ORCHESTRATION_KEY_PATTERNS.md` |
 | 27 | INTEGRATION atomization + orchestration | Prompt | `G3_INTEGRATION_2.2.2e_*.md` (3 files) + CLAUDE.md Stage Flow |
+| 28 | INTEGRATION validators | Validation | `INT_T1_VALIDATOR.md`, `INT_T2_VALIDATOR.md`, `INT_T3_VALIDATOR.md` |
 
 ---
 
@@ -105,6 +106,7 @@ These require kernel code changes before prompts will work correctly:
 | 2024-12-20 | 25 | Claude | Success | SC smoke test, State 2/3 semantic fix, prompts→CANONICAL |
 | 2024-12-20 | 26 | Claude | Success | Pattern 11 Surgical Stitching + Markdown generation default |
 | 2024-12-20 | 27 | Claude | Success | INTEGRATION atomized (3 files) + full Stage Flow orchestration docs |
+| 2024-12-20 | 28 | Claude | Success | INT T1/T2/T3 validators created, CLAUDE.md Current Versions updated |
 | | | | | |
 
 ---

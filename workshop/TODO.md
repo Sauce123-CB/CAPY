@@ -1,7 +1,7 @@
 # CAPY Workshop - Master TODO
 
 > **Last updated:** 2024-12-20
-> **Structure version:** 0.6 (Silicon Council complete, INTEGRATION atomized, ready for smoke test)
+> **Structure version:** 0.7 (INTEGRATION validators created, ready for smoke test)
 
 ---
 
@@ -65,6 +65,7 @@
 | 22 | Validator model guidance | Orchestrator | 2024-12-20 | CLAUDE.md: ALWAYS use Opus for validators |
 | 23 | Acquisition premium lump sum | Prompt | 2024-12-20 | Added to SCENARIO prompt |
 | 27 | **INTEGRATION atomization + orchestration** | Prompt | 2024-12-20 | EXPERIMENTAL (3-file split + full Stage Flow docs) |
+| 28 | **INTEGRATION validators** | Validation | 2024-12-20 | INT_T1/T2/T3_VALIDATOR.md created, ready for smoke test |
 
 ---
 
