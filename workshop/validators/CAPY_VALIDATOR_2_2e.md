@@ -38,10 +38,10 @@ Check what the human attached for the turn just executed:
 | BASE | T2 | Prompt (G3BASE_2.2.1e.md), REFINE output (not T1), Kernel |
 | RQ_GEN | — | Prompt (RQ_Gen_2.2.2e.docx), Complete BASE outputs |
 | RQ_ASK | — | A.8 (RQs), AlphaSense, Gemini DR |
-| ENRICH | T1 | Prompt (G3ENRICH_2.2.1e.md), Complete BASE outputs, A.8, Research bundle |
-| ENRICH | T2 | Prompt (G3ENRICH_2.2.1e.md), ENRICH T1, Kernel |
-| SCENARIO | T1 | Prompt (G3_SCENARIO_2_2_1e.md), Complete ENRICH outputs |
-| SCENARIO | T2 | Prompt (G3_SCENARIO_2_2_1e.md), SCEN T1, Complete ENRICH outputs (fresh), Kernel |
+| ENRICH | T1 | Prompt (G3ENRICH_2.2.2e_*.md, 3 files), Complete BASE outputs, A.8, Research bundle |
+| ENRICH | T2 | Prompt (G3ENRICH_2.2.2e_*.md, 3 files), ENRICH T1, Kernel |
+| SCENARIO | T1 | Prompt (G3_SCENARIO_2.2.2e_*.md, 3 files), Complete ENRICH outputs |
+| SCENARIO | T2 | Prompt (G3_SCENARIO_2.2.2e_*.md, 3 files), SCEN T1, Complete ENRICH outputs (fresh), Kernel |
 | SC | — | Prompt (G3_SILICON_COUNCIL_2.2.1e.md), Financials bundle (.zip), RQ outputs (1–6), Complete ENRICH/SCENARIO outputs |
 | INT | T1 | Prompt (G3_INTEGRATION_2_2_2e.md), Financials bundle, RQ outputs (1–6), Complete ENRICH/SCENARIO outputs, All SC outputs |
 | INT | T2 | Prompt (G3_INTEGRATION_2_2_2e.md), INT T1, Complete ENRICH/SCENARIO outputs (fresh), Kernel |

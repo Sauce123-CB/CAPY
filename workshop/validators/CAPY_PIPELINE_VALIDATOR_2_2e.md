@@ -89,12 +89,12 @@ Verify each stage received correct inputs per README Section 6 (Attachment Cheat
 **"Complete BASE outputs"** = REFINE output (A.1–A.6) + T2 output (A.7). If T2 consolidates everything, use T2 alone. If T2 only emits A.7, need both REFINE and T2 (not original T1 unless needed for something missing).
 
 **2.3 ENRICH Chain**
-- [ ] T1 received: Prompt (G3ENRICH_2.2.1e.md), Complete BASE outputs, A.8, Research bundle (7 RQ responses)
-- [ ] T2 received: Prompt (G3ENRICH_2.2.1e.md), ENRICH T1, Kernel
+- [ ] T1 received: Prompt (G3ENRICH_2.2.2e_*.md, 3 files), Complete BASE outputs, A.8, Research bundle (7 RQ responses)
+- [ ] T2 received: Prompt (G3ENRICH_2.2.2e_*.md, 3 files), ENRICH T1, Kernel
 
 **2.4 SCENARIO Chain**
-- [ ] T1 received: Prompt (G3_SCENARIO_2_2_1e.md), Complete ENRICH outputs
-- [ ] T2 received: Prompt (G3_SCENARIO_2_2_1e.md), SCEN T1, Complete ENRICH outputs (fresh), Kernel
+- [ ] T1 received: Prompt (G3_SCENARIO_2.2.2e_*.md, 3 files), Complete ENRICH outputs
+- [ ] T2 received: Prompt (G3_SCENARIO_2.2.2e_*.md, 3 files), SCEN T1, Complete ENRICH outputs (fresh), Kernel
 
 **2.5 SC Chain (Epistemic Parity)**
 - [ ] Each SC instance received: Prompt (G3_SILICON_COUNCIL_2.2.1e.md), Financials bundle (.zip), RQ outputs (1–7), Complete ENRICH/SCENARIO outputs

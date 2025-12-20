@@ -326,10 +326,11 @@ substantive (not \"no results found\").
   **Trigger**                         Do Turn 1: SCENARIO for {Company Name},
                                       {EXCHANGE:TICKER}
 
-  **Attachments**                     G3_SCENARIO_2_2_1e.md, Complete ENRICH
-                                      outputs. (Maybe T2 contains T1 but maybe
-                                      not so just see. It just means it has all
-                                      narratives and artefacts)
+  **Attachments**                     G3_SCENARIO_2.2.2e_*.md (3 files),
+                                      Complete ENRICH outputs. (Maybe T2
+                                      contains T1 but maybe not so just see.
+                                      It just means it has all narratives and
+                                      artefacts)
 
   **Output**                          {TICKER}\_SCEN2.2.1eO_T1\_{YYYYMMDD}.md
 
@@ -346,9 +347,9 @@ substantive (not \"no results found\").
   ----------------------------------- -----------------------------------------
   **Trigger**                         Do Turn 2
 
-  **Attachments**                     G3_SCENARIO_2_2_1e.md, T1 Output,
-                                      Complete ENRICH outputs,
-                                      CVR_KERNEL_SCEN_2_2_1e.py
+  **Attachments**                     G3_SCENARIO_2.2.2e_*.md (3 files),
+                                      T1 Output, Complete ENRICH outputs,
+                                      CVR_KERNEL_SCEN_2_2_2e.py
 
   **Output**                          {TICKER}\_SCEN2.2.1eO_T2\_{YYYYMMDD}.md
 
@@ -791,15 +792,15 @@ Run this checklist after each turn before proceeding to the next stage.
   RQ_ASK      ---         ---                            A.8 (RQs)         ---          AlphaSense,
                                                                                         Gemini DR
 
-  ENRICH      T1          G3ENRICH_2.2.1e.md             Complete BASE     ---          A.8, Research
+  ENRICH      T1          G3ENRICH_2.2.2e_*.md (3)       Complete BASE     ---          A.8, Research
                                                          outputs                        bundle
 
-  ENRICH      T2          G3ENRICH_2.2.1e.md             ENRICH T1         ✓ Execute    ---
+  ENRICH      T2          G3ENRICH_2.2.2e_*.md (3)       ENRICH T1         ✓ Execute    ---
 
-  SCENARIO    T1          G3_SCENARIO_2_2_1e.md          Complete ENRICH   ---          ---
-                                                         outputs                        
+  SCENARIO    T1          G3_SCENARIO_2.2.2e_*.md (3)    Complete ENRICH   ---          ---
+                                                         outputs
 
-  SCENARIO    T2          G3_SCENARIO_2_2_1e.md          SCEN T1           ✓ Execute    Complete ENRICH
+  SCENARIO    T2          G3_SCENARIO_2.2.2e_*.md (3)    SCEN T1           ✓ Execute    Complete ENRICH
                                                                                         outputs (fresh)
 
   SC          ---         G3_SILICON_COUNCIL_2.2.1e.md   Complete          ---          Financials bundle
