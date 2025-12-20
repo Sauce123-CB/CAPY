@@ -61,6 +61,12 @@ The following directories contain the complete pipeline state:
 └── {TICKER}_A10_SCENARIO.json
 ```
 
+**Critical Semantic Note:** State 2 IVPS (from A7, ENRICH output) and State 3
+E[IVPS] (from A10, SCENARIO output) are intentionally different values. State 2
+is deterministic; State 3 incorporates scenario probabilities via SSE. The delta
+represents option value from scenarios. This difference is NOT a data integrity
+error—it is the expected output of the pipeline.
+
 **The Access Protocol:**
 
 - You may and should access any document in these directories as needed

@@ -108,6 +108,11 @@ Verify that:
 Inconsistency between artifact structure and economic reality is a material
 error even when individual numbers are transcribed correctly.
 
+**Note:** State 2 IVPS (ENRICH output) and State 3 E[IVPS] (SCENARIO output) are
+intentionally different values. State 2 is deterministic; State 3 incorporates
+scenario probabilities via SSE. The delta represents option value from scenarios.
+This difference is NOT a data integrity error.
+
 ### **A.4 Definitional Alignment**
 
 Trace from methodology mechanics back to inputs. For each critical input,
