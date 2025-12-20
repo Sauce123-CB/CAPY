@@ -10,6 +10,29 @@ For **prompt development and iteration**, use `../workshop/` instead.
 
 ---
 
+## Auto-Peek Protocol
+
+**When to automatically look at workshop (without user asking):**
+
+| Trigger | Auto-Action |
+|---------|-------------|
+| Need latest orchestration patterns | Read `../workshop/orchestration/ORCHESTRATION_KEY_PATTERNS.md` |
+| Checking EXPERIMENTAL prompt versions | `ls ../workshop/prompts/{stage}/` |
+| Need to understand a patch or change | Read `../workshop/patches/SESSION_LOG_*.md` |
+| Smoke test results for comparison | `ls ../workshop/smoke_tests/{TICKER}_*` |
+| Checking pending patches | Read `../workshop/patches/PATCH_TRACKER.md` |
+
+**When to automatically look at shared:**
+
+| Trigger | Auto-Action |
+|---------|-------------|
+| Executing any pipeline stage | Read `../shared/PATTERNS.md` (pattern quick-ref) |
+| Unsure how contexts connect | Read `../shared/BRIDGE.md` |
+
+**Implementation:** Just do it. Don't ask permission to read sibling directories. Report what you found.
+
+---
+
 ## CRITICAL: You are an ORCHESTRATOR, not an ANALYST
 
 When you see commands starting with `CAPY:`, you MUST follow the dispatch protocol below.

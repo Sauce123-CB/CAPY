@@ -10,6 +10,29 @@ For **production analysis runs**, use `../production/` instead.
 
 ---
 
+## Auto-Peek Protocol
+
+**When to automatically look at production (without user asking):**
+
+| Trigger | Auto-Action |
+|---------|-------------|
+| Need source docs for smoke test | `ls ../production/source_library/{TICKER}/` |
+| Checking what's currently deployed | `ls ../production/prompts/{stage}/` |
+| Need to verify CANONICAL parity | Read `../production/prompts/{stage}/{file}` and compare |
+| Looking for prior analysis outputs | `find ../production/analyses/ -name "*{TICKER}*"` |
+| Need orchestration patterns | Read `../shared/PATTERNS.md` |
+
+**When to automatically look at shared:**
+
+| Trigger | Auto-Action |
+|---------|-------------|
+| Executing any pipeline stage | Read `../shared/PATTERNS.md` (pattern quick-ref) |
+| Unsure how contexts connect | Read `../shared/BRIDGE.md` |
+
+**Implementation:** Just do it. Don't ask permission to read sibling directories. Report what you found.
+
+---
+
 ## CLAUDE.md Versioning
 
 This instruction file is itself experimental and will evolve.

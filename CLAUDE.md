@@ -121,8 +121,27 @@ Within the mono-repo, use relative paths:
 |------|----|------|
 | workshop | production | `../production/` |
 | workshop | archive | `../archive/` |
+| workshop | shared | `../shared/` |
 | production | workshop | `../workshop/` |
 | production | archive | `../archive/` |
+| production | shared | `../shared/` |
+
+### Shared Layer
+
+The `shared/` directory contains resources visible to ALL contexts:
+
+| File | Purpose |
+|------|---------|
+| `shared/PATTERNS.md` | Quick-reference for 10 orchestration patterns |
+| `shared/BRIDGE.md` | How workshop ↔ production connect |
+
+**Always read `shared/PATTERNS.md` when executing pipeline stages.**
+
+### Cross-Context Peek
+
+Both workshop and production have a `/peek` command to look into sibling contexts without switching:
+- From workshop: `/peek production`, `/peek production sources DAVE`
+- From production: `/peek workshop`, `/peek workshop patches`
 
 ---
 
