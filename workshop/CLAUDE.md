@@ -577,6 +577,7 @@ Run on the 1st of each month:
 | ENRICH | G3ENRICH_2.2.1e.md | HISTORICAL | DAVE_20241210 | CVR_KERNEL_ENRICH_2.2.1e.py |
 | SCENARIO | G3_SCENARIO_2.2.2e_*.md (atomized) | CANONICAL | DAVE_ENRICH_SMOKE_20251220 | CVR_KERNEL_SCEN_2_2_2e.py |
 | SCENARIO | G3_SCENARIO_2_2_1e.md | HISTORICAL | DAVE_20241210 | CVR_KERNEL_SCEN_2_2_1e.py |
+| INTEGRATION | G3_INTEGRATION_2.2.2e_*.md (atomized) | EXPERIMENTAL | - | CVR_KERNEL_INT_2.2.2e.py |
 | INTEGRATION | G3_INTEGRATION_2_2_2e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_INT_2_2_2e.py |
 | IRR | G3_IRR_2_2_4e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_IRR_2_2_4e.py |
 
@@ -1113,3 +1114,490 @@ The SILICON COUNCIL prompt v2.2.2e is split into 10 atomic files:
 **Status:** EXPERIMENTAL - awaiting smoke test. G3_SILICON_COUNCIL_2.2.1e.md remains CANONICAL until smoke test passes.
 
 **Subagent loading:** Each subagent loads Preamble + its audit file + NORMDEFS (+ BLIND_SPOTS for FIT only).
+
+---
+
+## INTEGRATION Stage Orchestration (SILICON COUNCIL → INTEGRATION)
+
+### Purpose and Context
+
+The INTEGRATION stage is the **final analytical stage** of the CAPY pipeline. It transitions the CVR from State 3 (Probabilistic) to State 4 (Finalized).
+
+**What happened before INTEGRATION:**
+1. **ENRICH** produced a deterministic intrinsic value per share (IVPS) calculation with artifacts A.1-A.9
+2. **SCENARIO** added probabilistic scenario analysis on top, producing A.10 with E[IVPS] and distribution
+3. **SILICON COUNCIL** audited both stages across 6 dimensions, producing A.11 audit reports
+
+**What INTEGRATION does:**
+1. **T1 (Adjudication):** Receives ALL upstream artifacts + ALL audit findings. Adjudicates each audit finding (ACCEPT/REJECT/MODIFY) against primary evidence. Determines what needs recalculation.
+2. **T2 (Recalculation):** Executes kernel if any modifications were accepted. Produces finalized artifacts with amendments applied.
+3. **T3 (Final Output):** Produces the **complete, clean, finalized CVR** - all narratives, all artifacts, no deprecated content. This is THE document for human review or IRR stage.
+
+**Why Epistemic Parity matters:**
+The INTEGRATION subagent must have access to the same evidence that upstream stages used. It cannot adjudicate audit findings without seeing the original source documents, RQ outputs, and analytical artifacts. This is non-negotiable.
+
+### Architecture (v2.2.2e)
+
+**Three-Shot Execution:**
+
+| Turn | Name | Purpose | Key Output |
+|------|------|---------|------------|
+| T1 | Adjudication | Review SC findings, adjudicate against evidence | Adjudication decisions + T1 Handoff JSON |
+| T2 | Recalculation | Execute kernel if cascade required | Finalized artifacts A.1-A.12 + state_4_active_inputs |
+| T3 | Final Output | Produce complete CVR State 4 document | Clean, unified document with N1-N7 + A.1-A.12 |
+
+### Directory Structure
+
+```
+{analysis_dir}/
+├── 00_source/ or source_docs/       ← Source financials (10-K, 10-Q, transcripts)
+├── 04_RQ/                           ← Research outputs (RQ1-RQ7, A.8, A.9)
+├── 05_ENRICH/                       ← State 2 artifacts (A.1-A.9 + narratives)
+├── 06_SCENARIO/                     ← State 3 artifacts (A.10 + narratives)
+├── 07_SILICON_COUNCIL/              ← Audit outputs (A.11 from all instances)
+├── 08_INTEGRATION/                  ← INTEGRATION outputs
+│   ├── {TICKER}_INT_T1_{DATE}.md        ← T1: Adjudication output
+│   ├── {TICKER}_INT_T2_{DATE}.md        ← T2: Recalculation output
+│   ├── {TICKER}_INT_T3_{DATE}.md        ← T3: Final CVR State 4
+│   └── {TICKER}_A12_INTEGRATION_TRACE.json
+└── 09_IRR/                          ← Next stage (receives T3 output)
+```
+
+### Stage Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 0: AUTO-DISCOVERY AND INPUT VALIDATION                                 │
+│                                                                             │
+│ Locate most recent complete pipeline run:                                   │
+│   find smoke_tests/ -name "*A11*.json" | sort -r | head -5                  │
+│                                                                             │
+│ Verify folder contains ALL required inputs (see Step 1).                    │
+│ READ key files to extract baseline metrics:                                 │
+│   - E[IVPS] from A.10                                                       │
+│   - Pipeline Fit grade(s) from A.11                                         │
+│   - Count of CRITICAL/HIGH findings                                         │
+│                                                                             │
+│ Set {analysis_dir} to the pipeline run folder.                              │
+│ Create 08_INTEGRATION/ if it doesn't exist.                                 │
+└──────────────────────┬──────────────────────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 1: PREPARE EPISTEMIC PARITY BUNDLE                                     │
+│                                                                             │
+│ The T1 subagent MUST receive everything Silicon Council received,           │
+│ PLUS the A.11 audit outputs. This is mandatory for principled adjudication. │
+│                                                                             │
+│ ┌─────────────────────────────────────────────────────────────────────────┐ │
+│ │ SOURCE DOCUMENTS (Discovery Record)                                     │ │
+│ │ Location: {analysis_dir}/00_source/ or /source_docs/                    │ │
+│ │                                                                         │ │
+│ │ Files:                                                                  │ │
+│ │   • 10-K filing (full or extracted.md)                                  │ │
+│ │   • 10-Q filings (all available quarters)                               │ │
+│ │   • Earnings call transcripts                                           │ │
+│ │   • Investor presentations                                              │ │
+│ │   • Pre-processed financials spreadsheet                                │ │
+│ │                                                                         │ │
+│ │ Why needed: Primary evidence for adjudicating disputed claims.          │ │
+│ │ The subagent may need to verify facts cited by SC audits.               │ │
+│ └─────────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+│ ┌─────────────────────────────────────────────────────────────────────────┐ │
+│ │ RESEARCH QUESTION OUTPUTS                                               │ │
+│ │ Location: {analysis_dir}/04_RQ/                                         │ │
+│ │                                                                         │ │
+│ │ Files:                                                                  │ │
+│ │   • RQ1_*.md through RQ7_*.md (7 research reports)                      │ │
+│ │   • {TICKER}_A8_RESEARCH_PLAN.json                                      │ │
+│ │   • {TICKER}_A9_RESEARCH_RESULTS.json                                   │ │
+│ │                                                                         │ │
+│ │ Why needed: External research that informed ENRICH/SCENARIO.            │ │
+│ │ SC may have challenged assumptions based on RQ findings.                │ │
+│ └─────────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+│ ┌─────────────────────────────────────────────────────────────────────────┐ │
+│ │ ENRICH OUTPUTS (State 2 - Deterministic IVPS)                           │ │
+│ │ Location: {analysis_dir}/05_ENRICH/                                     │ │
+│ │                                                                         │ │
+│ │ Files:                                                                  │ │
+│ │   • {TICKER}_ENRICH_T1.md (analysis narrative)                          │ │
+│ │   • {TICKER}_ENRICH_T2.md (kernel output narrative)                     │ │
+│ │   • A1_EPISTEMIC_ANCHORS.json                                           │ │
+│ │   • A2_ANALYTIC_KG.json                                                 │ │
+│ │   • A3_CAUSAL_DAG.json                                                  │ │
+│ │   • A5_GESTALT_IMPACT_MAP.json                                          │ │
+│ │   • A6_DR_DERIVATION_TRACE.json                                         │ │
+│ │   • A7_LIGHTWEIGHT_VALUATION_SUMMARY.json (contains Base Case IVPS)     │ │
+│ │   • A9_ENRICHMENT_TRACE.json                                            │ │
+│ │                                                                         │ │
+│ │ Why needed: The deterministic valuation that SCENARIO built upon.       │ │
+│ │ SC may have challenged base case assumptions.                           │ │
+│ └─────────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+│ ┌─────────────────────────────────────────────────────────────────────────┐ │
+│ │ SCENARIO OUTPUTS (State 3 - Probabilistic E[IVPS])                      │ │
+│ │ Location: {analysis_dir}/06_SCENARIO/                                   │ │
+│ │                                                                         │ │
+│ │ Files:                                                                  │ │
+│ │   • {TICKER}_SCEN_T1.md (scenario identification narrative)             │ │
+│ │   • {TICKER}_SCEN_T2.md (SSE execution narrative)                       │ │
+│ │   • {TICKER}_A10_SCENARIO.json (scenarios, probabilities, distribution) │ │
+│ │                                                                         │ │
+│ │ Why needed: The probabilistic layer that SC audited.                    │ │
+│ │ SC may have challenged scenario selection, probabilities, or SSE math.  │ │
+│ └─────────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+│ ┌─────────────────────────────────────────────────────────────────────────┐ │
+│ │ SILICON COUNCIL OUTPUTS (A.11 Audit Reports)                            │ │
+│ │ Location: {analysis_dir}/07_SILICON_COUNCIL/                            │ │
+│ │                                                                         │ │
+│ │ Files:                                                                  │ │
+│ │   • SC_ACCOUNTING_AUDIT.json (source integrity findings)                │ │
+│ │   • SC_FIT_AUDIT.json (pipeline fit assessment)                         │ │
+│ │   • SC_EPISTEMIC_AUDIT.json (Bayesian protocol compliance)              │ │
+│ │   • SC_RED_TEAM_AUDIT.json (adversarial review)                         │ │
+│ │   • SC_DISTRIBUTIONAL_AUDIT.json (distribution coherence)               │ │
+│ │   • SC_ECONOMIC_REALISM_AUDIT.json (top-down plausibility)              │ │
+│ │   • {TICKER}_A11_AUDIT_REPORT.json (consolidated audit report)          │ │
+│ │   • *.md versions of above (human-readable)                             │ │
+│ │                                                                         │ │
+│ │ Why needed: THE INPUT that triggers adjudication.                       │ │
+│ │ Each finding must be evaluated: ACCEPT, REJECT, or MODIFY.              │ │
+│ └─────────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+│ VERIFICATION: Before proceeding, confirm ALL folders exist and contain     │
+│ the expected files. Log file counts. If anything is missing, STOP.         │
+└──────────────────────┬──────────────────────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 2: INTEGRATION T1 — ADJUDICATION                                       │
+│                                                                             │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│ TASK: Spawn Opus subagent to adjudicate Silicon Council findings            │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│                                                                             │
+│ PROMPT FILES TO ATTACH:                                                     │
+│   1. prompts/integration/G3_INTEGRATION_2.2.2e_PROMPT.md                    │
+│   2. prompts/integration/G3_INTEGRATION_2.2.2e_SCHEMAS.md                   │
+│   3. prompts/integration/G3_INTEGRATION_2.2.2e_NORMDEFS.md                  │
+│   4. kernels/CVR_KERNEL_INT_2.2.2e.py (FOR CONTEXT ONLY - DO NOT EXECUTE)   │
+│                                                                             │
+│ INPUT FILES TO ATTACH (Full Epistemic Parity Bundle from Step 1):           │
+│   • ALL source documents from 00_source/                                    │
+│   • ALL RQ outputs from 04_RQ/                                              │
+│   • ALL ENRICH outputs from 05_ENRICH/                                      │
+│   • ALL SCENARIO outputs from 06_SCENARIO/                                  │
+│   • ALL SILICON COUNCIL outputs from 07_SILICON_COUNCIL/                    │
+│                                                                             │
+│ INSTRUCTION TO SUBAGENT:                                                    │
+│   "Execute INTEGRATION Turn 1 for {TICKER}.                                 │
+│                                                                             │
+│    Your task: Adjudicate all Silicon Council findings against the           │
+│    primary evidence. For each finding, determine disposition:               │
+│    ACCEPT (State 3 needs modification), REJECT (State 3 stands),            │
+│    or MODIFY (partial adjustment needed).                                   │
+│                                                                             │
+│    Execute Phases A-C per the prompt:                                       │
+│    - Phase A: Initialization and Triage (dock all findings)                 │
+│    - Phase B: Adjudication Loop (evaluate each finding)                     │
+│    - Phase C: Scenario Reconciliation (finalize scenario set)               │
+│                                                                             │
+│    DO NOT execute the kernel. It is provided for context only.              │
+│                                                                             │
+│    Output: Adjudication decisions + T1 Handoff JSON (cascade scope).        │
+│    Write output to: {output_dir}/{TICKER}_INT_T1_{DATE}.md                  │
+│    Return confirmation and filepath only."                                  │
+│                                                                             │
+│ OUTPUT PRODUCED:                                                            │
+│   • {TICKER}_INT_T1_{DATE}.md containing:                                   │
+│     - Adjudication reasoning for each finding                               │
+│     - Disposition (ACCEPT/REJECT/MODIFY) for each finding                   │
+│     - T1 Handoff JSON with:                                                 │
+│       • cascade_scope (FULL/PARTIAL_SCENARIO/PARTIAL_SSE/NONE)              │
+│       • modifications_to_apply (list of specific changes)                   │
+│       • scenarios_finalized (post-reconciliation scenario set)              │
+│                                                                             │
+│ PATTERN: Direct-Write (Pattern 1) - subagent writes to disk, returns path  │
+└──────────────────────┬──────────────────────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 3: INTEGRATION T1 VALIDATOR                                            │
+│                                                                             │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│ TASK: Spawn Opus subagent to validate T1 output                             │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│                                                                             │
+│ PROMPT FILE:                                                                │
+│   validators/INT_T1_VALIDATOR.md                                            │
+│                                                                             │
+│ INPUT FILE:                                                                 │
+│   {output_dir}/{TICKER}_INT_T1_{DATE}.md (from Step 2)                      │
+│                                                                             │
+│ VALIDATION CHECKS:                                                          │
+│   • All CRITICAL findings have explicit disposition                         │
+│   • All HIGH findings have explicit disposition                             │
+│   • T1 Handoff JSON is well-formed and complete                             │
+│   • cascade_scope is valid enum value                                       │
+│   • If cascade_scope != NONE, modifications_to_apply is non-empty           │
+│   • scenarios_finalized contains ≤4 scenarios                               │
+│                                                                             │
+│ IF FAIL: Stop. Report issues. Do not proceed to T2.                         │
+│ IF PASS: Proceed to Step 4.                                                 │
+└──────────────────────┬──────────────────────────────────────────────────────┘
+                       │ (proceed only if PASS)
+                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 4: INTEGRATION T2 — RECALCULATION                                      │
+│                                                                             │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│ TASK: Spawn Opus subagent to execute recalculation cascade (if needed)      │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│                                                                             │
+│ PROMPT FILES TO ATTACH:                                                     │
+│   1. prompts/integration/G3_INTEGRATION_2.2.2e_PROMPT.md                    │
+│   2. prompts/integration/G3_INTEGRATION_2.2.2e_SCHEMAS.md                   │
+│   3. prompts/integration/G3_INTEGRATION_2.2.2e_NORMDEFS.md                  │
+│   4. kernels/CVR_KERNEL_INT_2.2.2e.py (EXECUTABLE IN T2)                    │
+│                                                                             │
+│ INPUT FILES TO ATTACH:                                                      │
+│   • {output_dir}/{TICKER}_INT_T1_{DATE}.md (T1 output with Handoff JSON)    │
+│   • State 3 artifacts RE-INGESTED FRESH from 06_SCENARIO/:                  │
+│     - {TICKER}_A10_SCENARIO.json                                            │
+│     - A5_GESTALT_IMPACT_MAP.json (if GIM modifications needed)              │
+│     - A7_LIGHTWEIGHT_VALUATION_SUMMARY.json                                 │
+│                                                                             │
+│ INSTRUCTION TO SUBAGENT:                                                    │
+│   "Execute INTEGRATION Turn 2 for {TICKER}.                                 │
+│                                                                             │
+│    Your task: Apply the modifications from T1 and execute recalculation     │
+│    cascade if required.                                                     │
+│                                                                             │
+│    Execute Phases D-E per the prompt:                                       │
+│    - Phase D: Recalculation Cascade (execute kernel if cascade needed)      │
+│    - Phase E: Distributional Re-Analysis (document State 3→4 bridge)        │
+│                                                                             │
+│    If cascade_scope = NONE: Lock State 4 = State 3, no kernel execution.    │
+│    If cascade_scope != NONE: Load kernel via Bash and execute appropriate   │
+│    functions (execute_cvr_workflow, execute_scenario_intervention, etc.)    │
+│                                                                             │
+│    Output:                                                                  │
+│    - Finalized artifacts A.1-A.12 with amendments applied                   │
+│    - A.12_INTEGRATION_TRACE (full adjudication record)                      │
+│    - state_4_active_inputs (pre-merged inputs for IRR)                      │
+│                                                                             │
+│    Write outputs to:                                                        │
+│    - {output_dir}/{TICKER}_INT_T2_{DATE}.md                                 │
+│    - {output_dir}/{TICKER}_A12_INTEGRATION_TRACE.json                       │
+│    Return confirmation and filepaths only."                                 │
+│                                                                             │
+│ OUTPUT PRODUCED:                                                            │
+│   • {TICKER}_INT_T2_{DATE}.md containing:                                   │
+│     - Recalculation cascade log (what was executed)                         │
+│     - State 3 → State 4 bridge (delta analysis)                             │
+│     - All finalized artifacts A.1-A.12 embedded                             │
+│     - state_4_active_inputs block                                           │
+│   • {TICKER}_A12_INTEGRATION_TRACE.json (standalone artifact)               │
+│                                                                             │
+│ PATTERN: Bash Kernel (Pattern 6) - execute kernel via Bash if cascade needed│
+│ PATTERN: Direct-Write (Pattern 1) - subagent writes to disk, returns path   │
+└──────────────────────┬──────────────────────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 5: INTEGRATION T2 VALIDATOR                                            │
+│                                                                             │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│ TASK: Spawn Opus subagent to validate T2 output                             │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│                                                                             │
+│ PROMPT FILE:                                                                │
+│   validators/INT_T2_VALIDATOR.md                                            │
+│                                                                             │
+│ INPUT FILES:                                                                │
+│   • {output_dir}/{TICKER}_INT_T2_{DATE}.md                                  │
+│   • {output_dir}/{TICKER}_A12_INTEGRATION_TRACE.json                        │
+│                                                                             │
+│ VALIDATION CHECKS:                                                          │
+│   • All artifacts A.1-A.12 present                                          │
+│   • Amendment manifest documents all changes                                │
+│   • state_4_active_inputs is complete                                       │
+│   • State bridge shows valid State 3 → State 4 delta                        │
+│   • If cascade executed: kernel output validates (sums to 1.0, etc.)        │
+│   • A.12 schema compliance                                                  │
+│                                                                             │
+│ IF FAIL: Stop. Report issues. Do not proceed to T3.                         │
+│ IF PASS: Proceed to Step 6.                                                 │
+└──────────────────────┬──────────────────────────────────────────────────────┘
+                       │ (proceed only if PASS)
+                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 6: INTEGRATION T3 — FINAL CVR OUTPUT                                   │
+│                                                                             │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│ TASK: Spawn Opus subagent to produce complete, finalized CVR State 4        │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│                                                                             │
+│ THIS IS THE FINAL OUTPUT. It must be:                                       │
+│   • Complete (all narratives N1-N7, all artifacts A.1-A.12)                 │
+│   • Clean (no deprecated content, no duplication)                           │
+│   • Ready for human review or IRR stage consumption                         │
+│                                                                             │
+│ PROMPT FILES TO ATTACH:                                                     │
+│   1. prompts/integration/G3_INTEGRATION_2.2.2e_PROMPT.md                    │
+│   2. prompts/integration/G3_INTEGRATION_2.2.2e_SCHEMAS.md                   │
+│                                                                             │
+│ INPUT FILES TO ATTACH:                                                      │
+│   • {output_dir}/{TICKER}_INT_T1_{DATE}.md (adjudication work)              │
+│   • {output_dir}/{TICKER}_INT_T2_{DATE}.md (finalized artifacts)            │
+│                                                                             │
+│ DO NOT ATTACH deprecated upstream narratives (BASE_T2, ENRICH_T2, SCEN_T2). │
+│ The adjudicated versions from T1/T2 supersede those.                        │
+│                                                                             │
+│ INSTRUCTION TO SUBAGENT:                                                    │
+│   "Execute INTEGRATION Turn 3 for {TICKER}.                                 │
+│                                                                             │
+│    Your task: Produce the COMPLETE, FINALIZED CVR State 4 document.         │
+│    This is THE output of the entire CAPY pipeline to date.                  │
+│                                                                             │
+│    Execute Phase F per the prompt:                                          │
+│    - Compile all narratives N1-N7 (finalized versions from T1/T2)           │
+│    - Embed all artifacts A.1-A.12 (finalized versions from T2)              │
+│    - Include state_4_active_inputs (for IRR consumption)                    │
+│                                                                             │
+│    Narrative inventory:                                                     │
+│    - N1: Investment Thesis (finalized)                                      │
+│    - N2: Invested Capital Modeling (finalized)                              │
+│    - N3: Economic Governor & Constraints (finalized)                        │
+│    - N4: Risk Assessment & DR Derivation (finalized)                        │
+│    - N5: Enrichment Synthesis (finalized)                                   │
+│    - N6: Scenario Model Synthesis (finalized)                               │
+│    - N7: Adjudication Synthesis (from T1 work)                              │
+│                                                                             │
+│    Artifact inventory:                                                      │
+│    - A.1 through A.12 (all finalized, amendments applied)                   │
+│    - state_4_active_inputs                                                  │
+│                                                                             │
+│    The output must contain NO deprecated content and NO duplication.        │
+│    A human analyst reading only this document should have everything        │
+│    they need to understand and evaluate the valuation.                      │
+│                                                                             │
+│    Write output to: {output_dir}/{TICKER}_INT_T3_{DATE}.md                  │
+│    Return confirmation and filepath only."                                  │
+│                                                                             │
+│ OUTPUT PRODUCED:                                                            │
+│   • {TICKER}_INT_T3_{DATE}.md — THE COMPLETE CVR STATE 4 DOCUMENT           │
+│     This file contains:                                                     │
+│     - Executive Summary with E[IVPS], key metrics, confidence               │
+│     - N1-N7 narratives (finalized, adjudicated)                             │
+│     - A.1-A.12 artifacts (finalized, amendments applied)                    │
+│     - state_4_active_inputs (computational inputs for IRR)                  │
+│     - Pipeline Fit assessment and confidence characterization               │
+│                                                                             │
+│ PATTERN: Direct-Write (Pattern 1) - subagent writes to disk, returns path   │
+│ PATTERN: Surgical Stitching (Pattern 11) - concatenate from T1/T2 outputs   │
+└──────────────────────┬──────────────────────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 7: INTEGRATION T3 VALIDATOR                                            │
+│                                                                             │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│ TASK: Spawn Opus subagent to validate final CVR output                      │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│                                                                             │
+│ PROMPT FILE:                                                                │
+│   validators/INT_T3_VALIDATOR.md                                            │
+│                                                                             │
+│ INPUT FILE:                                                                 │
+│   {output_dir}/{TICKER}_INT_T3_{DATE}.md                                    │
+│                                                                             │
+│ VALIDATION CHECKS:                                                          │
+│   • All narratives N1-N7 present                                            │
+│   • All artifacts A.1-A.12 present and complete                             │
+│   • state_4_active_inputs present and complete                              │
+│   • No deprecated content (check for stale State 3 references)              │
+│   • No duplication (narratives not repeated)                                │
+│   • Executive summary matches embedded artifact values                      │
+│   • Document is self-contained (human can read without other files)         │
+│                                                                             │
+│ IF FAIL: Report issues. May need T3 re-execution.                           │
+│ IF PASS: INTEGRATION stage complete. Output ready for human or IRR.         │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Execution Commands (DEV: SMOKE TEST INTEGRATION {TICKER})
+
+Execute the steps above in sequence. Key commands:
+
+**Step 0: Auto-Discovery**
+```bash
+# Find most recent pipeline run with SC outputs
+find smoke_tests/ -name "*{TICKER}*A11*.json" | sort -r | head -5
+
+# Or check production
+find production/analyses/ -name "*{TICKER}*A11*.json" | sort -r | head -5
+
+# Set analysis_dir to parent folder
+# Create output directory
+mkdir -p {analysis_dir}/08_INTEGRATION/
+```
+
+**Step 1: Verify Bundle Completeness**
+```bash
+# Verify all input folders exist and have files
+ls {analysis_dir}/00_source/
+ls {analysis_dir}/04_RQ/
+ls {analysis_dir}/05_ENRICH/
+ls {analysis_dir}/06_SCENARIO/
+ls {analysis_dir}/07_SILICON_COUNCIL/
+
+# Count files in each
+find {analysis_dir}/00_source/ -type f | wc -l
+find {analysis_dir}/04_RQ/ -type f | wc -l
+# ... etc
+```
+
+**Steps 2-7: Spawn Subagents**
+Use Task tool with model="opus" for each step. See Stage Flow above for exact prompts and inputs.
+
+### Critical Patterns Applied
+
+| Pattern | Application |
+|---------|-------------|
+| Pattern 1: Direct-Write | All subagents write to disk, return filepath only |
+| Pattern 3: Two-Shot (Extended) | T1=adjudication, T2=recalculation, T3=final output |
+| Pattern 5: JSON Repair | T2 can repair malformed T1 JSON before kernel execution |
+| Pattern 6: Bash Kernel | T2 executes CVR_KERNEL_INT via Bash if cascade required |
+| Pattern 7: Validators | Opus validator after T1, T2, AND T3 |
+| Pattern 8: Atomized Prompts | 3 files (PROMPT/SCHEMAS/NORMDEFS) + kernel |
+| Pattern 10: Input Validation | Verify full bundle before T1; verify artifacts before T2/T3 |
+| Pattern 11: Surgical Stitching | T3 concatenates from T1/T2, no regeneration |
+
+### INTEGRATION Stage Files
+
+| File | Location | Purpose |
+|------|----------|---------|
+| G3_INTEGRATION_2.2.2e_PROMPT.md | prompts/integration/ | Core instructions (Sections I-V) |
+| G3_INTEGRATION_2.2.2e_SCHEMAS.md | prompts/integration/ | JSON schemas (Appendix A) |
+| G3_INTEGRATION_2.2.2e_NORMDEFS.md | prompts/integration/ | DSL & financial definitions (Appendix B) |
+| CVR_KERNEL_INT_2.2.2e.py | kernels/ | Recalculation kernel |
+| INT_T1_VALIDATOR.md | validators/ | T1 adjudication validator |
+| INT_T2_VALIDATOR.md | validators/ | T2 recalculation validator |
+| INT_T3_VALIDATOR.md | validators/ | T3 final output validator |
+
+### INTEGRATION Stage Atomized Files (EXPERIMENTAL)
+
+| File | Purpose | Lines |
+|------|---------|-------|
+| `G3_INTEGRATION_2.2.2e_PROMPT.md` | Core instructions (Sections I-V) | 1307 |
+| `G3_INTEGRATION_2.2.2e_SCHEMAS.md` | JSON schemas (Appendix A) | 512 |
+| `G3_INTEGRATION_2.2.2e_NORMDEFS.md` | DSL & financial definitions (Appendix B) | 567 |
+| `CVR_KERNEL_INT_2.2.2e.py` | Recalculation kernel | (existing) |
+
+**Status:** EXPERIMENTAL - awaiting smoke test.
+
+**Subagent loading:** Load all 3 prompt files. Kernel attached for T1 context, executed via Bash in T2.
