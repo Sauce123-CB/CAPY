@@ -1,16 +1,31 @@
 # CAPY 2.2.3e Patch Tracker
 
-Last updated: 2024-12-19
+Last updated: 2024-12-20
 
 ## Summary
 
 | Status | Count |
 |--------|-------|
-| Complete | 7 |
-| Pending | 12 |
+| Complete | 8 |
+| Pending | 11 |
 | **Total** | **19** |
 
-**Completion: 29%**
+**Completion: 42%**
+
+---
+
+## Pipeline Smoke Test Status
+
+| Stage | Status | Smoke Test Folder | Notes |
+|-------|--------|-------------------|-------|
+| BASE | ✅ Complete | `DAVE_20241214/` | Full T1→REFINE→T2 |
+| RQ | ✅ Complete | `DAVE_RQ_CLAUDE_TEST/` | 7-slot with Claude Opus subagents |
+| ENRICH | ✅ Complete | `DAVE_ENRICH_SMOKE_20251220_120936/` | State 1→2: $241.72→$199.25 |
+| SCENARIO | ⏳ Pending | - | Next smoke test |
+| INTEGRATION | ⏳ Pending | - | After SCENARIO |
+| IRR | ⏳ Pending | - | Final stage |
+
+**Goal:** Full autonomous CAPY (all stages chain without human intervention)
 
 ---
 
@@ -77,6 +92,8 @@ These require kernel code changes before prompts will work correctly:
 | 2024-12-18 | N/A | Claude | Success | RQ_GEN 6×GDR routing + Gemini CLI setup |
 | 2024-12-19 | 18 | Claude | Success | RQ 7-slot architecture (M-3a/M-3b split) |
 | 2024-12-19 | 19 | Claude | Success | Claude Opus subagent RQ_ASK + direct-write protocol |
+| 2024-12-20 | 20 | Claude | Success | ENRICH smoke test + Pattern 10/11 orchestration fixes |
+| 2024-12-20 | 21 | Claude | Success | Direct-write protocol documentation across all stages |
 | | | | | |
 
 ---
@@ -464,3 +481,123 @@ feat(RQ): implement Claude Opus subagent execution with 7-slot architecture
 
 Closes #18
 ```
+
+---
+
+## PATCH-2024-12-20-001: ENRICH Stage Smoke Test & Orchestration Fixes (#20)
+
+**Date:** 2024-12-20
+**Source:** ENRICH smoke test for DAVE
+**Status:** COMPLETE
+
+### Problem Statement
+
+1. Initial ENRICH smoke test used wrong inputs ($127.68 IVPS instead of $241.72) due to orchestrator assuming file contents from filenames instead of reading them
+2. Direct-write protocol was documented in Pattern 1 but not explicitly specified in all subagent dispatch sections
+3. No Source Discovery protocol for cold-start ENRICH invocation
+
+### Solution
+
+**1. Pattern 10: Input Source Validation Protocol**
+
+Added to ORCHESTRATION_KEY_PATTERNS.md:
+- Always READ files (not just `ls`) before using as inputs
+- Extract and log key metrics (IVPS, DR) before proceeding
+- Never assume file contents from filenames
+- If folder incomplete, search for most recent complete run
+
+**2. Explicit Direct-Write Protocol in All Subagent Sections**
+
+Updated production/CLAUDE.md for:
+- BASE_T1, BASE_REFINE, BASE_T2
+- RQ_GEN, RQ_ASK
+- ENRICH_T1, ENRICH_T2
+
+Each now explicitly states:
+- "Use the Write tool to save to: {path}"
+- "After writing, return ONLY: 'Complete. File: {path}'"
+- "DO NOT return the file contents"
+
+**3. Source Discovery for Cold-Start**
+
+Added Stage 0 to ENRICH section:
+```
+1. Find candidate runs: find analyses/ -name "*{TICKER}*" -type d
+2. Identify most recent COMPLETE run (has required artifacts)
+3. READ and validate (extract IVPS, log baseline)
+4. Set RUN_ID, proceed to Stage 1
+```
+
+### Smoke Test Results
+
+**Run:** `DAVE_ENRICH_SMOKE_20251220_120936`
+
+| Metric | State 1 (BASE) | State 2 (ENRICH) | Change |
+|--------|----------------|------------------|--------|
+| IVPS | $241.72 | $199.25 | -17.6% |
+| DR | 13.0% | 13.25% | +25 bps |
+| Terminal ROIC | 49.3% | 40.9% | -8.4 ppts |
+
+**Artifacts Generated:**
+- DAVE_ENRICH_T1.md (86KB)
+- DAVE_ENRICH_T2.md (11KB)
+- A2-A7 JSON files
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `workshop/orchestration/ORCHESTRATION_KEY_PATTERNS.md` | Added Pattern 10, enhanced Pattern 1 |
+| `production/CLAUDE.md` | Explicit direct-write protocol in all sections, Stage 0 Source Discovery |
+| `workshop/CLAUDE.md` | Added Pattern 10 note to smoke test section |
+| `workshop/patches/PATCH_TRACKER.md` | Updated with smoke test status |
+
+### Acceptance Criteria
+
+- [x] Pattern 10 documented and applied
+- [x] Direct-write protocol explicit in all subagent sections
+- [x] Source Discovery (Stage 0) added to ENRICH
+- [x] ENRICH smoke test passes with correct inputs
+- [x] State 1 IVPS correctly captured ($241.72)
+- [x] T1 → T2 flow works with kernel execution
+- [ ] Cold-start "Do ENRICH on DAVE" test in fresh window
+
+### Path Forward
+
+1. **SCENARIO smoke test** - Next stage to validate
+2. **INTEGRATION smoke test** - After SCENARIO
+3. **IRR smoke test** - Final stage
+4. **Full CAPY test** - Chain all stages without human intervention
+
+---
+
+## PATCH-2024-12-20-002: Direct-Write Protocol Documentation (#21)
+
+**Date:** 2024-12-20
+**Source:** Review of orchestration patterns during ENRICH smoke test
+**Status:** COMPLETE
+
+### Summary
+
+Ensured all subagent dispatch sections in production/CLAUDE.md explicitly document the direct-write protocol per Pattern 1. This prevents orchestrator from attempting to transcribe subagent outputs (which causes truncation).
+
+### Pattern 1 Enhancement
+
+Added to ORCHESTRATION_KEY_PATTERNS.md:
+
+**Anti-Patterns (PROHIBITED):**
+- Subagent returns full content → Orchestrator writes with Write tool (TRUNCATION RISK)
+- Orchestrator manually transcribes subagent output (ERROR RISK)
+- Orchestrator embeds subagent output in next prompt without reading from disk
+
+**Plan Documentation Standard:**
+When describing subagent tasks, always specify:
+1. Tool used: "Subagent uses Write tool to save to {path}"
+2. Return format: "Returns confirmation + filepath only"
+3. Verification step: "Orchestrator verifies with `ls -la`"
+
+### Acceptance Criteria
+
+- [x] Pattern 1 enhanced with anti-patterns and documentation standard
+- [x] All subagent sections in production/CLAUDE.md use explicit protocol
+- [x] Step numbering fixed (no duplicate step numbers)

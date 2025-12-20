@@ -1,0 +1,143 @@
+{
+  "schema_version": "G3_2.2",
+  "metadata": {
+    "atp_complexity_assessment": "MODERATE",
+    "atp_mode": "Full ATP",
+    "assessment_rationale": "Adjusted metrics (Adj. EBITDA) used extensively; SBC material; credit loss provisioning requires scrutiny; new fee model transition creates YoY comparability issues"
+  },
+  "core_data": {
+    "Y0_data": {
+      "Revenue": 545.0,
+      "Service_Based_Revenue": 478.0,
+      "Transaction_Based_Revenue": 42.4,
+      "ExtraCash_Originations": 8000.0,
+      "Gross_Profit": 373.0,
+      "Gross_Profit_Margin": 0.685,
+      "EBIT": 148.0,
+      "EBIT_Margin": 0.272,
+      "NOPAT": 111.0,
+      "Provision_for_Credit_Losses": 88.0,
+      "SBC": 31.0,
+      "DA": 7.0,
+      "CapEx": 7.0,
+      "Invested_Capital": 275.0,
+      "Net_ExtraCash_Receivables": 260.0,
+      "Total_Debt": 75.0,
+      "Cash_and_Equivalents": 94.0,
+      "Excess_Cash": 50.0,
+      "MTMs": 2.85,
+      "ARPU": 220.0,
+      "Total_Members": 14.0,
+      "ARPU_Annualized": 220.0,
+      "Avg_ExtraCash_Size": 210.0,
+      "Net_Monetization_Rate": 0.048,
+      "CAC": 19.0,
+      "Tax_Rate": 0.25
+    },
+    "TSM_data": {
+      "Q3_2025_Revenue": 150.8,
+      "Q3_2025_Net_Income": 92.0,
+      "Q3_2025_Adj_EBITDA": 58.7,
+      "Q3_2025_MTMs": 2.77,
+      "Q3_2025_ExtraCash_Originations": 2000.0,
+      "LTM_Revenue": 492.0,
+      "LTM_EBITDA": 188.0
+    }
+  },
+  "accounting_translation_log": {
+    "EBIT": {
+      "source_metric": "Operating Income (implied from Net Income + Interest + Taxes)",
+      "source_reference": "Q3 2025 10-Q, Consolidated Statements of Operations",
+      "adjustments_applied": [
+        "Added back SBC (~$23M YTD, ~$31M FY estimate)",
+        "Excluded one-time legal settlement accrual ($4.5M Q3)",
+        "Excluded DTA release benefit ($27.4M) - non-cash"
+      ],
+      "normative_alignment": "EBIT includes SBC per normative definition",
+      "confidence": "High",
+      "flags": []
+    },
+    "CapEx": {
+      "source_metric": "Payments for internally developed software + Purchase of PP&E",
+      "source_reference": "Q3 2025 10-Q, Cash Flow Statement",
+      "adjustments_applied": [
+        "Combined software capitalization ($4.8M YTD) + PP&E ($0.2M)"
+      ],
+      "normative_alignment": "Aligned; internally developed software treated as CapEx",
+      "confidence": "High",
+      "flags": []
+    },
+    "D&A": {
+      "source_metric": "Depreciation and amortization",
+      "source_reference": "Q3 2025 10-Q, Cash Flow Statement",
+      "adjustments_applied": [
+        "None - reported figure used"
+      ],
+      "normative_alignment": "Aligned",
+      "confidence": "High",
+      "flags": []
+    },
+    "SBC_Treatment": {
+      "source_metric": "Stock-based compensation",
+      "source_reference": "Q3 2025 10-Q, Note 2 and Cash Flow",
+      "adjustments_applied": [
+        "Included in EBIT per normative definition"
+      ],
+      "normative_alignment": "Aligned - SBC treated as real expense",
+      "confidence": "High",
+      "flags": [
+        "SBC elevated at ~23-25% of cash compensation; dilution risk"
+      ]
+    },
+    "Share_Count_Basis": {
+      "source_metric": "Weighted average diluted shares",
+      "source_reference": "Q3 2025 10-Q, EPS calculation",
+      "adjustments_applied": [
+        "Using diluted share count for valuation: 14.5M"
+      ],
+      "normative_alignment": "Aligned - diluted basis appropriate for DCF",
+      "confidence": "High",
+      "flags": [
+        "Warrant overhang (~11.4M warrants at $368 strike - likely OTM)"
+      ]
+    },
+    "Revenue_Recognition": {
+      "source_metric": "Service based revenue, net / Transaction based revenue, net",
+      "source_reference": "Q3 2025 10-Q, Note 2",
+      "adjustments_applied": [
+        "Processing costs netted against service revenue per ASC 310"
+      ],
+      "normative_alignment": "Aligned with GAAP presentation",
+      "confidence": "High",
+      "flags": [
+        "Fee model transition in Feb 2025 affects YoY comparability"
+      ]
+    }
+  },
+  "market_context": {
+    "Current_Stock_Price": 225.0,
+    "Valuation_Date": "2025-12-07",
+    "RFR": 0.0425,
+    "ERP": 0.05,
+    "Shares_Outstanding_Diluted": 14.5,
+    "Market_Cap": 3262.5,
+    "Enterprise_Value": 3287.5,
+    "Other_Context": {
+      "52_Week_High": 286.16,
+      "52_Week_Low": 66.56,
+      "Avg_Analyst_PT": 275.0,
+      "Analyst_Rating": "Strong Buy"
+    }
+  },
+  "share_data": {
+    "Class_A_Outstanding": 12.19,
+    "Class_V_Outstanding": 1.31,
+    "Total_Basic_Shares": 13.5,
+    "Diluted_Shares": 14.5,
+    "shares_out_diluted_tsm": 14.5,
+    "Treasury_Shares": 0.21,
+    "Warrants_Outstanding": 11.44,
+    "Warrant_Strike": 368.0,
+    "Warrants_In_Money": false
+  }
+}

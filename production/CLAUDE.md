@@ -678,16 +678,30 @@ Next steps:
 - RQ_STAGE complete (A.8 + 7 RQ outputs exist in `04_RQ/`: RQ1, RQ2, RQ3a, RQ3b, RQ4, RQ5, RQ6)
 - A.7 artifact exists with State 1 IVPS
 
-**Input Validation (MANDATORY - Pattern 10):**
-Before spawning ENRICH_T1, orchestrator MUST:
-1. READ (not just list) the source files for State 1 baseline
-2. Extract State 1 IVPS from kernel output or A.7
-3. Verify IVPS consistency across markdown and JSON
-4. Log State 1 IVPS value before proceeding: "State 1 IVPS: ${value}"
+---
 
-If bridge prompt specifies source folder, use that folder.
-If not specified, find most recent complete run for ticker.
-Never assume file contents from filenames - always READ.
+#### Stage 0: Source Discovery (Pattern 10)
+
+**For cold-start invocation (e.g., "Do ENRICH on DAVE"):**
+
+1. **Find candidate runs:**
+   ```
+   find analyses/ -name "*{TICKER}*" -type d | sort -r | head -5
+   ```
+
+2. **Identify most recent COMPLETE run** (must have all required artifacts):
+   - `02_REFINE/{TICKER}_BASE_REFINE.md` (A.1-A.6)
+   - `03_T2/{TICKER}_BASE_T2.md` or kernel output (A.7 with IVPS)
+   - `04_RQ/RQ*.md` (7 research outputs)
+
+3. **READ and validate** (not just list):
+   - Extract State 1 IVPS from A.7 or kernel output JSON
+   - Log: "Source: {RUN_ID}, State 1 IVPS: ${value}, DR: {value}%"
+
+4. **Set RUN_ID** from discovered folder, proceed to Stage 1.
+
+**If bridge prompt specifies source folder:** Use that folder (still validate with READ).
+**If no complete run found:** HALT, report to user.
 
 ---
 
