@@ -6,11 +6,11 @@ Last updated: 2024-12-20
 
 | Status | Count |
 |--------|-------|
-| Complete | 8 |
+| Complete | 11 |
 | Pending | 11 |
-| **Total** | **19** |
+| **Total** | **22** |
 
-**Completion: 42%**
+**Completion: 50%**
 
 ---
 
@@ -21,7 +21,7 @@ Last updated: 2024-12-20
 | BASE | ✅ Complete | `DAVE_20241214/` | Full T1→REFINE→T2 |
 | RQ | ✅ Complete | `DAVE_RQ_CLAUDE_TEST/` | 7-slot with Claude Opus subagents |
 | ENRICH | ✅ Complete | `DAVE_ENRICH_SMOKE_20251220_120936/` | State 1→2: $241.72→$199.25 |
-| SCENARIO | ⏳ Pending | - | Next smoke test |
+| SCENARIO | ✅ Complete | `DAVE_ENRICH_SMOKE_20251220_120936/06_SCENARIO/` | E[IVPS]=$206.34, 4 scenarios, SSE 16 states |
 | INTEGRATION | ⏳ Pending | - | After SCENARIO |
 | IRR | ⏳ Pending | - | Final stage |
 
@@ -38,6 +38,9 @@ Last updated: 2024-12-20
 | 9 | Smoke test (DAVE) | Testing | `smoke_tests/DAVE_20241214/` |
 | 13 | Folder organization | Infrastructure | Three-folder architecture |
 | 14 | Inter-turn validator | Validation | Spec in CLAUDE.md (prompt NOT written) |
+| 21 | SCENARIO smoke test (DAVE) | Testing | `DAVE_ENRICH_SMOKE_20251220_120936/06_SCENARIO/` |
+| 22 | Validator model guidance | Orchestrator | CLAUDE.md (ALWAYS use Opus) |
+| 23 | Acquisition premium lump sum | Prompt | G3_SCENARIO_2.2.2e_PROMPT.md |
 
 ---
 

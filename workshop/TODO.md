@@ -1,7 +1,7 @@
 # CAPY Workshop - Master TODO
 
 > **Last updated:** 2024-12-20
-> **Structure version:** 0.4 (Atomized prompts CANONICAL through ENRICH)
+> **Structure version:** 0.5 (SCENARIO smoke test complete, INTEGRATION next)
 
 ---
 
@@ -61,6 +61,9 @@
 | 18 | RQ 7-slot architecture (M-3a/M-3b) | Prompt | 2024-12-19 | CANONICAL |
 | 19 | Claude Opus subagent RQ_ASK | Kernel | 2024-12-19 | Direct-write protocol |
 | 20 | ENRICH atomization + smoke test | Prompt | 2024-12-20 | CANONICAL (4-file split) |
+| 21 | **SCENARIO smoke test (DAVE)** | Testing | 2024-12-20 | E[IVPS]=$206.34, 4 scenarios, SSE 16 states |
+| 22 | Validator model guidance | Orchestrator | 2024-12-20 | CLAUDE.md: ALWAYS use Opus for validators |
+| 23 | Acquisition premium lump sum | Prompt | 2024-12-20 | Added to SCENARIO prompt |
 
 ---
 
