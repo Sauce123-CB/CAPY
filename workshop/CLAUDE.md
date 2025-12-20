@@ -1,6 +1,6 @@
 # CAPY Workshop - Prompt Development Environment
 
-> **Version:** 0.9.0
+> **Version:** 0.10.0
 > **Last reviewed:** 2024-12-20
 > **Review cadence:** Weekly during active development, monthly otherwise
 
@@ -561,6 +561,7 @@ Run on the 1st of each month:
 | REFINE | BASE_T1_REFINE_v1_1.md | HISTORICAL | DAVE_20241210 | - |
 | ENRICH | G3ENRICH_2.2.2e_*.md (atomized) | CANONICAL | DAVE_ENRICH_20241220 | CVR_KERNEL_ENRICH_2.2.2e.py |
 | ENRICH | G3ENRICH_2.2.1e.md | HISTORICAL | DAVE_20241210 | CVR_KERNEL_ENRICH_2.2.1e.py |
+| SCENARIO | G3_SCENARIO_2.2.2e_*.md (atomized) | EXPERIMENTAL | - | CVR_KERNEL_SCEN_2_2_2e.py |
 | SCENARIO | G3_SCENARIO_2_2_1e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_SCEN_2_2_1e.py |
 | INTEGRATION | G3_INTEGRATION_2_2_2e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_INT_2_2_2e.py |
 | IRR | G3_IRR_2_2_4e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_IRR_2_2_4e.py |
@@ -584,6 +585,8 @@ Run on the 1st of each month:
 | Inter-turn Validator | CAPY_VALIDATOR_2_2e.md | CANONICAL | DAVE_20241210 |
 | A.8 Validator | A8_VALIDATOR.md | EXPERIMENTAL | - |
 | A.9 Validator | A9_VALIDATOR.md | EXPERIMENTAL | - |
+| SCENARIO T1 Validator | SCENARIO_T1_VALIDATOR.md | EXPERIMENTAL | - |
+| A.10 Validator | A10_VALIDATOR.md | EXPERIMENTAL | - |
 
 ### BASE Stage Atomized Files (CANONICAL)
 
@@ -617,5 +620,191 @@ The ENRICH prompt v2.2.2e is split into 3 atomic files plus kernel, mirroring th
 - Version refs updated to G3_2.2.2e
 
 **Status:** CANONICAL - smoke tested 2024-12-20. G3ENRICH_2.2.1e.md is HISTORICAL.
+
+**Subagent loading:** Load all 3 prompt files. Kernel executed via Bash in T2 (not embedded in subagent context).
+
+---
+
+## SCENARIO Stage Orchestration (ENRICH → SCENARIO)
+
+The SCENARIO stage transitions the CVR from deterministic State 2 (ENRICH output) to probabilistic State 3 by modeling discrete high-impact scenarios as causal interventions.
+
+### Architecture (v2.2.2e)
+
+**4-Scenario Limit:** Maximum 4 scenarios, prioritized by |P × M| (expected materiality).
+
+**Scenario Types:**
+| Type | Definition | Example |
+|------|------------|---------|
+| MAINLINE | High-probability, moderate impact | Expected M&A, product launch |
+| BLUE_SKY | Low-probability transformative upside | Market dominance, breakthrough adoption |
+| BLACK_SWAN | Low-probability catastrophic downside | Technological obsolescence, existential regulatory |
+
+**Integration:** Structured State Enumeration (SSE) produces 2^4 = 16 states, filtered by constraints, renormalized to joint probability distribution.
+
+### Stage Flow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 1. SCENARIO T1 (Opus Subagent)                              │
+│    Input:  ENRICH T2 artifacts (A.1-A.9) +                  │
+│            Scenario Research (RQ M-3a, M-3b outputs) +      │
+│            G3_SCENARIO_2.2.2e_*.md (3 atomized files) +     │
+│            CVR_KERNEL_SCEN_2_2_2e.py (contextual only)      │
+│    Output: Scenario Execution Arguments JSON (in markdown)  │
+│    Save:   06_SCENARIO/{TICKER}_SCEN_T1_{DATE}.md           │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 2. SCENARIO T1 VALIDATOR (Opus Subagent)                    │
+│    Prompt: validators/SCENARIO_T1_VALIDATOR.md              │
+│    Check:  4 scenarios defined, probabilities valid,        │
+│            interventions well-formed, constraints present   │
+│    Output: PASS/FAIL + issues                               │
+└──────────────────────┬──────────────────────────────────────┘
+                       │ (proceed only if PASS)
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 3. SCENARIO T2 (Opus Subagent)                              │
+│    Input:  T1 output + ENRICH artifacts (fresh re-ingest)   │
+│            + CVR_KERNEL_SCEN_2_2_2e.py (executable)         │
+│    Execute: Kernel via Bash (Pattern 6)                     │
+│    Output: A.10_SCENARIO_MODEL_OUTPUT (JSON) + narrative    │
+│    Save:   06_SCENARIO/{TICKER}_SCEN_T2_{DATE}.md           │
+│            + {TICKER}_A10_SCENARIO.json                     │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 4. A.10 VALIDATOR (Opus Subagent)                           │
+│    Prompt: validators/A10_VALIDATOR.md                      │
+│    Check:  Schema compliance, SSE math, distribution        │
+│            metrics, Economic Governor satisfied             │
+│    Output: PASS/WARN/FAIL + issues                          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Directory Structure
+
+SCENARIO outputs go in the analysis folder's `06_SCENARIO/` subdirectory:
+```
+production/analyses/{TICKER}_CAPY_{TIMESTAMP}/
+├── 04_RQ/
+├── 05_ENRICH/                       ← Input: State 2 artifacts
+│   ├── {TICKER}_ENRICH_T1.md
+│   ├── {TICKER}_ENRICH_T2.md
+│   ├── A2_ANALYTIC_KG.json
+│   ├── A3_CAUSAL_DAG.json
+│   ├── A5_GESTALT_IMPACT_MAP.json
+│   ├── A6_DR_DERIVATION_TRACE.json
+│   └── A7_kernel_output.json
+├── 06_SCENARIO/                     ← SCENARIO stage outputs
+│   ├── {TICKER}_SCEN_T1_{DATE}.md
+│   ├── {TICKER}_SCEN_T2_{DATE}.md
+│   └── {TICKER}_A10_SCENARIO.json
+├── 07_INTEGRATION/                  ← Next stage
+└── pipeline_state.json
+```
+
+### Execution Commands (DEV: SMOKE TEST SCENARIO)
+
+**Step 1: Validate Input (Pattern 10 - MANDATORY)**
+```
+READ files in 05_ENRICH/ to verify:
+- A7_kernel_output.json exists with State 2 IVPS
+- Extract and log: base_ivps, dr_static, terminal_g, terminal_roic
+- Verify IVPS consistency: markdown must match kernel output JSON
+```
+
+**Step 2: Execute SCENARIO T1 (Opus Subagent)**
+```
+Spawn Opus subagent with:
+- prompts/scenario/G3_SCENARIO_2.2.2e_PROMPT.md
+- prompts/scenario/G3_SCENARIO_2.2.2e_SCHEMAS.md
+- prompts/scenario/G3_SCENARIO_2.2.2e_NORMDEFS.md
+- {analysis_dir}/05_ENRICH/*.md (all ENRICH artifacts)
+- {analysis_dir}/04_RQ/RQ*_M-3a*.md, RQ*_M-3b*.md (scenario research)
+- kernels/CVR_KERNEL_SCEN_2_2_2e.py (for context only, DO NOT EXECUTE)
+
+Instruct: "Execute SCENARIO T1 for {TICKER}. Emit Scenario Execution
+Arguments JSON embedded in markdown. DO NOT execute kernel."
+
+Subagent writes output directly to disk (Pattern 1).
+```
+
+**Step 3: Validate SCENARIO T1**
+```
+Spawn Opus subagent with:
+- validators/SCENARIO_T1_VALIDATOR.md
+- The T1 output from step 2
+
+Instruct: "Validate this SCENARIO T1 artifact."
+```
+
+**Step 4: Execute SCENARIO T2 (Opus Subagent)**
+```
+Spawn Opus subagent with:
+- T1 output (for embedded JSON)
+- {analysis_dir}/05_ENRICH/*.json (artifacts re-ingested fresh)
+- kernels/CVR_KERNEL_SCEN_2_2_2e.py
+
+Instruct: "Execute SCENARIO T2 for {TICKER}. Load kernel via Bash
+and execute. Emit A.10_SCENARIO_MODEL_OUTPUT as JSON file."
+
+Subagent executes kernel via Bash (Pattern 6).
+Subagent writes output directly to disk (Pattern 1).
+```
+
+**Step 5: Validate A.10**
+```
+Spawn Opus subagent with:
+- validators/A10_VALIDATOR.md
+- The A.10 JSON from step 4
+
+Instruct: "Validate this A.10 artifact."
+```
+
+### Critical Patterns Applied
+
+| Pattern | Application |
+|---------|-------------|
+| Pattern 1: Direct-Write | Subagent writes T1/T2 output to disk, returns path only |
+| Pattern 3: Two-Shot | T1 = analytical synthesis (no kernel), T2 = kernel execution |
+| Pattern 5: JSON Repair | T2 can repair malformed T1 JSON before kernel execution |
+| Pattern 6: Bash Kernel | T2 executes CVR_KERNEL_SCEN_2_2_2e.py via Bash |
+| Pattern 7: Validators | Opus validator after T1 AND after T2 |
+| Pattern 8: Atomized Prompts | 3 files (PROMPT/SCHEMAS/NORMDEFS) + kernel |
+| Pattern 10: Input Validation | READ ENRICH artifacts, verify State 2 IVPS before T1 |
+
+### SCENARIO Stage Files
+
+| File | Location | Purpose |
+|------|----------|---------|
+| G3_SCENARIO_2.2.2e_PROMPT.md | prompts/scenario/ | Core instructions (Sections I-V) |
+| G3_SCENARIO_2.2.2e_SCHEMAS.md | prompts/scenario/ | JSON schemas (Appendix A) |
+| G3_SCENARIO_2.2.2e_NORMDEFS.md | prompts/scenario/ | DSL & financial definitions (Appendix B) |
+| CVR_KERNEL_SCEN_2_2_2e.py | kernels/ | Scenario/SSE kernel |
+| SCENARIO_T1_VALIDATOR.md | validators/ | T1 schema/semantic validator |
+| A10_VALIDATOR.md | validators/ | A.10 completeness validator |
+
+### SCENARIO Stage Atomized Files (EXPERIMENTAL)
+
+The SCENARIO prompt v2.2.2e is split into 3 atomic files plus kernel:
+
+| File | Purpose | Size |
+|------|---------|------|
+| `G3_SCENARIO_2.2.2e_PROMPT.md` | Core instructions (Sections I-V) | ~22KB |
+| `G3_SCENARIO_2.2.2e_SCHEMAS.md` | JSON schemas (Appendix A) | ~20KB |
+| `G3_SCENARIO_2.2.2e_NORMDEFS.md` | DSL & financial definitions (Appendix B) | ~14KB |
+| `CVR_KERNEL_SCEN_2_2_2e.py` | Scenario/SSE kernel | 82KB |
+
+**Key updates from 2.2.1e:**
+- 3-file atomization for context management
+- References updated to G3ENRICH_2.2.2e (7-slot RQ architecture)
+- Schema version updated to G3_2.2.2eS
+- Embedded kernel (old Appendix C) removed - delivered as separate file
+
+**Status:** EXPERIMENTAL - awaiting smoke test. G3_SCENARIO_2_2_1e.md remains CANONICAL until smoke test passes.
 
 **Subagent loading:** Load all 3 prompt files. Kernel executed via Bash in T2 (not embedded in subagent context).
