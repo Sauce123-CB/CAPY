@@ -351,68 +351,81 @@ This is the preferred command for production runs. Use individual stage commands
 
 #### Stage 3: BASE_T2
 
-**CRITICAL: T2 is kernel execution, NOT an LLM analysis task. DO NOT spawn a subagent.**
+**CRITICAL: Subagent executes kernel via Bash. Direct-write to disk.**
 
-**WARNING (from smoke test 2024-12-16):** Subagents will fabricate kernel output instead of running Python.
-T2 MUST be executed by the orchestrator directly via Bash.
+1. **Spawn Opus subagent** (Task tool, subagent_type: "general-purpose"):
+   ```
+   You are executing CAPY BASE Turn 2.
 
-1. **Extract artifacts from REFINE output:**
-   - Read `02_REFINE/{TICKER}_BASE_REFINE.md`
-   - Parse and extract JSON blocks:
-     - A.1_EPISTEMIC_ANCHORS
-     - A.2_ANALYTIC_KG (including Y0_data)
-     - A.3_CAUSAL_DAG
-     - A.5_GESTALT_IMPACT_MAP
-     - A.6_DR_DERIVATION_TRACE
-   - Write to: `03_T2/{TICKER}_kernel_input.json`
+   YOUR JOB IS KERNEL EXECUTION, NOT ANALYSIS.
 
-2. **Fix schema mismatches (if any):**
+   === STEP 1: READ REFINE OUTPUT ===
+   Read: analyses/{RUN_ID}/02_REFINE/{TICKER}_BASE_REFINE.md
 
-   The kernel expects specific key names. Common REFINE output → kernel input fixes:
-   - `A.3_CAUSAL_DAG.nodes` → `A.3_CAUSAL_DAG.DAG`
-   - `A.5_GESTALT_IMPACT_MAP.drivers` → `A.5_GESTALT_IMPACT_MAP.GIM`
-   - Ensure `A.3_CAUSAL_DAG.coverage_manifest` is populated (not empty)
-   - Collapse multi-period GIM formats (`Y1_Y3`, `Y4_Y10`) to single DSL per driver
+   === STEP 2: EXTRACT AND VALIDATE ARTIFACTS ===
+   Extract these JSON blocks from REFINE and save to individual files:
+   - A.2_ANALYTIC_KG → analyses/{RUN_ID}/03_T2/A2_ANALYTIC_KG.json
+   - A.3_CAUSAL_DAG → analyses/{RUN_ID}/03_T2/A3_CAUSAL_DAG.json
+   - A.5_GESTALT_IMPACT_MAP → analyses/{RUN_ID}/03_T2/A5_GESTALT_IMPACT_MAP.json
+   - A.6_DR_DERIVATION_TRACE → analyses/{RUN_ID}/03_T2/A6_DR_DERIVATION_TRACE.json
 
-   If fixes are needed, write corrected version to: `03_T2/{TICKER}_kernel_input_fixed.json`
+   If JSON is malformed, repair it (fix brackets, trailing commas, etc.)
+   Use the Write tool to save each JSON file.
 
-3. **Execute Python kernel via Bash (NOT subagent):**
-   ```bash
-   cd {REPO_ROOT}
+   === STEP 3: EXECUTE KERNEL VIA BASH ===
+   **YOU MUST USE THE BASH TOOL. DO NOT COMPUTE IVPS YOURSELF.**
+
+   Run this command:
    python -c "
    import json
    import sys
    sys.path.insert(0, 'kernels')
    from BASE_CVR_KERNEL_2_2_1e import execute_cvr_workflow
 
-   with open('analyses/{RUN_ID}/03_T2/{TICKER}_kernel_input.json', 'r') as f:
-       artifacts = json.load(f)
+   kg = json.load(open('analyses/{RUN_ID}/03_T2/A2_ANALYTIC_KG.json'))
+   dag = json.load(open('analyses/{RUN_ID}/03_T2/A3_CAUSAL_DAG.json'))
+   gim = json.load(open('analyses/{RUN_ID}/03_T2/A5_GESTALT_IMPACT_MAP.json'))
+   dr = json.load(open('analyses/{RUN_ID}/03_T2/A6_DR_DERIVATION_TRACE.json'))
 
-   result = execute_cvr_workflow(
-       kg=artifacts['A.2_ANALYTIC_KG'],
-       dag_artifact=artifacts['A.3_CAUSAL_DAG'],
-       gim_artifact=artifacts['A.5_GESTALT_IMPACT_MAP'],
-       dr_trace=artifacts['A.6_DR_DERIVATION_TRACE']
-   )
+   result = execute_cvr_workflow(kg, dag, gim, dr)
 
-   with open('analyses/{RUN_ID}/03_T2/{TICKER}_kernel_output.json', 'w') as f:
-       json.dump(result, f, indent=2)
-
-   print('Kernel execution complete')
+   json.dump(result, open('analyses/{RUN_ID}/03_T2/A7_kernel_output.json', 'w'), indent=2)
    print(json.dumps(result, indent=2))
    "
+
+   === STEP 4: FORMAT T2 OUTPUT ===
+   Read the kernel output JSON. Create T2 markdown document with:
+   - Execution summary (kernel version, status)
+   - A.7_LIGHTWEIGHT_VALUATION_SUMMARY (embed full JSON)
+   - Sensitivity analysis results
+   - Terminal driver values
+
+   Write to: analyses/{RUN_ID}/03_T2/{TICKER}_BASE_T2.md
+
+   === STEP 5: RETURN CONFIRMATION ===
+   Return ONLY: "Complete. File: analyses/{RUN_ID}/03_T2/{TICKER}_BASE_T2.md"
+
+   === PROHIBITED ===
+   - DO NOT calculate IVPS yourself
+   - DO NOT invent kernel output
+   - If Bash fails, report the error - do not fabricate results
    ```
 
-4. **Format T2 output:**
-   - Read kernel output JSON
-   - Format as markdown with A.7 artifact
-   - Write to: `03_T2/{TICKER}_BASE_T2.md`
+2. **Wait for subagent completion**
 
-5. **Run validator** (stage="BASE_T2", model: opus)
+3. **Verify output file exists**
 
-6. **Process validation result:**
-   - Write to: `03_T2/{TICKER}_T2_validation.json`
-   - Update state: add "T2" to `completed_turns`, set `current_turn: null`
+4. **Run validator** (Task tool, subagent_type: "general-purpose", model: opus):
+   - Validate output at `03_T2/{TICKER}_BASE_T2.md`
+   - Write result to `03_T2/{TICKER}_T2_validation.json`
+
+5. **Process validation result:**
+   - If `"proceed": false` → HALT pipeline, report issues
+   - If `"proceed": true` → Continue
+
+6. **Update state:**
+   - Add "T2" to `completed_turns`
+   - Set `current_turn: null`
 
 ---
 
@@ -1019,52 +1032,20 @@ Next steps:
 
 ### CAPY: RUN BASE_T2
 
-**CRITICAL: T2 REQUIRES ACTUAL PYTHON KERNEL EXECUTION**
+**CRITICAL: Subagent executes kernel via Bash. Direct-write to disk.**
 
-T2 is NOT an LLM analysis task. It is a kernel execution task.
+Spawn Opus subagent with the prompt from Stage 3: BASE_T2 above.
 
-**Step 1: Extract artifacts from REFINE output**
+The subagent will:
+1. Read REFINE output
+2. Extract and validate JSON artifacts (repair if malformed)
+3. Execute kernel via Bash
+4. Format and write T2 output to disk
+5. Return confirmation + filepath only
 
-Read the REFINE output (or T1 if no REFINE) and extract JSON artifacts:
-- A.1_EPISTEMIC_ANCHORS
-- A.2_ANALYTIC_KG (including Y0_data)
-- A.3_CAUSAL_DAG
-- A.5_GESTALT_IMPACT_MAP
-- A.6_DR_DERIVATION_TRACE
+Then run validator and update pipeline state.
 
-Write to: `03_T2/{TICKER}_kernel_input.json`
-
-**Step 2: Execute the Python kernel**
-
-```python
-import json
-import sys
-sys.path.insert(0, 'kernels')
-from BASE_CVR_KERNEL_2_2_1e import execute_cvr_workflow
-
-with open('analyses/{TICKER}_CAPY_{YYYYMMDD}_{HHMMSS}/03_T2/{TICKER}_kernel_input.json', 'r') as f:
-    artifacts = json.load(f)
-
-result = execute_cvr_workflow(
-    kg=artifacts['A.2_ANALYTIC_KG'],
-    dag_artifact=artifacts['A.3_CAUSAL_DAG'],
-    gim_artifact=artifacts['A.5_GESTALT_IMPACT_MAP'],
-    dr_trace=artifacts['A.6_DR_DERIVATION_TRACE']
-)
-
-print(json.dumps(result, indent=2))
-```
-
-**Step 3: Write T2 output**
-
-Output to: `03_T2/{TICKER}_BASE_T2.md`
-
-**Step 4: RUN VALIDATOR**
-
-**DO NOT:**
-- Perform manual DCF calculations
-- Invent kernel output
-- Skip Python execution
+**See Stage 3: BASE_T2 in CAPY: RUN BASE_PIPELINE for full subagent prompt.**
 
 ---
 
