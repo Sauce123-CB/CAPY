@@ -588,8 +588,8 @@ Run on the 1st of each month:
 | Research Question Gen (legacy) | RQ_Gen_2_2_2e.md | HISTORICAL | - |
 | RQ Executor | RQ_ASK_KERNEL_2_2_3e.py | CANONICAL | DAVE_RQ_CLAUDE_TEST |
 | RQ Executor CLI | run_rq_ask.py | CANONICAL | DAVE_RQ_CLAUDE_TEST |
-| Silicon Council | G3_SC_2.2.2e_*.md (atomized) | EXPERIMENTAL | - |
-| Silicon Council | G3_SILICON_COUNCIL_2.2.1e.md | CANONICAL | DAVE_20241210 |
+| Silicon Council | G3_SC_2.2.2e_*.md (atomized) | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
+| Silicon Council | G3_SILICON_COUNCIL_2.2.1e.md | HISTORICAL | DAVE_20241210 |
 | HITL Audit | HITL_DIALECTIC_AUDIT_1_0_Goldilocks.md | CANONICAL | DAVE_20241210 |
 
 ### Validators
@@ -602,7 +602,7 @@ Run on the 1st of each month:
 | A.9 Validator | A9_VALIDATOR.md | EXPERIMENTAL | - |
 | SCENARIO T1 Validator | SCENARIO_T1_VALIDATOR.md | EXPERIMENTAL | - |
 | A.10 Validator | A10_VALIDATOR.md | EXPERIMENTAL | - |
-| SC Validator | SC_VALIDATOR.md | EXPERIMENTAL | - |
+| SC Validator | SC_VALIDATOR.md | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
 
 ### BASE Stage Atomized Files (CANONICAL)
 
@@ -1045,6 +1045,21 @@ Task(
 
 Verify A11 file exists.
 Report summary to user.
+```
+
+**Step 4: Generate Markdown Copies (for human audit)**
+```
+Convert all JSON outputs to Markdown for human readability:
+- SC_ACCOUNTING_AUDIT.json → SC_ACCOUNTING_AUDIT.md
+- SC_FIT_AUDIT.json → SC_FIT_AUDIT.md
+- SC_EPISTEMIC_AUDIT.json → SC_EPISTEMIC_AUDIT.md
+- SC_RED_TEAM_AUDIT.json → SC_RED_TEAM_AUDIT.md
+- SC_DISTRIBUTIONAL_AUDIT.json → SC_DISTRIBUTIONAL_AUDIT.md
+- SC_ECONOMIC_REALISM_AUDIT.json → SC_ECONOMIC_REALISM_AUDIT.md
+- {TICKER}_A11_AUDIT_REPORT.json → {TICKER}_A11_AUDIT_REPORT.md
+
+Keep both JSON (for pipeline) and Markdown (for human audit).
+Use simple JSON-to-Markdown conversion, do NOT transcribe/rewrite content.
 ```
 
 ### Critical Patterns Applied
