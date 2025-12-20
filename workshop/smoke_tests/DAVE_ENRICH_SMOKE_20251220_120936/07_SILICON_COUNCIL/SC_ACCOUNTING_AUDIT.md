@@ -1,0 +1,50 @@
+# SC ACCOUNTING AUDIT
+
+**audit_type:** ACCOUNTING
+**source_integrity:**
+  **highest_risk_finding:**
+  > MATERIAL TRANSCRIPTION ERROR: SCENARIO T2 narrative reports E[IVPS] = $198.34 with Delta = -$0.91 (-0.5%), but A.10_SCENARIO.json kernel output shows E[IVPS] = $206.34 with Delta = +$7.09 (+3.6%). This 4% discrepancy ($8/share) between the human-readable narrative and the authoritative JSON artifact is a material data integrity failure. The T2 markdown incorrectly describes the State 2 to State 3 transition as value-destructive when the SSE actually shows value accretion. This error would propagate to downstream INTEGRATION stage if not corrected.
+
+  **verification_performed:**
+    - Cross-validated A.10 JSON e_ivps field ($206.34) against SCENARIO T2 narrative E[IVPS] claim ($198.34)
+    - Verified A.10 cvr_state_bridge: state_2_ivps = $199.25, state_3_e_ivps = $206.34, delta = +$7.09 (+3.6%)
+    - Confirmed T2 markdown incorrectly states Delta = -$0.91 (-0.5%)
+    - Reviewed A2_ANALYTIC_KG.json Y0_data values against ENRICH T1/T2 narrative claims
+    - Cross-checked A5_GESTALT_IMPACT_MAP driver starting values against A2 Y0_data (Gross_Profit_Margin 0.69 vs 0.685 - minor rounding acceptable)
+    - Verified A7_kernel_output IVPS ($199.25) matches A10 base_case_reference.state_2_ivps ($199.25)
+    - Validated DR consistency: A6 DR_Static = 13.25% matches A7 and A10 DR values
+    - Spot-checked ATP accounting_translation_log reconciliations for EBIT, SBC, CapEx against normative definitions
+    - Verified shares_outstanding_diluted (14.5M) consistent across A2 and market context
+    - Compared RQ-cited figures (delinquency 2.33%, CAC $19, ARPU $217-220) against A2/A5 artifacts
+  **confidence_justification:**
+  > HIGH CONFIDENCE in identifying the primary error due to direct comparison of authoritative JSON output against narrative claims. The e_ivps discrepancy is unambiguous and material. Other artifact consistency checks (A2/A3/A5/A6/A7) show proper alignment with no definitional drift detected. ATP reconciliations are complete for high-risk categories (EBIT includes SBC per normative definition, CapEx properly combines software and PP&E). The transcription error is isolated to the T2 narrative synthesis, not the kernel computation itself.
+
+  **atp_compliance:**
+    **status:** COMPLIANT
+    **findings:**
+    > ATP metadata correctly identifies MODERATE complexity and Full ATP mode, appropriate given Dave's adjusted EBITDA metrics, SBC materiality (~$31M), and fee model transition affecting YoY comparability. The accounting_translation_log documents 6 key reconciliations: (1) EBIT reconciled from implied operating income with SBC added back and one-time items excluded, (2) CapEx combines software capitalization and PP&E per normative definition, (3) D&A uses reported figure without adjustment, (4) SBC explicitly treated as operating expense with dilution risk flagged (warrants at $368 strike), (5) Share count uses diluted basis (14.5M), (6) Revenue recognition notes ASC 310 netting and fee model transition comparability issues. All ATP reconciliations are consistent with normative definitions in B.1 (EBIT includes SBC). No unreconciled flags that would require downstream attention.
+
+  **artifact_consistency:**
+    **status:** DRIFT_DETECTED
+    **findings:**
+    > CRITICAL DRIFT in T2 narrative synthesis: E[IVPS] value transcribed incorrectly from A.10 kernel output ($206.34 actual vs $198.34 claimed). This is not definitional drift but rather transcription error during T2 narrative generation. Non-critical observations: (1) GIM Gross_Profit_Margin start_value (0.69) slightly higher than A2 Y0 value (0.685) - acceptable rounding within 1%; (2) T1 narrative mentions 'State 2 IVPS estimated $231-234' but actual A7 output is $199.25 - this reflects T1 pre-kernel estimation vs T2 post-kernel actuals, not an error; (3) DAG coverage manifest confirms all exogenous drivers in GIM, no orphan nodes; (4) Scenario S4 GIM overlay shows FCF_Adjustment of $40/share but T1 described this as acquisition premium - appropriate structural choice but documentation could be clearer.
+
+  **citation_spot_check:**
+    **claims_verified:** 8
+    **discrepancies_found:** 1
+    **details:**
+    > Spot-checked 8 material quantitative claims from upstream artifacts: (1) 28-day delinquency 2.33% Q3 2025 per T1/RQ5 - VERIFIED in RQ5 Section 3; (2) CAC $19 per T1/A2 - VERIFIED in RQ5/RQ6; (3) ARPU $217-220 annualized per A2/T1 - VERIFIED in RQ5 ($217 quarterly, $78 monthly annualized to ~$220); (4) Revenue $545M Y0 per A2 - VERIFIED against management guidance cited in A1; (5) Gross margin 68.5% per A2 (0.685) - VERIFIED consistent with Q3 2025 quarterly reporting; (6) MTMs 2.77-2.85M per A2/T1 - VERIFIED in RQ reports; (7) Invested Capital $275M per A2 - consistent with T1 estimate of ~$273M (minor rounding); (8) DR 13.25% per A6 - VERIFIED consistent across all ENRICH/SCENARIO artifacts. ONE DISCREPANCY FOUND: T1 narrative cites 'ROIC ~50%+' for Q3 2025 ($140M NOPAT / $273M IC) but this conflicts with A7 terminal ROIC of 40.9% - not an error but temporal confusion (current vs terminal). All RQ citations to external sources verified as accurate representations of source findings.
+
+**narrative_n0:**
+> SOURCE INTEGRITY AUDIT - DAVE INC. ACCOUNTING REVIEW
+
+HIGHEST RISK FINDING: A material transcription error was identified between the SCENARIO T2 narrative and the A.10_SCENARIO.json kernel output. The T2 markdown reports E[IVPS] = $198.34 with a -0.5% delta from State 2, but the authoritative A.10 JSON shows E[IVPS] = $206.34 with a +3.6% delta. This $8/share (4%) discrepancy is significant enough to affect investment conclusions - the T2 narrative incorrectly characterizes the scenario-weighted valuation as value-destructive when it is actually value-accretive. The error appears to be a transcription mistake during T2 narrative synthesis, as the kernel computation itself (A.10 JSON) is internally consistent with correct SSE probability math.
+
+ATP COMPLIANCE: The pipeline demonstrates COMPLIANT ATP execution. Full ATP was appropriately triggered given Dave's MODERATE complexity profile (adjusted metrics, SBC materiality, fee model transition). The accounting_translation_log documents reconciliations for all high-risk categories per A.2.5 mandate. EBIT properly includes SBC expense per normative definition B.1.1. Share count uses diluted basis with warrant overhang flagged. No ATP flags remain unaddressed.
+
+ARTIFACT CONSISTENCY: Beyond the critical T2/A.10 discrepancy, artifact consistency is strong. Y0_data values flow correctly from A2 through A3 (DAG), A5 (GIM starting values), A6 (DR derivation), and A7 (kernel output). The DR revision from BASE (13.0% to 13.25%) is properly documented in A6 justification with X multiplier change traced to RQ evidence (regulatory + credit risk elevation). GIM driver definitions are consistent with DAG equations. No definitional drift detected in how metrics like EBIT, NOPAT, or ROIC are calculated across stages.
+
+CITATION VERIFICATION: 8 material claims spot-checked with 7 fully verified and 1 temporal clarification needed (current vs terminal ROIC). RQ citations accurately represent source findings. Y0 data points (revenue, margins, user metrics) are traceable to Q3 2025 filings and management guidance.
+
+RECOMMENDATION: INTEGRATION stage must use A.10 JSON E[IVPS] = $206.34, NOT the T2 narrative figure of $198.34. The T2 markdown should be corrected before finalization. This is an isolated transcription error, not a systemic data integrity failure - confidence in underlying kernel computations remains high.
+
