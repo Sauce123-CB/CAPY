@@ -217,20 +217,109 @@ The three-shot architecture provides:
 - **T2 Clean Execution:** Fresh context for deterministic kernel execution
 - **T3 Comprehensive Synthesis:** Produces unified final valuation document suitable for human review and IRR stage consumption
 
+A.y T1 Output Specification (Surgical Edit Protocol)
+
+T1 must produce COMPLETE, SELF-CONTAINED output files. T2 and T3 receive ONLY these files—no epistemic bundle re-ingestion.
+
+**Artifact Editing Instructions:**
+
+For each artifact (A.1, A.2, A.3, A.5, A.6, A.10):
+
+1. **READ** the State 3 artifact from the epistemic bundle
+2. **IDENTIFY** any modifications required by adjudication dispositions (from A.12)
+3. **APPLY** modifications surgically:
+   - If ACCEPT: Apply the SC-recommended change
+   - If MODIFY: Apply partial adjustment per adjudication reasoning
+   - If REJECT or no finding touches artifact: Copy unchanged
+4. **WRITE** the complete artifact with `_S4` suffix
+
+**CASCADE.json Schema:**
+
+```json
+{
+  "cascade_scope": "FULL | PARTIAL_SCENARIO | PARTIAL_SSE | NONE",
+  "modifications": [
+    {
+      "artifact": "A.5",
+      "field": "gim_drivers.revenue_growth_y1",
+      "from_value": 0.15,
+      "to_value": 0.12,
+      "finding_id": "F3",
+      "disposition": "ACCEPT"
+    }
+  ],
+  "scenarios_finalized": [
+    {"id": "S1", "name": "...", "p": 0.25, "status": "RETAINED"},
+    {"id": "S2", "name": "...", "p": 0.20, "status": "MODIFIED"},
+    {"id": "S3", "name": "...", "p": 0.15, "status": "RETAINED"},
+    {"id": "S4", "name": "...", "p": 0.10, "status": "ADDED"}
+  ],
+  "dr_revision": null | {"prior": 0.13, "posterior": 0.135, "finding_id": "F7"}
+}
+```
+
+**Narrative Editing Instructions (N1-N6):**
+
+For each narrative:
+
+1. **LOCATE** the narrative in upstream outputs:
+   - N1 (Investment Thesis): ENRICH T2
+   - N2 (IC Modeling): ENRICH T2
+   - N3 (Economic Governor): ENRICH T2
+   - N4 (Risk Assessment): ENRICH T2
+   - N5 (Enrichment Synthesis): ENRICH T2
+   - N6 (Scenario Synthesis): SCENARIO T2
+
+2. **COPY** the narrative verbatim
+
+3. **EDIT** only sentences affected by adjudication:
+   - If a finding modified an assumption, update the narrative to reflect the new value
+   - Add "[State 4: Revised per F{N}]" annotation after edited sentences
+   - If no changes: add "[State 4: Confirmed]" at end of narrative
+
+4. **WRITE** all six narratives to `{TICKER}_N1_N6_NARRATIVES_S4.md`
+
+**File Output Protocol:**
+
+T1 subagent uses the Write tool to save each file directly to disk:
+
+```
+{output_dir}/
+├── {TICKER}_INT_T1_{YYYYMMDD}.md          # Adjudication reasoning + A.12
+├── {TICKER}_A1_EPISTEMIC_ANCHORS_S4.json
+├── {TICKER}_A2_ANALYTIC_KG_S4.json
+├── {TICKER}_A3_CAUSAL_DAG_S4.json
+├── {TICKER}_A5_GESTALT_IMPACT_MAP_S4.json
+├── {TICKER}_A6_DR_DERIVATION_TRACE_S4.json
+├── {TICKER}_A10_SCENARIO_MODEL_S4.json
+├── {TICKER}_N1_N6_NARRATIVES_S4.md
+└── {TICKER}_CASCADE.json
+```
+
+Return confirmation + filepaths only. Do NOT return file contents to orchestrator.
+
 B. The CVR Kernel Mandate (Computational Integrity)
 
-The CVR Kernel (G3_2.2.2e_INT) is the sole authorized execution engine for all
+The CVR Kernel (G3_2.2.3e_INT) is the sole authorized execution engine for all
 recalculation.
 
 1\. Loading & Execution (Three-Shot File Delivery):
 
-\* Turn 1: CVR_KERNEL_INT_2.2.2e.py is attached for contextual understanding only (DSL modes, function signatures, node naming conventions). DO NOT execute kernel code in T1.
+\* Turn 1: CVR_KERNEL_INT_2.2.3e.py is attached for contextual understanding only (DSL modes, function signatures, node naming conventions). DO NOT execute kernel code in T1.
 
-\* Turn 2: Load CVR_KERNEL_INT_2.2.2e.py directly into the execution environment. The kernel file can be imported or executed as a standard Python module.
+\* Turn 2: Execute CVR_KERNEL_INT_2.2.3e.py via Bash command (see A.x). Manual calculation is PROHIBITED.
 
-\* Turn 3: No kernel execution. T3 performs narrative synthesis only.
+\* Turn 3: No kernel execution. T3 performs final CVR assembly only.
 
-\* Action: In T2, load the kernel and call functions directly (e.g., `from CVR_KERNEL_INT_2_2_2e import execute_cvr_workflow, calculate_sse_jpd`).
+\* Action: In T2, execute kernel via Bash:
+```bash
+python3 CVR_KERNEL_INT_2.2.3e.py \
+  --a5 {TICKER}_A5_GESTALT_IMPACT_MAP_S4.json \
+  --a6 {TICKER}_A6_DR_DERIVATION_TRACE_S4.json \
+  --a10 {TICKER}_A10_SCENARIO_MODEL_S4.json \
+  --cascade {TICKER}_CASCADE.json \
+  --output {TICKER}_A7_VALUATION_S4.json
+```
 
 2\. Kernel Capabilities Required:
 

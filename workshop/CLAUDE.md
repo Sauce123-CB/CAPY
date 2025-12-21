@@ -1362,48 +1362,43 @@ The INTEGRATION subagent must have access to the same evidence that upstream sta
 │                                                                             │
 │ PROMPT FILES TO ATTACH:                                                     │
 │   1. prompts/integration/G3_INTEGRATION_2.2.3e_PROMPT.md                    │
-│   2. prompts/integration/G3_INTEGRATION_2.2.3e_SCHEMAS.md                   │
-│   3. prompts/integration/G3_INTEGRATION_2.2.3e_NORMDEFS.md                  │
-│   4. kernels/CVR_KERNEL_INT_2.2.3e.py (EXECUTABLE IN T2)                    │
+│   2. kernels/CVR_KERNEL_INT_2.2.3e.py (EXECUTABLE)                          │
 │                                                                             │
-│ INPUT FILES TO ATTACH:                                                      │
-│   • {output_dir}/{TICKER}_INT_T1_{DATE}.md (T1 output with Handoff JSON)    │
-│   • State 3 artifacts RE-INGESTED FRESH from 06_SCENARIO/:                  │
-│     - {TICKER}_A10_SCENARIO.json                                            │
-│     - A5_GESTALT_IMPACT_MAP.json (if GIM modifications needed)              │
-│     - A7_LIGHTWEIGHT_VALUATION_SUMMARY.json                                 │
+│ INPUT FILES TO ATTACH (T1 OUTPUTS ONLY - NO EPISTEMIC BUNDLE):              │
+│   • {output_dir}/{TICKER}_INT_T1_{DATE}.md                                  │
+│   • {output_dir}/{TICKER}_A5_GESTALT_IMPACT_MAP_S4.json                     │
+│   • {output_dir}/{TICKER}_A6_DR_DERIVATION_TRACE_S4.json                    │
+│   • {output_dir}/{TICKER}_A10_SCENARIO_MODEL_S4.json                        │
+│   • {output_dir}/{TICKER}_CASCADE.json                                      │
 │                                                                             │
 │ INSTRUCTION TO SUBAGENT:                                                    │
 │   "Execute INTEGRATION Turn 2 for {TICKER}.                                 │
 │                                                                             │
-│    Your task: Apply the modifications from T1 and execute recalculation     │
-│    cascade if required.                                                     │
+│    CRITICAL: You receive ONLY T1 outputs. Do NOT request epistemic bundle.  │
+│    CRITICAL: Manual calculation is PROHIBITED. You MUST use Bash kernel.    │
 │                                                                             │
-│    Execute Phases D-E per the prompt:                                       │
-│    - Phase D: Recalculation Cascade (execute kernel if cascade needed)      │
-│    - Phase E: Distributional Re-Analysis (document State 3→4 bridge)        │
+│    Read CASCADE.json to determine cascade_scope.                            │
 │                                                                             │
-│    If cascade_scope = NONE: Lock State 4 = State 3, no kernel execution.    │
-│    If cascade_scope != NONE: Load kernel via Bash and execute appropriate   │
-│    functions (execute_cvr_workflow, execute_scenario_intervention, etc.)    │
+│    If cascade_scope = NONE: State 4 = State 3, copy artifacts unchanged.    │
+│    If cascade_scope != NONE: Execute kernel via Bash:                       │
 │                                                                             │
-│    Output:                                                                  │
-│    - Finalized artifacts A.1-A.12 with amendments applied                   │
-│    - A.12_INTEGRATION_TRACE (full adjudication record)                      │
-│    - state_4_active_inputs (pre-merged inputs for IRR)                      │
+│    python3 CVR_KERNEL_INT_2.2.3e.py \                                       │
+│      --a5 {TICKER}_A5_GESTALT_IMPACT_MAP_S4.json \                          │
+│      --a6 {TICKER}_A6_DR_DERIVATION_TRACE_S4.json \                         │
+│      --a10 {TICKER}_A10_SCENARIO_MODEL_S4.json \                            │
+│      --cascade {TICKER}_CASCADE.json \                                      │
+│      --output {TICKER}_A7_VALUATION_S4.json                                 │
 │                                                                             │
 │    Write outputs to:                                                        │
-│    - {output_dir}/{TICKER}_INT_T2_{DATE}.md                                 │
-│    - {output_dir}/{TICKER}_A12_INTEGRATION_TRACE.json                       │
+│    - {output_dir}/{TICKER}_INT_T2_{DATE}.md (kernel log + State 3→4 bridge) │
+│    - {output_dir}/{TICKER}_A7_VALUATION_S4.json (kernel output)             │
+│    - {output_dir}/{TICKER}_A10_SCENARIO_MODEL_S4_FINAL.json (if SSE changed)│
 │    Return confirmation and filepaths only."                                 │
 │                                                                             │
 │ OUTPUT PRODUCED:                                                            │
-│   • {TICKER}_INT_T2_{DATE}.md containing:                                   │
-│     - Recalculation cascade log (what was executed)                         │
-│     - State 3 → State 4 bridge (delta analysis)                             │
-│     - All finalized artifacts A.1-A.12 embedded                             │
-│     - state_4_active_inputs block                                           │
-│   • {TICKER}_A12_INTEGRATION_TRACE.json (standalone artifact)               │
+│   • {TICKER}_INT_T2_{DATE}.md - Kernel execution log + State 3→4 bridge     │
+│   • {TICKER}_A7_VALUATION_S4.json - Kernel output (recalculated valuation)  │
+│   • {TICKER}_A10_SCENARIO_MODEL_S4_FINAL.json - Updated SSE (if changed)    │
 │                                                                             │
 │ PATTERN: Bash Kernel (Pattern 6) - execute kernel via Bash if cascade needed│
 │ PATTERN: Direct-Write (Pattern 1) - subagent writes to disk, returns path   │
