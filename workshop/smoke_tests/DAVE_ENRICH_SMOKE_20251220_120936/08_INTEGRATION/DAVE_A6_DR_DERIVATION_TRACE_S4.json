@@ -1,0 +1,11 @@
+{
+  "schema_version": "G3_2.2.3eI-S4",
+  "state_4_annotation": "Unchanged from State 3. No adjudication modifications applied.",
+  "derivation_trace": {
+    "RFR": 0.0425,
+    "ERP": 0.05,
+    "X_Risk_Multiplier": 1.8,
+    "DR_Static": 0.1325
+  },
+  "justification": "UPDATED from BASE X=1.75, DR=13.0%. X = 1.80 reflects materially elevated risk profile discovered through RQ evidence. Factors: (1) Regulatory risk INCREASED to +0.4 (from +0.3): DOJ lawsuit escalation with CEO as individual defendant (Dec 2024), CFPB interpretive rule requiring 192-234% APR disclosure, state AG coordination (NY/CA/CT/DC/PA), settlement precedents $10-50M range, complete shutdown risk 2-5% base rate per RQ3b analysis. (2) Credit cycle exposure INCREASED to +0.25 (from +0.2): Q3'25 28-day delinquency +31% YoY (2.33% vs 1.78%), management strategy to 'maximize gross profit dollars' introduces procyclical risk, COVID-19 precedent shows marketplace lenders experienced +2.3pp default increase. (3) Bank partner dependency DECREASED to +0.05 (from +0.1): Successfully transitioned from Evolve to Coastal (mitigates single point of failure), though Coastal material weakness partially offsets. (4) NEW execution track record mitigant -0.05: Fee transition and bank migration with zero churn demonstrates operational excellence, 937% stock gain in 2024 validates market confidence. (5) Small-cap/emerging (+0.3), single product concentration (+0.1), profitability (-0.1), cash generation (-0.1), TAM runway (-0.05) UNCHANGED from BASE. Net X adjustment: +0.05 (1.75 to 1.80). Resulting 13.25% DR is above mature fintech (10-12%) but below distressed/venture-stage (15%+), appropriate for Dave's elevated risk profile with validated execution."
+}

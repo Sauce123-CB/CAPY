@@ -1,0 +1,73 @@
+{
+  "schema_version": "G3_2.2.3eI",
+  "ticker": "DAVE",
+  "valuation_date": "2025-12-21",
+  "cascade_scope": "NONE",
+  "cascade_determination": {
+    "scope": "NONE",
+    "rationale": "All HIGH findings were either REJECTED (insufficient evidentiary basis to override State 3) or MODIFIED (through interpretive guidance only, no artifact changes). No kernel input artifacts (A.5, A.6, A.10) were modified. State 4 = State 3.",
+    "trigger_findings": []
+  },
+  "modifications": [],
+  "scenarios_finalized": [
+    {
+      "scenario_id": "S1_REG_SETTLEMENT",
+      "scenario_name": "Regulatory Settlement",
+      "p_posterior": 0.73,
+      "ivps_impact": -52.29,
+      "status": "RETAINED"
+    },
+    {
+      "scenario_id": "S2_BNPL_SUCCESS",
+      "scenario_name": "BNPL Success",
+      "p_posterior": 0.16,
+      "ivps_impact": 30.59,
+      "status": "RETAINED"
+    },
+    {
+      "scenario_id": "S3_BANK_TRANSITION",
+      "scenario_name": "Bank Transition Success",
+      "p_posterior": 0.76,
+      "ivps_impact": 42.59,
+      "status": "RETAINED"
+    },
+    {
+      "scenario_id": "S4_ACQUISITION",
+      "scenario_name": "Acquisition",
+      "p_posterior": 0.20,
+      "ivps_impact": 40.00,
+      "status": "RETAINED"
+    }
+  ],
+  "state_bridge_summary": {
+    "state_3_e_ivps": 206.34,
+    "state_4_e_ivps": 206.34,
+    "delta": 0.0,
+    "delta_percent": 0.0
+  },
+  "interpretive_guidance_added": [
+    {
+      "finding_id": "F1",
+      "guidance": "Shutdown risk (5-10% probability, -100% impact) not explicitly modeled. Recommend mental discount of $10-20 per share."
+    },
+    {
+      "finding_id": "F3/F4",
+      "guidance": "Terminal ROIC of 40.9% exceeds industry p90 (35%) and long-term anchors (18-22%). Recommend 10-15% mental discount ($20-30 per share) for ROIC sustainability uncertainty."
+    }
+  ],
+  "t2_instructions": {
+    "kernel_execution_required": false,
+    "rationale": "cascade_scope = NONE implies State 4 = State 3. No recalculation needed.",
+    "artifacts_to_copy_unchanged": [
+      "A.7_VALUATION_SUMMARY"
+    ]
+  },
+  "adjudication_summary": {
+    "total_findings_reviewed": 8,
+    "findings_accepted": 0,
+    "findings_rejected": 5,
+    "findings_modified_interpretive": 2,
+    "findings_low_priority": 1,
+    "pipeline_fit_grade": "B"
+  }
+}

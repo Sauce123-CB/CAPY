@@ -1,7 +1,7 @@
 # CAPY Workshop - Master TODO
 
 > **Last updated:** 2024-12-20
-> **Structure version:** 0.7 (INTEGRATION validators created, ready for smoke test)
+> **Structure version:** 0.8 (INTEGRATION smoke test complete, prompts CANONICAL)
 
 ---
 
@@ -64,8 +64,9 @@
 | 21 | **SCENARIO smoke test (DAVE)** | Testing | 2024-12-20 | E[IVPS]=$206.34, 4 scenarios, SSE 16 states |
 | 22 | Validator model guidance | Orchestrator | 2024-12-20 | CLAUDE.md: ALWAYS use Opus for validators |
 | 23 | Acquisition premium lump sum | Prompt | 2024-12-20 | Added to SCENARIO prompt |
-| 27 | **INTEGRATION atomization + orchestration** | Prompt | 2024-12-20 | EXPERIMENTAL (3-file split + full Stage Flow docs) |
-| 28 | **INTEGRATION validators** | Validation | 2024-12-20 | INT_T1/T2/T3_VALIDATOR.md created, ready for smoke test |
+| 27 | **INTEGRATION atomization + orchestration** | Prompt | 2024-12-20 | CANONICAL (3-file split + full Stage Flow docs) |
+| 28 | **INTEGRATION validators** | Validation | 2024-12-20 | CANONICAL (INT_T1/T2/T3_VALIDATOR.md) |
+| 30 | **INTEGRATION smoke test (DAVE)** | Testing | 2024-12-21 | E[IVPS]=$206.34, cascade=NONE, kernel verified |
 
 ---
 
@@ -177,7 +178,8 @@
 | 2. BASE Pipeline | ✅ Working | Atomized prompts CANONICAL |
 | 3. RQ Fan-out | ✅ Working | 7-slot architecture, Claude Opus subagents |
 | 4. ENRICH | ✅ Working | Atomized prompts CANONICAL |
-| 5. SCENARIO→IRR | 🟡 Prompts exist | Need smoke test (next) |
+| 5. SCENARIO→INTEGRATION | ✅ Working | Prompts CANONICAL |
+| 6. IRR | 🟡 Prompt exists | Need smoke test (next) |
 | 6. Silicon Council | 🟡 Spec only | Need Gemini Extended Thinking integration |
 | 7. HITL Audit | ✅ Prompt exists | None |
 

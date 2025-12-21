@@ -1,0 +1,90 @@
+{
+  "schema_version": "G3_2.2.3eI-S4",
+  "state_4_annotation": "Unchanged from State 3. No adjudication modifications applied.",
+  "GIM": {
+    "MTM_Growth_Rate": {
+      "mode": "LINEAR_FADE",
+      "params": {
+        "start_value": 0.15,
+        "end_value": 0.03,
+        "fade_years": 12
+      },
+      "qualitative_thesis": "Prior: Neobank MTM growth converges to 3-5% at maturity (p50=5%). Evidence: RQ4 confirms Dave MTM growth decelerating 21% YoY (Q3'24) to 15% YoY (Q3'25); Cash App saturation signal (flat MAUs 4 quarters) validates market maturity assumptions. Industry base rate for mature fintech: 10-15% CAGR. Posterior: CONFIRM BASE assumption - start at 15% (current run-rate) and fade linearly to 3% over 12 years as penetration ceiling approaches. Variance Justification: Starting at p90 (15% vs p50=5%) due to demonstrated execution and large conversion opportunity from 11M inactive members; fading to p10 range reflects mature market dynamics. RQ evidence provides HIGH CONFIDENCE in BASE trajectory."
+    },
+    "ARPU_Growth_Rate": {
+      "mode": "LINEAR_FADE",
+      "params": {
+        "start_value": 0.12,
+        "end_value": 0.02,
+        "fade_years": 10
+      },
+      "qualitative_thesis": "Prior: Mature fintech ARPU growth tracks inflation + modest expansion (2-4% p.a.). Evidence: RQ5 confirms Q3'25 ARPU $78 (+26% YoY), driven by higher advance limits, increased frequency, and Dave Banking cross-sell. Fee model transition (tips to 5% mandatory) sustainable per RQ1 (no churn spike post-change). Posterior: CONFIRM BASE assumption - start at 12% (fade of structural tailwinds) converging to 2% (inflation) over 10 years. Variance Justification: Above p50 near-term (12% vs 3%) due to subscription rollout ($3/mo) and monetization optimization runway; terminal 2% is conservative within p10-p50 range. RQ evidence validates sustainability of ARPU expansion thesis."
+    },
+    "Gross_Profit_Margin": {
+      "mode": "LINEAR_FADE",
+      "params": {
+        "start_value": 0.69,
+        "end_value": 0.6,
+        "fade_years": 8
+      },
+      "qualitative_thesis": "Prior: Consumer fintech gross margins 50-70% (p50=60%). Evidence: RQ5 confirms current 69% reflects low credit losses (1.6% 121-day vs normalized 3.0%) and efficient cost structure. UPDATED ASSUMPTION: Through-cycle credit loss normalization from BASE 2.5% to 3.0% per RQ3b precedents (COVID-19 marketplace lenders +2.3pp default increase). Variable costs = provision + processing + network fees. Posterior: MODIFY - fade from 69% to 60% over 8 years, incorporating higher steady-state credit losses (3.0% vs BASE 2.5%). Variance Justification: Terminal 60% equals p50, reflecting structural cost advantages that persist but acknowledging higher normalized credit losses than BASE assumed. Net impact: -200bps terminal gross margin vs BASE due to credit assumption revision."
+    },
+    "Opex_ex_Variable_Pct": {
+      "mode": "LINEAR_FADE",
+      "params": {
+        "start_value": 0.41,
+        "end_value": 0.35,
+        "fade_years": 6
+      },
+      "qualitative_thesis": "Prior: Scaled fintech opex ratio 30-40% of revenue (p50=35%). Evidence: RQ6 validates Dave's exceptional operating leverage - Q3'24 EBITDA margin 27% implies ~43% opex ratio on 70% gross margin. Management claims '90% of incremental gross profit flows to EBITDA' due to fixed cost base. Peer analysis: SoFi 26-27%, Cash App 18%, MoneyLion 17%. Posterior: CONFIRM BASE assumption - fade from 41% to 35% over 6 years as scale benefits accrue. Variance Justification: Terminal 35% aligns with p50; starting point reflects continued investment phase. RQ evidence provides HIGH CONFIDENCE in operating leverage thesis - best-in-class unit economics (CAC $19, 4-month payback) support margin sustainability."
+    },
+    "Tax_Rate": {
+      "mode": "STATIC",
+      "params": {
+        "value": 0.25
+      },
+      "qualitative_thesis": "Federal statutory rate 21% + blended state rate ~4% = 25% effective rate. Dave's historical rate impacted by NOL utilization and DTA valuation allowance release (one-time). Normalized effective rate assumption. No variance from base rate. CONFIRMED by RQ evidence - no material change to tax assumptions required."
+    },
+    "DA_Pct_Revenue": {
+      "mode": "STATIC",
+      "params": {
+        "value": 0.013
+      },
+      "qualitative_thesis": "D&A ~$7M on ~$545M revenue = 1.3%. Asset-light model; intangibles (software) are primary depreciating asset. Stable as % of revenue. CONFIRMED by RQ evidence - no material change required."
+    },
+    "CapEx_Pct_Revenue": {
+      "mode": "LINEAR_FADE",
+      "params": {
+        "start_value": 0.013,
+        "end_value": 0.01,
+        "fade_years": 5
+      },
+      "qualitative_thesis": "CapEx primarily software development (~$5-7M annually). Current ~1.3% of revenue; fade to 1.0% as platform matures and maintenance mode dominates. CONFIRMED by RQ evidence - no material change required."
+    },
+    "Receivables_Days": {
+      "mode": "STATIC",
+      "params": {
+        "value": 175
+      },
+      "qualitative_thesis": "Net receivables ~$260M on ~$545M revenue implies ~175 days. Reflects short-duration ExtraCash (~11 day avg term) with high turnover but growing balance as originations scale. Management plans off-balance-sheet funding in 2026 which would reduce this; modeling conservatively as on-balance-sheet. CONFIRMED by RQ evidence - no material change required."
+    },
+    "NWC_ex_Receivables_Pct": {
+      "mode": "STATIC",
+      "params": {
+        "value": -0.02
+      },
+      "qualitative_thesis": "Net working capital ex-receivables is negative (liability position). Prepaids/partner receivables offset by accruals and deferred items. Minimal working capital intensity given payment processing model. -2% of revenue is conservative estimate. CONFIRMED by RQ evidence - no material change required."
+    }
+  },
+  "sensitivity_candidates": [
+    "MTM_Growth_Rate",
+    "ARPU_Growth_Rate",
+    "Gross_Profit_Margin",
+    "Opex_ex_Variable_Pct",
+    "Receivables_Days"
+  ],
+  "metadata": {
+    "terminal_growth_assumption": "Capped at RFR (4.25%) per methodology. Terminal revenue growth implied by MTM_Growth + ARPU_Growth = 3% + 2% = 5%, capped to 4.25%.",
+    "terminal_ROIC_note": "Terminal ROIC implied by model; target convergence to 18-22% range per long-term anchors. RQ evidence confirms industry convergence assumption. [State 4: Model produces 40.9% terminal ROIC - interpretive guidance recommends mental discount]"
+  }
+}

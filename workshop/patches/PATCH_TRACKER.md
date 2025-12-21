@@ -6,11 +6,11 @@ Last updated: 2024-12-21
 
 | Status | Count |
 |--------|-------|
-| Complete | 17 |
-| Pending | 11 |
+| Complete | 18 |
+| Pending | 10 |
 | **Total** | **28** |
 
-**Completion: 61%**
+**Completion: 64%**
 
 ---
 
@@ -23,7 +23,7 @@ Last updated: 2024-12-21
 | ENRICH | ✅ Complete | `DAVE_ENRICH_SMOKE_20251220_120936/` | State 1→2: $241.72→$199.25 |
 | SCENARIO | ✅ Complete | `DAVE_ENRICH_SMOKE_20251220_120936/06_SCENARIO/` | E[IVPS]=$206.34, 4 scenarios, SSE 16 states |
 | SILICON COUNCIL | ✅ Complete | `DAVE_ENRICH_SMOKE_20251220_120936/07_SILICON_COUNCIL/` | 6 parallel audits, A11 consolidated, prompts CANONICAL |
-| INTEGRATION | 🟡 Validators Ready | - | Prompts atomized, INT_T1/T2/T3_VALIDATOR.md created, awaiting smoke test |
+| INTEGRATION | ✅ Complete | `DAVE_ENRICH_SMOKE_20251220_120936/08_INTEGRATION/` | Prompts CANONICAL, E[IVPS]=$206.34, cascade=NONE, kernel verified |
 | IRR | ⏳ Pending | - | Final stage |
 
 **Goal:** Full autonomous CAPY (all stages chain without human intervention)
@@ -48,6 +48,7 @@ Last updated: 2024-12-21
 | 27 | INTEGRATION atomization + orchestration | Prompt | `G3_INTEGRATION_2.2.2e_*.md` (3 files) + CLAUDE.md Stage Flow |
 | 28 | INTEGRATION validators | Validation | `INT_T1_VALIDATOR.md`, `INT_T2_VALIDATOR.md`, `INT_T3_VALIDATOR.md` |
 | 29 | INT 2.2.3e deterministic handoff | Prompt | `G3_INTEGRATION_2.2.3e_PROMPT.md` - surgical edit mandate, kernel execution |
+| 30 | **INTEGRATION smoke test** | Testing | `DAVE_ENRICH_SMOKE_20251220_120936/08_INTEGRATION/` |
 
 ---
 
@@ -109,6 +110,7 @@ These require kernel code changes before prompts will work correctly:
 | 2024-12-20 | 27 | Claude | Success | INTEGRATION atomized (3 files) + full Stage Flow orchestration docs |
 | 2024-12-20 | 28 | Claude | Success | INT T1/T2/T3 validators created, CLAUDE.md Current Versions updated |
 | 2024-12-21 | 29 | Claude | Success | INT 2.2.2e→2.2.3e: Deterministic T1→T2 handoff, surgical edit mandate, kernel execution mandate |
+| 2024-12-21 | 30 | Claude | Success | INTEGRATION smoke test complete, prompts→CANONICAL, kernel verified |
 | | | | | |
 
 ---
@@ -559,7 +561,7 @@ INT smoke test for DAVE revealed:
 - [x] T3 receives T1+T2 only (no upstream narratives)
 - [x] Final CVR excludes deprecated artifacts
 - [x] Version bumped to 2.2.3e
-- [ ] INT smoke test with new architecture (next run)
+- [x] INT smoke test with new architecture (2024-12-21)
 
 ---
 

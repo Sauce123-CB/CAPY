@@ -1,0 +1,186 @@
+{
+  "schema_version": "G3_2.2.3eI-S4-FINAL",
+  "state_4_annotation": "FINAL. Unchanged from State 3. No adjudication modifications applied. Scenario set retained without substitution.",
+  "finalization_timestamp": "2025-12-21T00:00:00Z",
+  "generation_timestamp": "2025-12-21T00:00:00Z",
+  "metadata": {
+    "company_name": "Dave Inc.",
+    "ticker": "DAVE",
+    "valuation_date": "2025-12-21",
+    "base_case_reference": {
+      "source_stage": "G3_ENRICHMENT_2.2.2e",
+      "state_2_ivps": 199.25,
+      "dr_static": 0.1325,
+      "terminal_g": 0.0425,
+      "terminal_roic": 0.409,
+      "shares_outstanding": 14.5
+    }
+  },
+  "scenario_results": [
+    {
+      "scenario_id": "S1_REG_SETTLEMENT",
+      "p_posterior": 0.73,
+      "ivps_impact": -52.29279271959493,
+      "ivps_scenario": 146.9574034062443,
+      "terminal_g": 0.0425,
+      "terminal_roic": 0.3832721845890156,
+      "p2_status": "PASS",
+      "p2_message": "Economic Governor satisfied.",
+      "dr_used": 0.1325,
+      "fundamentals_y1_intervened": {
+        "revenue": 839.7749781473683,
+        "ebit": 250.7328149039999,
+        "ebit_margin": 0.2985714285714285,
+        "nopat": 188.0496111779999,
+        "fcf_unlevered": 137.08379073951818
+      }
+    },
+    {
+      "scenario_id": "S2_BNPL_SUCCESS",
+      "p_posterior": 0.16,
+      "ivps_impact": 30.594032805968112,
+      "ivps_scenario": 229.84422893180735,
+      "terminal_g": 0.03963735167675786,
+      "terminal_roic": 0.4173255120487103,
+      "p2_status": "PASS",
+      "p2_message": "Economic Governor satisfied.",
+      "dr_used": 0.1325,
+      "fundamentals_y1_intervened": {
+        "revenue": 1020.0696389333335,
+        "ebit": 324.8474401038223,
+        "ebit_margin": 0.3184561403508772,
+        "nopat": 243.63558007786673,
+        "fcf_unlevered": 138.2531104611233
+      }
+    },
+    {
+      "scenario_id": "S3_BANK_TRANSITION",
+      "p_posterior": 0.76,
+      "ivps_impact": 42.58970276060862,
+      "ivps_scenario": 241.83989888644786,
+      "terminal_g": 0.04041587074362522,
+      "terminal_roic": 0.43056505726626115,
+      "p2_status": "PASS",
+      "p2_message": "Economic Governor satisfied.",
+      "dr_used": 0.1325,
+      "fundamentals_y1_intervened": {
+        "revenue": 972.6777326933337,
+        "ebit": 302.0420327837194,
+        "ebit_margin": 0.31052631578947365,
+        "nopat": 226.53152458778953,
+        "fcf_unlevered": 141.7253342224547
+      }
+    },
+    {
+      "scenario_id": "S4_ACQUISITION",
+      "p_posterior": 0.2,
+      "ivps_impact": 40.0,
+      "ivps_scenario": 239.25019612583924,
+      "terminal_g": 0.0425,
+      "terminal_roic": 0.4092299625664982,
+      "p2_status": "PASS",
+      "p2_message": "Economic Governor satisfied.",
+      "dr_used": 0.1325,
+      "fundamentals_y1_intervened": {
+        "revenue": 1020.0696389333335,
+        "ebit": 284.74515349653325,
+        "ebit_margin": 0.279142857142857,
+        "nopat": 213.55886512239994,
+        "fcf_unlevered": 116.6932783129149
+      }
+    }
+  ],
+  "sse_result": {
+    "e_ivps": 206.3396767875524,
+    "distribution_stats": {
+      "e_ivps": 206.3396767875524,
+      "median_p50": 188.0018816785839,
+      "p10": 146.9574034062443,
+      "p25": 179.95812747109355,
+      "p75": 215.23470448658867,
+      "p90": 238.99575705208042,
+      "min_ivps": 146.9574034062443,
+      "max_ivps": 312.43393169241597,
+      "range": 165.47652828617166,
+      "standard_deviation": 31.55355773015522,
+      "variance": 995.6270054302381,
+      "coefficient_of_variation": 0.15908848013276328,
+      "skewness": "RIGHT",
+      "modality": "MULTIMODAL",
+      "base_ivps_reference": 199.25019612583924
+    },
+    "renormalization_factor": 1.0,
+    "feasible_state_count": 16,
+    "total_state_count": 16,
+    "probability_sum_validation": 1.0
+  },
+  "probability_sensitivities": [
+    {
+      "scenario_id": "S1_REG_SETTLEMENT",
+      "original_p": 0.73,
+      "delta_p": 0.1,
+      "delta_e_ivps": -5.23,
+      "sensitivity_ratio": -52.29,
+      "interpretation": "+10% probability -> $-5.23 E[IVPS]"
+    },
+    {
+      "scenario_id": "S3_BANK_TRANSITION",
+      "original_p": 0.76,
+      "delta_p": 0.1,
+      "delta_e_ivps": 4.26,
+      "sensitivity_ratio": 42.59,
+      "interpretation": "+10% probability -> $+4.26 E[IVPS]"
+    },
+    {
+      "scenario_id": "S2_BNPL_SUCCESS",
+      "original_p": 0.16,
+      "delta_p": 0.1,
+      "delta_e_ivps": 3.06,
+      "sensitivity_ratio": 30.59,
+      "interpretation": "+10% probability -> $+3.06 E[IVPS]"
+    },
+    {
+      "scenario_id": "S4_ACQUISITION",
+      "original_p": 0.2,
+      "delta_p": 0.1,
+      "delta_e_ivps": 4.0,
+      "sensitivity_ratio": 40.0,
+      "interpretation": "+10% probability -> $+4.00 E[IVPS]"
+    }
+  ],
+  "summary": {
+    "primary_output": {
+      "e_ivps": 206.34,
+      "e_ivps_derivation": "Sum of P(State) x IVPS(State) across 16 feasible states"
+    },
+    "cvr_state_bridge": {
+      "state_2_ivps_deterministic": 199.25,
+      "state_3_e_ivps_probabilistic": 206.34,
+      "state_4_e_ivps_finalized": 206.34,
+      "delta_state2_to_state3": 7.09,
+      "delta_state2_to_state3_percent": 3.56,
+      "delta_state3_to_state4": 0.0,
+      "delta_state3_to_state4_percent": 0.0
+    },
+    "risk_metrics": {
+      "downside_probability": 0.64,
+      "upside_probability": 0.033,
+      "limited_liability_states": 0
+    }
+  },
+  "integration_metadata": {
+    "cascade_scope": "NONE",
+    "kernel_executed": false,
+    "scenarios_modified": false,
+    "interpretive_guidance": [
+      {
+        "finding_id": "F1",
+        "guidance": "Shutdown risk (5-10% probability, -100% impact) not explicitly modeled. Recommend mental discount of $10-20 per share."
+      },
+      {
+        "finding_id": "F3/F4",
+        "guidance": "Terminal ROIC of 40.9% exceeds industry p90 (35%) and long-term anchors (18-22%). Recommend 10-15% mental discount ($20-30 per share) for ROIC sustainability uncertainty."
+      }
+    ]
+  }
+}

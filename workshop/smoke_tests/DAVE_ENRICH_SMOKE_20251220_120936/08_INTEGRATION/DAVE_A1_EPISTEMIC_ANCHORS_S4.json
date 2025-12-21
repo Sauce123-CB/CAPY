@@ -1,0 +1,53 @@
+{
+  "schema_version": "G3_2.2.3eI-S4",
+  "state_4_annotation": "Unchanged from State 3. No adjudication modifications applied.",
+  "near_term_anchors": {
+    "management_guidance_FY2025": {
+      "revenue": {"low": 544, "high": 547, "unit": "USD_MM"},
+      "adj_ebitda": {"low": 215, "high": 218, "unit": "USD_MM"},
+      "source": "Q3 2025 Earnings Release (Nov 4, 2025)"
+    },
+    "wall_street_consensus": {
+      "FY2025_revenue": 545,
+      "FY2025_EPS": 6.39,
+      "FY2026_revenue": 589,
+      "FY2026_EPS": 8.93,
+      "source": "Yahoo Finance / GuruFocus (pre-Q3 beat estimates updated)",
+      "confidence": "Medium - estimates likely to be revised post-Q3"
+    },
+    "near_term_anchor_status": "INGESTED",
+    "anchor_reasoning": "Management has raised guidance 3x in 2025; consensus trails actual performance. Weighting management guidance > consensus for Y1-Y2."
+  },
+  "long_term_anchors": {
+    "Revenue_Growth_Rate": {
+      "description": "Long-term sustainable revenue growth for mature consumer fintech",
+      "base_rate_distribution": {"p10": 0.03, "p50": 0.08, "p90": 0.15},
+      "source": "Industry analysis: SoFi, Affirm, LendingClub historical mature growth rates (BASE); RQ4 Growth/TAM analysis confirms industry base rate 10-15% CAGR",
+      "anchor_rationale": "Consumer fintech growth converges to GDP+ as penetration matures; TAM growth ~2%. RQ evidence validates BASE assumption with Cash App saturation signal (flat MAUs 4 quarters) confirming market maturity."
+    },
+    "EBITDA_Margin": {
+      "description": "Steady-state Adjusted EBITDA margin for scaled consumer fintech",
+      "base_rate_distribution": {"p10": 0.18, "p50": 0.25, "p90": 0.32},
+      "source": "Peer analysis, mature payment/lending company margins (BASE); RQ6 peer benchmarking (Dave 27%, SoFi 26-27%, Cash App 18%, MoneyLion 17%, Chime 15-20%)",
+      "anchor_rationale": "Dave's 27% current margin (Q3 2024 GAAP) places at p60-p70 of distribution. BASE terminal 25-30% assumption validated by peer analysis. Structural cost advantages (CAC $19, 4-month payback) support above-median terminal margin."
+    },
+    "ROIC_Terminal": {
+      "description": "Terminal ROIC for asset-light fintech with credit exposure",
+      "base_rate_distribution": {"p10": 0.12, "p50": 0.18, "p90": 0.25},
+      "source": "Industry analysis, cost of equity convergence theory (BASE); RQ4, RQ6 confirm industry convergence to 15-25%",
+      "anchor_rationale": "High current ROIC (>50%) unsustainable; competitive entry erodes excess returns. BASE terminal 18-22% assumption CONFIRMED by RQ evidence. [State 4: Model produces 40.9% terminal ROIC vs. 18-22% anchor - interpretive guidance recommends 10-15% mental discount]"
+    },
+    "Credit_Loss_Rate": {
+      "description": "Through-cycle 121-day charge-off rate for subprime-adjacent short-duration credit",
+      "base_rate_distribution": {"p10": 0.015, "p50": 0.030, "p90": 0.050},
+      "source": "Historical fintech/subprime credit performance 2015-2023 (BASE); UPDATED with RQ5 unit economics analysis and RQ3b credit crisis precedents",
+      "anchor_rationale": "UPDATED from BASE: Current 1.6% reflects benign credit; RQ evidence suggests through-cycle normalization to 3.0% (p40-p50) vs. BASE assumption of 2.5% (p10-p20). Industry base rate for subprime-adjacent: 3-6%. Dave benefits from short duration and paycheck linkage but management strategy to 'maximize gross profit dollars' introduces procyclical risk."
+    },
+    "MTM_Growth_Rate": {
+      "description": "Long-term monthly transacting member growth",
+      "base_rate_distribution": {"p10": 0.02, "p50": 0.05, "p90": 0.10},
+      "source": "Neobank/fintech user growth patterns at scale (BASE); RQ4 confirms deceleration trend (21% YoY Q3'24 to 15% YoY Q3'25)",
+      "anchor_rationale": "Current 15% YoY growth validates BASE start_value. Cash App saturation signal (flat MAUs 4 quarters) supports BASE assumption of fade to 3% terminal. Penetration ceiling approaching as easy acquisition exhausts."
+    }
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "schema_version": "G3_2.2.3eI-S4",
+  "state_4_annotation": "Unchanged from State 3. cascade_scope = NONE; no kernel recalculation performed.",
+  "source": "05_ENRICH/A7_kernel_output.json",
+  "ivps_summary": {
+    "IVPS": 199.25019612583924,
+    "DR": 0.1325,
+    "Terminal_g": 0.0425,
+    "ROIC_Terminal": 0.4092299625664982,
+    "Current_Market_Price": 225.0
+  },
+  "implied_multiples_analysis": {
+    "Implied_EV_Sales_Y1": 3.6084874288298177,
+    "Implied_EV_EBIT_Y1": 12.887455102963635,
+    "Implied_P_NOPAT_Y1": 17.035859952822186,
+    "Market_EV_Sales_Y1": 4.070824293936422,
+    "Market_EV_EBIT_Y1": 14.538658192630079,
+    "Market_P_NOPAT_Y1": 19.237464072377442
+  },
+  "sensitivity_analysis": {
+    "tornado_summary": [
+      {
+        "Driver_Handle": "Gross_Profit_Margin",
+        "IVPS_Low": 133.6828023120368,
+        "IVPS_High": 264.81758993964166,
+        "IVPS_Swing_Percent": 0.6581413227055739
+      },
+      {
+        "Driver_Handle": "Opex_ex_Variable_Pct",
+        "IVPS_Low": 161.16918573478705,
+        "IVPS_High": 237.33120651689134,
+        "IVPS_Swing_Percent": 0.3822431408499247
+      },
+      {
+        "Driver_Handle": "MTM_Growth_Rate",
+        "IVPS_Low": 167.02565895612315,
+        "IVPS_High": 237.84102497794962,
+        "IVPS_Swing_Percent": 0.3554092663331786
+      },
+      {
+        "Driver_Handle": "Discount_Rate",
+        "IVPS_Low": 171.566897190619,
+        "IVPS_High": 234.45988234862122,
+        "IVPS_Swing_Percent": 0.3156482973712171
+      },
+      {
+        "Driver_Handle": "ARPU_Growth_Rate",
+        "IVPS_Low": 175.52806164474862,
+        "IVPS_High": 226.12651416310544,
+        "IVPS_Swing_Percent": 0.2539443047092444
+      }
+    ]
+  },
+  "key_forecast_metrics": {
+    "Revenue_CAGR_Y1_Y5": 0.2734521381967445,
+    "EBIT_Margin_Y5": 0.27657142857142863,
+    "ROIC_Y5": 0.3888587878876585
+  },
+  "terminal_drivers": {
+    "Terminal_ROIC": 0.4092299625664982,
+    "Terminal_RR": 0.10385358817194117,
+    "Terminal_g": 0.0425,
+    "MTM_Growth_Rate": 0.03,
+    "ARPU_Growth_Rate": 0.02,
+    "Gross_Profit_Margin": 0.6,
+    "Opex_ex_Variable_Pct": 0.35,
+    "Tax_Rate": 0.25,
+    "DA_Pct_Revenue": 0.013,
+    "CapEx_Pct_Revenue": 0.01,
+    "Receivables_Days": 175.0,
+    "NWC_ex_Receivables_Pct": -0.02
+  },
+  "forecast_trajectory_checkpoints": {
+    "Y0": {
+      "Gross_Profit_Margin": 0.685,
+      "Tax_Rate": 0.25,
+      "Revenue": 545.0,
+      "EBIT": 148.0,
+      "NOPAT": 111.0,
+      "Invested_Capital": 275.0,
+      "ARPU": 220.0,
+      "MTMs": 2.85,
+      "Gross_Profit": 373.0,
+      "DA": 7.0,
+      "CapEx": 7.0,
+      "EBIT_Margin": 0.272
+    },
+    "Y5": {
+      "MTM_Growth_Rate": 0.10636363636363635,
+      "ARPU_Growth_Rate": 0.07555555555555556,
+      "Gross_Profit_Margin": 0.6385714285714286,
+      "Opex_ex_Variable_Pct": 0.362,
+      "Tax_Rate": 0.25,
+      "DA_Pct_Revenue": 0.013,
+      "CapEx_Pct_Revenue": 0.01,
+      "Receivables_Days": 175.0,
+      "NWC_ex_Receivables_Pct": -0.02,
+      "Revenue": 1825.196540964014,
+      "EBIT": 504.7972147580474,
+      "NOPAT": 378.59791106853555,
+      "Invested_Capital": 1102.0035049879277,
+      "ROIC": 0.3888587878876585,
+      "FCF_Unlevered": 250.20725182633038,
+      "ARPU": 350.5680748519653,
+      "MTMs": 5.206396908032032,
+      "Gross_Profit": 1165.5183625870204,
+      "Operating_Expenses_ex_Variable": 660.721147828973,
+      "DA": 23.72755503253218,
+      "CapEx": 18.251965409640142,
+      "Net_Receivables": 875.0942319690479,
+      "NWC_ex_Receivables": -36.503930819280285,
+      "Delta_Receivables": 139.6934618449136,
+      "EBIT_Margin": 0.27657142857142863
+    },
+    "Y10": {
+      "MTM_Growth_Rate": 0.05181818181818182,
+      "ARPU_Growth_Rate": 0.02,
+      "Gross_Profit_Margin": 0.6,
+      "Opex_ex_Variable_Pct": 0.35,
+      "Tax_Rate": 0.25,
+      "DA_Pct_Revenue": 0.013,
+      "CapEx_Pct_Revenue": 0.01,
+      "Receivables_Days": 175.0,
+      "NWC_ex_Receivables_Pct": -0.02,
+      "Revenue": 3198.3520407402852,
+      "EBIT": 799.5880101850714,
+      "NOPAT": 599.6910076388035,
+      "Invested_Capital": 1692.5236572432336,
+      "ROIC": 0.37426190640019097,
+      "FCF_Unlevered": 509.49715576337985,
+      "ARPU": 430.85105302639755,
+      "MTMs": 7.4233357868672245,
+      "Gross_Profit": 1919.0112244441711,
+      "Operating_Expenses_ex_Variable": 1119.4232142590997,
+      "DA": 41.5785765296237,
+      "CapEx": 31.983520407402853,
+      "Net_Receivables": 1533.456457889178,
+      "NWC_ex_Receivables": -63.967040814805706,
+      "Delta_Receivables": 104.13273046862128,
+      "EBIT_Margin": 0.25000000000000006
+    },
+    "Y20": {
+      "MTM_Growth_Rate": 0.03,
+      "ARPU_Growth_Rate": 0.02,
+      "Gross_Profit_Margin": 0.6,
+      "Opex_ex_Variable_Pct": 0.35,
+      "Tax_Rate": 0.25,
+      "DA_Pct_Revenue": 0.013,
+      "CapEx_Pct_Revenue": 0.01,
+      "Receivables_Days": 175.0,
+      "NWC_ex_Receivables_Pct": -0.02,
+      "Revenue": 5295.119992253339,
+      "EBIT": 1323.779998063335,
+      "NOPAT": 992.8349985475012,
+      "Invested_Capital": 2527.3934076478795,
+      "ROIC": 0.4092299625664982,
+      "FCF_Unlevered": 891.5469335311981,
+      "ARPU": 525.2050294880439,
+      "MTMs": 10.082005493006955,
+      "Gross_Profit": 3177.0719953520033,
+      "Operating_Expenses_ex_Variable": 1853.2919972886684,
+      "DA": 68.8365598992934,
+      "CapEx": 52.95119992253339,
+      "Net_Receivables": 2538.756160669409,
+      "NWC_ex_Receivables": -105.90239984506678,
+      "Delta_Receivables": 122.27399745847379,
+      "EBIT_Margin": 0.25000000000000006
+    }
+  }
+}

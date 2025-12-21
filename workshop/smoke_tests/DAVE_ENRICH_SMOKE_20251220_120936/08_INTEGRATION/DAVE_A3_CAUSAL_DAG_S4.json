@@ -1,0 +1,235 @@
+{
+  "schema_version": "G3_2.2.3eI-S4",
+  "state_4_annotation": "Unchanged from State 3. No adjudication modifications applied.",
+  "DAG": {
+    "MTM_Growth_Rate": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": ""
+    },
+    "MTMs": {
+      "type": "Endogenous_Driver",
+      "parents": [
+        "MTM_Growth_Rate"
+      ],
+      "equation": "PREV('MTMs') * (1 + GET('MTM_Growth_Rate'))"
+    },
+    "ARPU_Growth_Rate": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": ""
+    },
+    "ARPU": {
+      "type": "Endogenous_Driver",
+      "parents": [
+        "ARPU_Growth_Rate"
+      ],
+      "equation": "PREV('ARPU') * (1 + GET('ARPU_Growth_Rate'))"
+    },
+    "Revenue": {
+      "type": "Financial_Line_Item",
+      "parents": [
+        "MTMs",
+        "ARPU"
+      ],
+      "equation": "GET('MTMs') * GET('ARPU')"
+    },
+    "Gross_Profit_Margin": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": ""
+    },
+    "Gross_Profit": {
+      "type": "Financial_Line_Item",
+      "parents": [
+        "Revenue",
+        "Gross_Profit_Margin"
+      ],
+      "equation": "GET('Revenue') * GET('Gross_Profit_Margin')"
+    },
+    "Opex_ex_Variable_Pct": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": ""
+    },
+    "Operating_Expenses_ex_Variable": {
+      "type": "Financial_Line_Item",
+      "parents": [
+        "Revenue",
+        "Opex_ex_Variable_Pct"
+      ],
+      "equation": "GET('Revenue') * GET('Opex_ex_Variable_Pct')"
+    },
+    "EBIT": {
+      "type": "Financial_Line_Item",
+      "parents": [
+        "Gross_Profit",
+        "Operating_Expenses_ex_Variable"
+      ],
+      "equation": "GET('Gross_Profit') - GET('Operating_Expenses_ex_Variable')"
+    },
+    "EBIT_Margin": {
+      "type": "Endogenous_Driver",
+      "parents": [
+        "EBIT",
+        "Revenue"
+      ],
+      "equation": "GET('EBIT') / GET('Revenue')"
+    },
+    "Tax_Rate": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": ""
+    },
+    "NOPAT": {
+      "type": "Financial_Line_Item",
+      "parents": [
+        "EBIT",
+        "Tax_Rate"
+      ],
+      "equation": "GET('EBIT') * (1 - GET('Tax_Rate'))"
+    },
+    "DA_Pct_Revenue": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": ""
+    },
+    "DA": {
+      "type": "Financial_Line_Item",
+      "parents": [
+        "Revenue",
+        "DA_Pct_Revenue"
+      ],
+      "equation": "GET('Revenue') * GET('DA_Pct_Revenue')"
+    },
+    "CapEx_Pct_Revenue": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": ""
+    },
+    "CapEx": {
+      "type": "Financial_Line_Item",
+      "parents": [
+        "Revenue",
+        "CapEx_Pct_Revenue"
+      ],
+      "equation": "GET('Revenue') * GET('CapEx_Pct_Revenue')"
+    },
+    "Receivables_Days": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": ""
+    },
+    "Net_Receivables": {
+      "type": "Financial_Line_Item",
+      "parents": [
+        "Revenue",
+        "Receivables_Days"
+      ],
+      "equation": "(GET('Revenue') / 365) * GET('Receivables_Days')"
+    },
+    "Delta_Receivables": {
+      "type": "Financial_Line_Item",
+      "parents": [
+        "Net_Receivables"
+      ],
+      "equation": "GET('Net_Receivables') - PREV('Net_Receivables')"
+    },
+    "NWC_ex_Receivables_Pct": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": ""
+    },
+    "NWC_ex_Receivables": {
+      "type": "Financial_Line_Item",
+      "parents": [
+        "Revenue",
+        "NWC_ex_Receivables_Pct"
+      ],
+      "equation": "GET('Revenue') * GET('NWC_ex_Receivables_Pct')"
+    },
+    "Delta_NWC_ex_Receivables": {
+      "type": "Financial_Line_Item",
+      "parents": [
+        "NWC_ex_Receivables"
+      ],
+      "equation": "GET('NWC_ex_Receivables') - PREV('NWC_ex_Receivables')"
+    },
+    "Reinvestment": {
+      "type": "Financial_Line_Item",
+      "parents": [
+        "CapEx",
+        "DA",
+        "Delta_Receivables",
+        "Delta_NWC_ex_Receivables"
+      ],
+      "equation": "GET('CapEx') - GET('DA') + GET('Delta_Receivables') + GET('Delta_NWC_ex_Receivables')"
+    },
+    "FCF_Unlevered": {
+      "type": "Financial_Line_Item",
+      "parents": [
+        "NOPAT",
+        "Reinvestment"
+      ],
+      "equation": "GET('NOPAT') - GET('Reinvestment')"
+    },
+    "Invested_Capital": {
+      "type": "Financial_Line_Item",
+      "parents": [
+        "Net_Receivables",
+        "NWC_ex_Receivables",
+        "CapEx",
+        "DA"
+      ],
+      "equation": "PREV('Invested_Capital') + GET('CapEx') - GET('DA') + GET('Delta_Receivables') + GET('Delta_NWC_ex_Receivables')"
+    },
+    "ROIC": {
+      "type": "Endogenous_Driver",
+      "parents": [
+        "NOPAT",
+        "Invested_Capital"
+      ],
+      "equation": "GET('NOPAT') / PREV('Invested_Capital')"
+    }
+  },
+  "coverage_manifest": {
+    "exogenous_drivers": [
+      "MTM_Growth_Rate",
+      "ARPU_Growth_Rate",
+      "Gross_Profit_Margin",
+      "Opex_ex_Variable_Pct",
+      "Tax_Rate",
+      "DA_Pct_Revenue",
+      "CapEx_Pct_Revenue",
+      "Receivables_Days",
+      "NWC_ex_Receivables_Pct"
+    ],
+    "endogenous_drivers": [
+      "MTMs",
+      "ARPU",
+      "EBIT_Margin",
+      "ROIC"
+    ],
+    "financial_line_items": [
+      "Revenue",
+      "Gross_Profit",
+      "Operating_Expenses_ex_Variable",
+      "EBIT",
+      "NOPAT",
+      "DA",
+      "CapEx",
+      "Net_Receivables",
+      "Delta_Receivables",
+      "NWC_ex_Receivables",
+      "Delta_NWC_ex_Receivables",
+      "Reinvestment",
+      "FCF_Unlevered",
+      "Invested_Capital"
+    ],
+    "dag_validation": {
+      "all_exogenous_in_GIM": true,
+      "all_nodes_reachable": true,
+      "no_cycles": true
+    }
+  }
+}
