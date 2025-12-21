@@ -1308,22 +1308,43 @@ The INTEGRATION subagent must have access to the same evidence that upstream sta
 │    - Phase B: Adjudication Loop (evaluate each finding)                     │
 │    - Phase C: Scenario Reconciliation (finalize scenario set)               │
 │                                                                             │
+│    Then execute the SURGICAL EDIT PROTOCOL (CRITICAL):                      │
+│    For each artifact (A.1, A.2, A.3, A.5, A.6, A.10):                       │
+│    1. READ the State 3 version from the epistemic bundle                    │
+│    2. APPLY any modifications required by your adjudication dispositions    │
+│    3. WRITE the complete artifact with _S4 suffix to output_dir             │
+│    If no modifications needed for an artifact, copy it unchanged.           │
+│                                                                             │
+│    Also extract and edit narratives N1-N6 from upstream T2 outputs.         │
+│    Add [State 4: Revised per F{N}] annotations where modified.              │
+│                                                                             │
 │    DO NOT execute the kernel. It is provided for context only.              │
 │                                                                             │
-│    Output: Adjudication decisions + T1 Handoff JSON (cascade scope).        │
-│    Write output to: {output_dir}/{TICKER}_INT_T1_{DATE}.md                  │
-│    Return confirmation and filepath only."                                  │
+│    YOU MUST WRITE ALL 9 OUTPUT FILES:                                       │
+│    1. {TICKER}_INT_T1_{DATE}.md (adjudication reasoning + A.12 trace)       │
+│    2. {TICKER}_A1_EPISTEMIC_ANCHORS_S4.json                                 │
+│    3. {TICKER}_A2_ANALYTIC_KG_S4.json                                       │
+│    4. {TICKER}_A3_CAUSAL_DAG_S4.json                                        │
+│    5. {TICKER}_A5_GESTALT_IMPACT_MAP_S4.json (kernel input)                 │
+│    6. {TICKER}_A6_DR_DERIVATION_TRACE_S4.json (kernel input)                │
+│    7. {TICKER}_A10_SCENARIO_MODEL_S4.json (kernel input)                    │
+│    8. {TICKER}_N1_N6_NARRATIVES_S4.md (edited narratives)                   │
+│    9. {TICKER}_CASCADE.json (cascade scope + modifications)                 │
 │                                                                             │
-│ OUTPUT PRODUCED:                                                            │
-│   • {TICKER}_INT_T1_{DATE}.md containing:                                   │
-│     - Adjudication reasoning for each finding                               │
-│     - Disposition (ACCEPT/REJECT/MODIFY) for each finding                   │
-│     - T1 Handoff JSON with:                                                 │
-│       • cascade_scope (FULL/PARTIAL_SCENARIO/PARTIAL_SSE/NONE)              │
-│       • modifications_to_apply (list of specific changes)                   │
-│       • scenarios_finalized (post-reconciliation scenario set)              │
+│    Return confirmation and list of filepaths written."                      │
 │                                                                             │
-│ PATTERN: Direct-Write (Pattern 1) - subagent writes to disk, returns path  │
+│ OUTPUT PRODUCED (9 files):                                                  │
+│   • {TICKER}_INT_T1_{DATE}.md - Adjudication reasoning + A.12 trace         │
+│   • {TICKER}_A1_EPISTEMIC_ANCHORS_S4.json - Edited/copied artifact          │
+│   • {TICKER}_A2_ANALYTIC_KG_S4.json - Edited/copied artifact                │
+│   • {TICKER}_A3_CAUSAL_DAG_S4.json - Edited/copied artifact                 │
+│   • {TICKER}_A5_GESTALT_IMPACT_MAP_S4.json - Kernel input artifact          │
+│   • {TICKER}_A6_DR_DERIVATION_TRACE_S4.json - Kernel input artifact         │
+│   • {TICKER}_A10_SCENARIO_MODEL_S4.json - Kernel input artifact             │
+│   • {TICKER}_N1_N6_NARRATIVES_S4.md - Edited narratives with annotations    │
+│   • {TICKER}_CASCADE.json - Cascade scope + modification manifest           │
+│                                                                             │
+│ PATTERN: Direct-Write (Pattern 1) - subagent writes to disk, returns paths │
 └──────────────────────┬──────────────────────────────────────────────────────┘
                        │
                        ▼
@@ -1337,16 +1358,25 @@ The INTEGRATION subagent must have access to the same evidence that upstream sta
 │ PROMPT FILE:                                                                │
 │   validators/INT_T1_VALIDATOR.md                                            │
 │                                                                             │
-│ INPUT FILE:                                                                 │
-│   {output_dir}/{TICKER}_INT_T1_{DATE}.md (from Step 2)                      │
+│ INPUT FILES (verify ALL 9 exist):                                           │
+│   {output_dir}/{TICKER}_INT_T1_{DATE}.md                                    │
+│   {output_dir}/{TICKER}_A1_EPISTEMIC_ANCHORS_S4.json                        │
+│   {output_dir}/{TICKER}_A2_ANALYTIC_KG_S4.json                              │
+│   {output_dir}/{TICKER}_A3_CAUSAL_DAG_S4.json                               │
+│   {output_dir}/{TICKER}_A5_GESTALT_IMPACT_MAP_S4.json                       │
+│   {output_dir}/{TICKER}_A6_DR_DERIVATION_TRACE_S4.json                      │
+│   {output_dir}/{TICKER}_A10_SCENARIO_MODEL_S4.json                          │
+│   {output_dir}/{TICKER}_N1_N6_NARRATIVES_S4.md                              │
+│   {output_dir}/{TICKER}_CASCADE.json                                        │
 │                                                                             │
 │ VALIDATION CHECKS:                                                          │
+│   • ALL 9 T1 OUTPUT FILES EXIST (block T2 if any missing)                   │
 │   • All CRITICAL findings have explicit disposition                         │
 │   • All HIGH findings have explicit disposition                             │
-│   • T1 Handoff JSON is well-formed and complete                             │
-│   • cascade_scope is valid enum value                                       │
-│   • If cascade_scope != NONE, modifications_to_apply is non-empty           │
+│   • CASCADE.json is well-formed with valid cascade_scope                    │
+│   • If cascade_scope != NONE, modifications array is non-empty              │
 │   • scenarios_finalized contains ≤4 scenarios                               │
+│   • _S4.json artifacts are valid JSON and contain required fields           │
 │                                                                             │
 │ IF FAIL: Stop. Report issues. Do not proceed to T2.                         │
 │ IF PASS: Proceed to Step 4.                                                 │
