@@ -577,7 +577,7 @@ Run on the 1st of each month:
 | ENRICH | G3ENRICH_2.2.1e.md | HISTORICAL | DAVE_20241210 | CVR_KERNEL_ENRICH_2.2.1e.py |
 | SCENARIO | G3_SCENARIO_2.2.2e_*.md (atomized) | CANONICAL | DAVE_ENRICH_SMOKE_20251220 | CVR_KERNEL_SCEN_2_2_2e.py |
 | SCENARIO | G3_SCENARIO_2_2_1e.md | HISTORICAL | DAVE_20241210 | CVR_KERNEL_SCEN_2_2_1e.py |
-| INTEGRATION | G3_INTEGRATION_2.2.2e_*.md (atomized) | EXPERIMENTAL | - | CVR_KERNEL_INT_2.2.2e.py |
+| INTEGRATION | G3_INTEGRATION_2.2.3e_*.md (atomized) | EXPERIMENTAL | - | CVR_KERNEL_INT_2.2.3e.py |
 | INTEGRATION | G3_INTEGRATION_2_2_2e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_INT_2_2_2e.py |
 | IRR | G3_IRR_2_2_4e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_IRR_2_2_4e.py |
 
@@ -1283,10 +1283,10 @@ The INTEGRATION subagent must have access to the same evidence that upstream sta
 │ ═══════════════════════════════════════════════════════════════════════════ │
 │                                                                             │
 │ PROMPT FILES TO ATTACH:                                                     │
-│   1. prompts/integration/G3_INTEGRATION_2.2.2e_PROMPT.md                    │
-│   2. prompts/integration/G3_INTEGRATION_2.2.2e_SCHEMAS.md                   │
-│   3. prompts/integration/G3_INTEGRATION_2.2.2e_NORMDEFS.md                  │
-│   4. kernels/CVR_KERNEL_INT_2.2.2e.py (FOR CONTEXT ONLY - DO NOT EXECUTE)   │
+│   1. prompts/integration/G3_INTEGRATION_2.2.3e_PROMPT.md                    │
+│   2. prompts/integration/G3_INTEGRATION_2.2.3e_SCHEMAS.md                   │
+│   3. prompts/integration/G3_INTEGRATION_2.2.3e_NORMDEFS.md                  │
+│   4. kernels/CVR_KERNEL_INT_2.2.3e.py (FOR CONTEXT ONLY - DO NOT EXECUTE)   │
 │                                                                             │
 │ INPUT FILES TO ATTACH (Full Epistemic Parity Bundle from Step 1):           │
 │   • ALL source documents from 00_source/                                    │
@@ -1361,10 +1361,10 @@ The INTEGRATION subagent must have access to the same evidence that upstream sta
 │ ═══════════════════════════════════════════════════════════════════════════ │
 │                                                                             │
 │ PROMPT FILES TO ATTACH:                                                     │
-│   1. prompts/integration/G3_INTEGRATION_2.2.2e_PROMPT.md                    │
-│   2. prompts/integration/G3_INTEGRATION_2.2.2e_SCHEMAS.md                   │
-│   3. prompts/integration/G3_INTEGRATION_2.2.2e_NORMDEFS.md                  │
-│   4. kernels/CVR_KERNEL_INT_2.2.2e.py (EXECUTABLE IN T2)                    │
+│   1. prompts/integration/G3_INTEGRATION_2.2.3e_PROMPT.md                    │
+│   2. prompts/integration/G3_INTEGRATION_2.2.3e_SCHEMAS.md                   │
+│   3. prompts/integration/G3_INTEGRATION_2.2.3e_NORMDEFS.md                  │
+│   4. kernels/CVR_KERNEL_INT_2.2.3e.py (EXECUTABLE IN T2)                    │
 │                                                                             │
 │ INPUT FILES TO ATTACH:                                                      │
 │   • {output_dir}/{TICKER}_INT_T1_{DATE}.md (T1 output with Handoff JSON)    │
@@ -1450,8 +1450,8 @@ The INTEGRATION subagent must have access to the same evidence that upstream sta
 │   • Ready for human review or IRR stage consumption                         │
 │                                                                             │
 │ PROMPT FILES TO ATTACH:                                                     │
-│   1. prompts/integration/G3_INTEGRATION_2.2.2e_PROMPT.md                    │
-│   2. prompts/integration/G3_INTEGRATION_2.2.2e_SCHEMAS.md                   │
+│   1. prompts/integration/G3_INTEGRATION_2.2.3e_PROMPT.md                    │
+│   2. prompts/integration/G3_INTEGRATION_2.2.3e_SCHEMAS.md                   │
 │                                                                             │
 │ INPUT FILES TO ATTACH:                                                      │
 │   • {output_dir}/{TICKER}_INT_T1_{DATE}.md (adjudication work)              │
@@ -1584,10 +1584,10 @@ Use Task tool with model="opus" for each step. See Stage Flow above for exact pr
 
 | File | Location | Purpose |
 |------|----------|---------|
-| G3_INTEGRATION_2.2.2e_PROMPT.md | prompts/integration/ | Core instructions (Sections I-V) |
-| G3_INTEGRATION_2.2.2e_SCHEMAS.md | prompts/integration/ | JSON schemas (Appendix A) |
-| G3_INTEGRATION_2.2.2e_NORMDEFS.md | prompts/integration/ | DSL & financial definitions (Appendix B) |
-| CVR_KERNEL_INT_2.2.2e.py | kernels/ | Recalculation kernel |
+| G3_INTEGRATION_2.2.3e_PROMPT.md | prompts/integration/ | Core instructions (Sections I-V) |
+| G3_INTEGRATION_2.2.3e_SCHEMAS.md | prompts/integration/ | JSON schemas (Appendix A) |
+| G3_INTEGRATION_2.2.3e_NORMDEFS.md | prompts/integration/ | DSL & financial definitions (Appendix B) |
+| CVR_KERNEL_INT_2.2.3e.py | kernels/ | Recalculation kernel |
 | INT_T1_VALIDATOR.md | validators/ | T1 adjudication validator |
 | INT_T2_VALIDATOR.md | validators/ | T2 recalculation validator |
 | INT_T3_VALIDATOR.md | validators/ | T3 final output validator |
@@ -1596,10 +1596,10 @@ Use Task tool with model="opus" for each step. See Stage Flow above for exact pr
 
 | File | Purpose | Lines |
 |------|---------|-------|
-| `G3_INTEGRATION_2.2.2e_PROMPT.md` | Core instructions (Sections I-V) | 1307 |
-| `G3_INTEGRATION_2.2.2e_SCHEMAS.md` | JSON schemas (Appendix A) | 512 |
-| `G3_INTEGRATION_2.2.2e_NORMDEFS.md` | DSL & financial definitions (Appendix B) | 567 |
-| `CVR_KERNEL_INT_2.2.2e.py` | Recalculation kernel | (existing) |
+| `G3_INTEGRATION_2.2.3e_PROMPT.md` | Core instructions (Sections I-V) | 1307 |
+| `G3_INTEGRATION_2.2.3e_SCHEMAS.md` | JSON schemas (Appendix A) | 512 |
+| `G3_INTEGRATION_2.2.3e_NORMDEFS.md` | DSL & financial definitions (Appendix B) | 567 |
+| `CVR_KERNEL_INT_2.2.3e.py` | Recalculation kernel | (existing) |
 
 **Status:** EXPERIMENTAL - awaiting smoke test.
 

@@ -1,4 +1,4 @@
-G3 INTEGRATION 2.2.2e: Adversarial Adjudication and Finalization
+G3 INTEGRATION 2.2.3e: Adversarial Adjudication and Finalization
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
@@ -89,23 +89,36 @@ A.x Three-Shot Execution Paradigm
 
 The INTEGRATION stage executes across three turns to optimize context utilization and produce a comprehensive final output.
 
-**Turn 1: Analytical Adjudication**
+**Turn 1: Adjudication + Surgical Artifact Editing**
 
 **Trigger:** "Do Turn 1: INTEGRATION for {Company Name}, {EXCHANGE:TICKER}"
 
 **Attachments Required:**
-- This prompt (G3_INTEGRATION_2.2.2e.md)
-- MRC State 3 Output ({TICKER}_SCEN2.2.1eO_T2_{YYYYMMDD}.md)
-- A.11_AUDIT_REPORT set (all SC outputs: {TICKER}_SC2.2.1eO_{YYYYMMDD}_{LLM}.md)
-- CVR_KERNEL_INT_2.2.2e.py (reference context only)
+- This prompt (G3_INTEGRATION_2.2.3e.md)
+- Full Epistemic Parity Bundle (source docs, RQ outputs, ENRICH artifacts, SCENARIO artifacts)
+- A.11_AUDIT_REPORT set (all SC outputs)
+- CVR_KERNEL_INT_2.2.3e.py (reference context only - DO NOT EXECUTE)
 
-**Scope:** Phases A-C (Initialization, Adjudication Loop, Scenario Reconciliation)
+**Scope:** Phases A-C (Initialization, Adjudication Loop, Scenario Reconciliation) + Surgical Artifact Editing
 
-**Output:**
-- Adjudication decisions with dispositions
-- Scenario reconciliation results
-- T1 Handoff JSON (execution arguments for T2)
-- Filename: {TICKER}_INT2.2.2eO_T1_{YYYYMMDD}.md
+**T1 Output Mandate (CRITICAL):**
+T1 must output COMPLETE, EDITED versions of all kernel input artifacts and narratives. T2 receives ONLY T1 outputs - no epistemic bundle re-ingestion.
+
+**T1 Output Files:**
+1. `{TICKER}_INT_T1_{YYYYMMDD}.md` - Adjudication reasoning + A.12_INTEGRATION_TRACE
+2. `{TICKER}_A1_EPISTEMIC_ANCHORS_S4.json` - Edited artifact (or unchanged if no modifications)
+3. `{TICKER}_A2_ANALYTIC_KG_S4.json` - Edited artifact
+4. `{TICKER}_A3_CAUSAL_DAG_S4.json` - Edited artifact
+5. `{TICKER}_A5_GESTALT_IMPACT_MAP_S4.json` - Edited artifact (kernel input)
+6. `{TICKER}_A6_DR_DERIVATION_TRACE_S4.json` - Edited artifact (kernel input)
+7. `{TICKER}_A10_SCENARIO_MODEL_S4.json` - Edited artifact (kernel input)
+8. `{TICKER}_N1_N6_NARRATIVES_S4.md` - Edited narratives N1-N6
+9. `{TICKER}_CASCADE.json` - Cascade scope + modification manifest
+
+**Surgical Edit Protocol:**
+- For each artifact: READ State 3 version → APPLY adjudication modifications → WRITE State 4 version
+- If no modifications needed: copy artifact unchanged with `_S4` suffix
+- All edits must be traceable to A.12 finding dispositions
 
 **Exclusion:** Do NOT execute Kernel. Kernel is provided for semantic alignment only.
 
@@ -113,62 +126,88 @@ The INTEGRATION stage executes across three turns to optimize context utilizatio
 
 **Trigger:** "Do Turn 2"
 
-**Attachments Required:**
-- This prompt (G3_INTEGRATION_2.2.2e.md)
-- Turn 1 Output ({TICKER}_INT2.2.2eO_T1_{YYYYMMDD}.md)
-- MRC State 3 artifacts (re-ingested fresh for clean context)
-- CVR_KERNEL_INT_2.2.2e.py
+**Attachments Required (T1 OUTPUTS ONLY - NO EPISTEMIC BUNDLE):**
+- This prompt (G3_INTEGRATION_2.2.3e.md)
+- T1 Output: `{TICKER}_INT_T1_{YYYYMMDD}.md`
+- T1 Output: `{TICKER}_A5_GESTALT_IMPACT_MAP_S4.json` (kernel input)
+- T1 Output: `{TICKER}_A6_DR_DERIVATION_TRACE_S4.json` (kernel input)
+- T1 Output: `{TICKER}_A10_SCENARIO_MODEL_S4.json` (kernel input)
+- T1 Output: `{TICKER}_CASCADE.json` (execution arguments)
+- CVR_KERNEL_INT_2.2.3e.py (EXECUTABLE)
+
+**CRITICAL:** T2 does NOT receive the epistemic parity bundle. T1 has already performed all adjudication and produced edited artifacts. T2 simply executes the kernel with T1's outputs.
 
 **Scope:** Phases D-E (Recalculation Cascade, Distributional Re-Analysis)
 
-**Output:**
-- Finalized artifacts A.1-A.12 with all amendments applied
-- state_4_active_inputs (pre-merged computational inputs)
-- Filename: {TICKER}_INT2.2.2eO_T2_{YYYYMMDD}.md
+**Kernel Execution Mandate:**
+T2 MUST execute the kernel via Bash. Manual calculation is PROHIBITED.
 
-**Turn 3: Narrative Synthesis**
+```bash
+python3 CVR_KERNEL_INT_2.2.3e.py \
+  --a5 {TICKER}_A5_GESTALT_IMPACT_MAP_S4.json \
+  --a6 {TICKER}_A6_DR_DERIVATION_TRACE_S4.json \
+  --a10 {TICKER}_A10_SCENARIO_MODEL_S4.json \
+  --cascade {TICKER}_CASCADE.json \
+  --output {TICKER}_A7_VALUATION_S4.json
+```
+
+**Output:**
+- `{TICKER}_INT_T2_{YYYYMMDD}.md` - Kernel execution log + State 3→4 bridge
+- `{TICKER}_A7_VALUATION_S4.json` - Kernel output (new valuation summary)
+- `{TICKER}_A10_SCENARIO_MODEL_S4_FINAL.json` - Updated SSE if scenarios modified
+
+**Turn 3: Final CVR Assembly**
 
 **Trigger:** "Do Turn 3"
 
-**Attachments Required:**
-- This prompt (G3_INTEGRATION_2.2.2e.md)
-- Turn 2 Output ({TICKER}_INT2.2.2eO_T2_{YYYYMMDD}.md)
-- Upstream narrative sources:
-  - {TICKER}_BASE2.2.1eO_T2_{YYYYMMDD}.md
-  - {TICKER}_ENRICH2.2.1eO_T2_{YYYYMMDD}.md
-  - {TICKER}_SCEN2.2.1eO_T2_{YYYYMMDD}.md
-  - {TICKER}_SC2.2.1eO_{YYYYMMDD}_{LLM}.md (all SC outputs)
+**Attachments Required (T1 + T2 OUTPUTS ONLY):**
+- This prompt (G3_INTEGRATION_2.2.3e.md)
+- T1 Output: `{TICKER}_INT_T1_{YYYYMMDD}.md` (adjudication reasoning, A.12)
+- T1 Output: `{TICKER}_A1_EPISTEMIC_ANCHORS_S4.json`
+- T1 Output: `{TICKER}_A2_ANALYTIC_KG_S4.json`
+- T1 Output: `{TICKER}_A3_CAUSAL_DAG_S4.json`
+- T1 Output: `{TICKER}_A5_GESTALT_IMPACT_MAP_S4.json`
+- T1 Output: `{TICKER}_A6_DR_DERIVATION_TRACE_S4.json`
+- T1 Output: `{TICKER}_N1_N6_NARRATIVES_S4.md` (edited narratives)
+- T2 Output: `{TICKER}_INT_T2_{YYYYMMDD}.md` (kernel log)
+- T2 Output: `{TICKER}_A7_VALUATION_S4.json` (kernel output)
+- T2 Output: `{TICKER}_A10_SCENARIO_MODEL_S4_FINAL.json` (final SSE)
 
-**Scope:** Phase F (Comprehensive Final Output)
+**CRITICAL:** T3 does NOT receive upstream narratives (BASE_T2, ENRICH_T2, SCEN_T2). T1 has already edited N1-N6 for consistency. T3 stitches T1+T2 outputs into final CVR.
 
-**Execution Mode:** CONCATENATION-PRIMARY — Copy/paste from upstream sources. Minimize generation. See Section V.A.x.
+**Scope:** Phase F (Final CVR Assembly)
+
+**Execution Mode:** CONCATENATION-PRIMARY — Stitch T1+T2 outputs. Generate N7-N9 only. See Section V.A.x.
 
 **Output:**
-- CVR State 4 Final Valuation (unified document)
-- Contains narratives N1-N9 + embedded artifacts
-- Filename: {TICKER}_INT2.2.2eO_T3_{YYYYMMDD}.md
+- `{TICKER}_INT_T3_{YYYYMMDD}.md` - CVR State 4 Final Valuation (unified document)
+- Contains narratives N1-N9 + artifacts A.1-A.7, A.10 (excludes A.8, A.9, A.11, A.12)
+- This is THE final output for human review and IRR stage
 
 **Data Flow:**
 
 ```
-T1 Inputs                    T1 Output
-─────────────────────────────────────────
-MRC State 3 artifacts   ──►  Adjudication JSON
-A.11 Audit Reports      ──►  (scenario decisions,
-Kernel (context)             modifications, cascade scope)
-                                    │
-                                    ▼
-T2 Inputs                    T2 Output
-─────────────────────────────────────────
-T1 JSON                 ──►  Finalized Artifacts A.1-A.12
-State 3 (fresh)         ──►  state_4_active_inputs
-Kernel (executable)     ──►  Recalculation results
-                                    │
-                                    ▼
-T3 Inputs                    T3 Output
-─────────────────────────────────────────
-T2 Artifacts            ──►  CVR State 4 Final Valuation
-Upstream Narratives     ──►  (N1-N9 + embedded artifacts)
+T1 Inputs                         T1 Outputs (WRITTEN TO DISK)
+──────────────────────────────────────────────────────────────
+Full Epistemic Bundle        ──►  A.1-A.3, A.5, A.6, A.10 (_S4.json)
+A.11 Audit Reports           ──►  N1-N6 Narratives (_S4.md)
+Kernel (context only)        ──►  A.12 + CASCADE.json
+                                         │
+                                         │ (files passed to T2)
+                                         ▼
+T2 Inputs (T1 OUTPUTS ONLY)       T2 Outputs
+──────────────────────────────────────────────────────────────
+A.5_S4, A.6_S4, A.10_S4      ──►  A.7_S4.json (kernel output)
+CASCADE.json                 ──►  A.10_S4_FINAL.json (if SSE changed)
+Kernel (EXECUTABLE)          ──►  T2 markdown (kernel log)
+                                         │
+                                         │ (files passed to T3)
+                                         ▼
+T3 Inputs (T1 + T2 OUTPUTS)       T3 Output
+──────────────────────────────────────────────────────────────
+All T1 artifacts (_S4.json)  ──►  CVR State 4 Final Valuation
+All T2 artifacts             ──►  (N1-N9 + A.1-A.7, A.10)
+N1-N6 from T1                ──►  CLEAN DOCUMENT (no A.8, A.9, A.11, A.12)
 ```
 
 **Rationale:**
@@ -287,7 +326,7 @@ the complete audit trail for human analysts.
 
 \"bundle_metadata\": {
 
-\"schema_version\": \"G3_2.2.2eI_BUNDLE\",
+\"schema_version\": \"G3_2.2.3eI_BUNDLE\",
 
 \"bundle_type\": \"CVR_STATE_4_FINALIZED\",
 
@@ -306,9 +345,9 @@ the complete audit trail for human analysts.
 
 \"paradigm\": \"G3 Meta-Prompting Doctrine v2.4 (Three-Shot Guided Autonomy)\",
 
-\"pipeline_stage\": \"INTEGRATION G3_2.2.2e\",
+\"pipeline_stage\": \"INTEGRATION G3_2.2.3e\",
 
-\"schema_version\": \"G3_2.2.2eI\",
+\"schema_version\": \"G3_2.2.3eI\",
 
 \"execution_model\": \"Three-Shot (T1=Adjudication, T2=Execution, T3=Synthesis)\",
 
@@ -326,35 +365,23 @@ the complete audit trail for human analysts.
 
 \"artifacts\": {
 
-\"A.1_EPISTEMIC_ANCHORS\": \"{\...full artifact, amended if adjudication
-required\...}\",
+\"A.1_EPISTEMIC_ANCHORS\": \"{\...full artifact, amended if adjudication required\...}\",
 
-\"A.2_ANALYTIC_KG\": \"{\...full artifact, amended if adjudication
-required\...}\",
+\"A.2_ANALYTIC_KG\": \"{\...full artifact, amended if adjudication required\...}\",
 
-\"A.3_CAUSAL_DAG\": \"{\...full artifact, amended if adjudication
-required\...}\",
+\"A.3_CAUSAL_DAG\": \"{\...full artifact, amended if adjudication required\...}\",
 
-\"A.5_GESTALT_IMPACT_MAP\": \"{\...full artifact, amended if
-adjudication required\...}\",
+\"A.5_GESTALT_IMPACT_MAP\": \"{\...full artifact, amended if adjudication required\...}\",
 
-\"A.6_DR_DERIVATION_TRACE\": \"{\...full artifact, amended if adjudication
-required per P7\...}\",
+\"A.6_DR_DERIVATION_TRACE\": \"{\...full artifact, amended if adjudication required per P7\...}\",
 
-\"A.7_LIGHTWEIGHT_VALUATION_SUMMARY\": \"{\...recalculated if cascade
-triggered, includes Y0-Y3 checkpoints\...}\",
+\"A.7_LIGHTWEIGHT_VALUATION_SUMMARY\": \"{\...recalculated if cascade triggered, includes Y0-Y3 checkpoints\...}\",
 
-\"A.8_RESEARCH_STRATEGY_MAP\": \"{\...full artifact, immutable\...}\",
-
-\"A.9_ENRICHMENT_TRACE\": \"{\...full artifact, immutable\...}\",
-
-\"A.10_SCENARIO_MODEL_OUTPUT\": \"{\...full artifact, amended if
-scenarios modified\...}\",
-
-\"A.12_INTEGRATION_TRACE\": \"{\...the adjudication record, per Appendix
-A schema\...}\"
+\"A.10_SCENARIO_MODEL_OUTPUT\": \"{\...full artifact, amended if scenarios modified\...}\"
 
 },
+
+\"_deprecated_procedural_artifacts\": \"A.8 (Research Strategy), A.9 (Enrichment Trace), A.11 (Audit Report), A.12 (Integration Trace) are NOT included in final CVR. They are procedural artifacts retained in 08_INTEGRATION/ folder for audit trail but excluded from IRR input.\",
 
 \"amendment_manifest\": {
 
@@ -1230,14 +1257,11 @@ Emit a comprehensive unified document with the following structure:
   "A.5_GESTALT_IMPACT_MAP": {...},
   "A.6_DR_DERIVATION_TRACE": {...},
   "A.7_LIGHTWEIGHT_VALUATION_SUMMARY": {...},
-  "A.8_RESEARCH_STRATEGY_MAP": {...},
-  "A.9_ENRICHMENT_TRACE": {...},
   "A.10_SCENARIO_MODEL_OUTPUT": {...},
-  "A.11_AUDIT_REPORT": {...},
-  "A.12_INTEGRATION_TRACE": {...},
-  "state_4_active_inputs": {...},
-  "amendment_manifest": {...}
+  "state_4_active_inputs": {...}
 }
+
+NOTE: A.8 (Research Strategy), A.9 (Enrichment Trace), A.11 (Audit Report), A.12 (Integration Trace) are EXCLUDED from final CVR. They are procedural/deprecated artifacts retained in 08_INTEGRATION/ folder for audit trail only.
 
 [END OF CVR STATE 4 FINAL VALUATION]
 ```
