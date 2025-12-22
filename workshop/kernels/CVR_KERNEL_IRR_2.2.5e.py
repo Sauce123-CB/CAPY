@@ -3291,20 +3291,13 @@ def calculate_fork_market_multiple(
     base_multiple_t1 = market_multiple_t0 * transition_factor
 
 
-    # Scenario adjustments (ρ-weighted)
+    # PATCH 2025-12-22: Scenario adjustments REMOVED to fix double-counting bug.
+    # Scenario impacts are already captured in fork_fundamentals (EBITDA/revenue adjustments).
+    # Applying scenario_multiple_impacts HERE would double-count: once via fundamentals,
+    # once via multiple. The multiple should only reflect TF compression + CR convergence.
     scenario_adjustment = 0.0
     adjustment_details = []
-
-
-    for scenario_id in active_scenarios:
-        impact = scenario_multiple_impacts.get(scenario_id, 0)
-        rho = rho_estimates.get(scenario_id, 0)
-
-
-        if abs(impact) > EPSILON and rho > EPSILON:
-            adj = impact * rho
-            scenario_adjustment += adj
-            adjustment_details.append(f"{scenario_id}: {impact:+.2f}x × ρ={rho:.2f} = {adj:+.2f}x")
+    # (scenario adjustment loop removed - fundamentals capture scenario value)
 
 
     market_multiple_t1 = base_multiple_t1 + scenario_adjustment
@@ -3776,10 +3769,24 @@ def build_scenario_fundamentals_map(scenarios):
 
         if fundamentals:
             # Normalize key names (handle both 'fcf_unlevered' and 'fcf')
+            revenue = fundamentals.get('revenue', 0)
+            ebit = fundamentals.get('ebit', 0)
+
+            # Derive EBITDA from EBIT + D&A if EBITDA not provided
+            # D&A is typically ~1.3% of revenue (from GIM terminal assumptions)
+            ebitda = fundamentals.get('ebitda')
+            if ebitda is None or ebitda == 0:
+                # Estimate D&A as 1.3% of revenue (standard DA_Pct_Revenue)
+                da_pct = 0.013
+                da_estimate = revenue * da_pct
+                ebitda = ebit + da_estimate
+                logger.info(f"Scenario {scenario_id}: Derived EBITDA={ebitda:.2f} from "
+                           f"EBIT={ebit:.2f} + D&A={da_estimate:.2f} (1.3% of revenue)")
+
             normalized = {
-                'revenue': fundamentals.get('revenue', 0),
-                'ebitda': fundamentals.get('ebitda', 0),
-                'ebit': fundamentals.get('ebit', 0),
+                'revenue': revenue,
+                'ebitda': ebitda,
+                'ebit': ebit,
                 'ebit_margin': fundamentals.get('ebit_margin', 0),
                 'nopat': fundamentals.get('nopat', 0),
                 'fcf': fundamentals.get('fcf_unlevered', fundamentals.get('fcf', 0))
@@ -3851,6 +3858,11 @@ def calculate_fork_fundamentals(
     # Start with copy of base fundamentals
     fork_fundamentals = dict(base_fundamentals)
 
+    # CRITICAL: Store original base values - these must be used for ALL scenario deltas
+    # Bug fix 2025-12-22: Previously, base_val was taken from fork_fundamentals which
+    # gets mutated in place. This caused compounding errors when multiple scenarios active.
+    original_base = dict(base_fundamentals)
+
 
     # Track adjustments for transparency
     adjustments_applied = []
@@ -3884,7 +3896,8 @@ def calculate_fork_fundamentals(
                 continue
 
 
-            base_val = fork_fundamentals[metric]
+            # CRITICAL: Use ORIGINAL base value, not the mutated fork_fundamentals value
+            base_val = original_base.get(metric)
             scenario_val = scenario_funds[metric]
 
 
@@ -3896,9 +3909,11 @@ def calculate_fork_fundamentals(
 
 
             # Calculate delta and apply ρ-weighted adjustment
+            # Formula: fork_metric = base + Σ(ρ_i × (scenario_i - base))
+            # We ADD to fork_fundamentals (which accumulates adjustments)
             delta = scenario_val - base_val
             adjustment = rho * delta
-            fork_fundamentals[metric] = base_val + adjustment
+            fork_fundamentals[metric] = fork_fundamentals.get(metric, base_val) + adjustment
 
 
             # Track for transparency
@@ -4186,6 +4201,21 @@ def generate_irr_forks_tf(
     shares_outstanding = market_data.get('shares_outstanding', 0)
     net_debt_t1 = tf_result.get('net_debt_t1', market_data.get('net_debt', 0))
 
+    # PATCH 2025-12-22: Build IVPS impact lookup for direct IRR calculation
+    # Instead of reconstructing IVPS from EBITDA (which causes inconsistencies),
+    # we use the IVPS impacts directly from the SCENARIO stage.
+    # Formula: Fork_IRR = Null_IRR + Σ(ρ × IVPS_impact) / Price_T0
+    scenario_ivps_impacts = {}
+    for s in scenarios:
+        s_id = s.get('scenario_id')
+        ivps_impact = s.get('ivps_impact', 0)
+        if s_id and ivps_impact is not None:
+            scenario_ivps_impacts[s_id] = ivps_impact
+
+    # Get null case IRR for the additive formula
+    # Note: null_case stores IRR in irr_decomposition.total_irr
+    null_irr = null_case.get('irr_decomposition', {}).get('total_irr', 0)
+
 
     # Extract valuation metric
     primary_metric = multiple_selection['primary']['metric']
@@ -4255,26 +4285,39 @@ def generate_irr_forks_tf(
 
 
         # ---------------------------------------------------------------------
-        # Step 3: Calculate T+1 valuation using fork fundamentals and multiple
+        # Step 3: Calculate Fork IRR using DIRECT IVPS approach (Patch 2025-12-22)
         # ---------------------------------------------------------------------
-        # Get the metric value for this fork
+        # SIMPLIFIED FORMULA: Fork_IRR = Null_IRR + Σ(ρ × IVPS_impact) / Price_T0
+        # This directly uses IVPS impacts from SCENARIO stage instead of
+        # reconstructing through EBITDA → EV → Price (which caused inconsistencies).
+        #
+        # Rationale: IVPS impacts were rigorously calculated in SCENARIO stage.
+        # New information (scenario resolution) is priced at CR=100% (efficient).
+        # The ρ (resolution %) already captures how much uncertainty resolves.
+
+        # Calculate IVPS contribution from active scenarios
+        ivps_contribution = 0.0
+        for s_id in scenarios_active:
+            ivps_impact = scenario_ivps_impacts.get(s_id, 0)
+            rho = rho_estimates.get(s_id, 0)
+            ivps_contribution += rho * ivps_impact
+
+        # Fork IRR = Null IRR + IVPS contribution / Price
+        fork_irr = null_irr + (ivps_contribution / price_t0) if price_t0 > EPSILON else 0
+
+        # Derive price_t1 for reporting (reverse engineer from IRR)
+        fork_price_t1 = price_t0 * (1 + fork_irr)
+        fork_price_t1 = max(0, fork_price_t1)  # Limited liability floor
+
+        # Calculate EV for reporting purposes only (not used for IRR)
         metric_map = {
             'EV_Revenue': fork_fundamentals.get('revenue', 0),
             'EV_EBITDA': fork_fundamentals.get('ebitda', 0),
             'EV_FCF': fork_fundamentals.get('fcf', 0)
         }
         fork_metric_t1 = metric_map.get(primary_metric, fork_fundamentals.get('revenue', 0))
-
-
-        # Calculate EV and price
         fork_ev_t1 = fork_metric_t1 * fork_market_multiple_t1
         fork_equity_t1 = fork_ev_t1 - net_debt_t1
-        fork_price_t1 = fork_equity_t1 / shares_outstanding if shares_outstanding > EPSILON else 0
-        fork_price_t1 = max(0, fork_price_t1)  # Limited liability floor
-
-
-        # Calculate IRR
-        fork_irr = (fork_price_t1 / price_t0) - 1 if price_t0 > EPSILON else 0
 
 
         # ---------------------------------------------------------------------
@@ -4291,6 +4334,8 @@ def generate_irr_forks_tf(
                 'base_multiple_t1': multiple_result['base_multiple_t1'],
                 'scenario_adjustment': multiple_result['scenario_adjustment'],
                 'fork_market_multiple_t1': fork_market_multiple_t1,
+                # Alias for backward compatibility with sanity checks
+                'expected_multiple_t1': fork_market_multiple_t1,
                 'calculation_trace': multiple_result['calculation_trace'],
                 'valuation_metric': primary_metric,
                 'valuation_fallback_flag': valuation_fallback_applied
@@ -4923,12 +4968,24 @@ def execute_irr_workflow(
     dr_static = valuation_anchor.get('dr_static')
     base_case_ivps_state2 = valuation_anchor.get('base_case_ivps_state2')
 
+    # CRITICAL: For TF calculation, use IVPS_DETERMINISTIC (base case, no scenarios)
+    # E[IVPS] already includes probability-weighted scenario impacts (+$7.09 for DAVE)
+    # Using E[IVPS] would double-count when we add ρ-weighted impacts in fork generation
+    ivps_deterministic = base_case_ivps_state2
 
     # Fallback to A.7 if bundle incomplete
     if e_ivps_state4 is None:
         ivps_summary = a7_summary.get('ivps_summary', {})
         e_ivps_state4 = ivps_summary.get('IVPS', 0)
         logger.warning("e_ivps_state4 missing from bundle; using A.7 IVPS")
+
+    if ivps_deterministic is None:
+        # Fallback: try A.7 base_case_ivps
+        ivps_deterministic = a7_summary.get('ivps_summary', {}).get('base_case_ivps')
+    if ivps_deterministic is None:
+        # Last resort: use e_ivps (will cause double-count but allows kernel to run)
+        logger.error("IVPS_DETERMINISTIC not found; falling back to E[IVPS] - WILL DOUBLE-COUNT!")
+        ivps_deterministic = e_ivps_state4
 
 
     if dr_static is None:
@@ -5057,8 +5114,9 @@ def execute_irr_workflow(
 
 
     # Calculate Transition Factor
+    # CRITICAL: Use ivps_deterministic (base case), NOT e_ivps_state4 (which includes scenario impacts)
     tf_result = calculate_transition_factor(
-        ivps_t0=e_ivps_state4,
+        ivps_t0=ivps_deterministic,
         dr_static=dr_static,
         fcf_y1=fundamentals_t1.get('fcf', 0),
         net_debt_t0=net_debt,
@@ -5130,7 +5188,8 @@ def execute_irr_workflow(
             'transition_factor': transition_factor,
             'market_multiple_t1_null': null_market_multiple_t1,
             'dcf_multiple_t1': dcf_multiple_t1,
-            'ivps_t0': e_ivps_state4,
+            'ivps_deterministic': ivps_deterministic,  # Base case IVPS (no scenarios)
+            'e_ivps_state4': e_ivps_state4,  # E[IVPS] including scenario impacts (for reference)
             'ivps_t1': tf_result['ivps_t1'],
             'dr_static': dr_static,
             'calculation_trace': tf_result['calculation_trace'],
@@ -5380,19 +5439,25 @@ if __name__ == "__main__":
             'company_name': irr_inputs.get('ticker', ''),
             'ticker': irr_inputs.get('ticker', ''),
             'market_context': {
-                'current_share_price': irr_inputs.get('market_data', {}).get('live_price_t0'),
+                'Current_Stock_Price': irr_inputs.get('price_t0'),
             },
             'share_data': {
-                'shares_outstanding_diluted': irr_inputs.get('market_data', {}).get('shares_outstanding_fdso'),
+                'shares_out_diluted_tsm': irr_inputs.get('shares_outstanding'),
             },
             'capital_structure': {
-                'net_debt_y0': irr_inputs.get('market_data', {}).get('net_debt_y0', 0),
+                'net_debt_y0': {
+                    # Net debt can be negative (net cash position)
+                    # For simplicity, encode as gross_debt - cash = net_debt
+                    'gross_debt': max(0, irr_inputs.get('net_debt_t0', 0)),
+                    'cash_equivalents': max(0, -irr_inputs.get('net_debt_t0', 0))
+                },
             }
         },
         'A.7_LIGHTWEIGHT_VALUATION_SUMMARY': {
             'ivps_summary': {
-                'base_case_ivps': irr_inputs.get('valuation_anchor', {}).get('base_case_ivps_state2'),
-                'e_ivps': irr_inputs.get('valuation_anchor', {}).get('e_ivps_state4'),
+                'IVPS': irr_inputs.get('valuation_anchor', {}).get('e_ivps_state4'),
+                'DR': irr_inputs.get('valuation_anchor', {}).get('dr_static'),
+                'Terminal_g': irr_inputs.get('valuation_anchor', {}).get('terminal_g', 0.03),
             },
             'dr_derivation': {
                 'dr_final': irr_inputs.get('valuation_anchor', {}).get('dr_static'),
@@ -5401,8 +5466,20 @@ if __name__ == "__main__":
                 'terminal_g': irr_inputs.get('valuation_anchor', {}).get('terminal_g', 0.03),
             },
             'forecast_trajectory_checkpoints': {
-                'Y0': irr_inputs.get('fundamentals_y0', {}),
-                'Y1': irr_inputs.get('fundamentals_y1', {}),
+                'Y0': {
+                    'Revenue': irr_inputs.get('fundamentals_y0', {}).get('revenue', 0),
+                    'EBITDA': irr_inputs.get('fundamentals_y0', {}).get('ebitda', 0),
+                    'EBIT': irr_inputs.get('fundamentals_y0', {}).get('ebit', 0),
+                    'NOPAT': irr_inputs.get('fundamentals_y0', {}).get('nopat', 0),
+                    'FCF_Unlevered': irr_inputs.get('fundamentals_y0', {}).get('fcf', 0),
+                },
+                'Y1': {
+                    'Revenue': irr_inputs.get('fundamentals_y1', {}).get('revenue', 0),
+                    'EBITDA': irr_inputs.get('fundamentals_y1', {}).get('ebitda', 0),
+                    'EBIT': irr_inputs.get('fundamentals_y1', {}).get('ebit', 0),
+                    'NOPAT': irr_inputs.get('fundamentals_y1', {}).get('nopat', 0),
+                    'FCF_Unlevered': irr_inputs.get('fundamentals_y1', {}).get('fcf', 0),
+                },
             }
         },
         'A.10_SCENARIO_MODEL_OUTPUT': {
@@ -5421,16 +5498,34 @@ if __name__ == "__main__":
             },
             'state_4_synthesis': {
                 'e_ivps_state4': irr_inputs.get('valuation_anchor', {}).get('e_ivps_state4'),
-            }
-        },
-        'state_4_active_inputs': {
-            'market_data_snapshot': irr_inputs.get('market_data', {}),
-            'valuation_anchor': irr_inputs.get('valuation_anchor', {}),
-            'fundamentals_trajectory': {
-                'Y0': irr_inputs.get('fundamentals_y0', {}),
-                'Y1': irr_inputs.get('fundamentals_y1', {}),
             },
-            'scenarios_finalized': irr_inputs.get('scenarios_finalized', []),
+            # CRITICAL: state_4_active_inputs MUST be inside A.12_INTEGRATION_TRACE
+            # The kernel extracts: a11_integration_trace.get('state_4_active_inputs', {})
+            'state_4_active_inputs': {
+                'market_data_snapshot': {
+                    'current_price': irr_inputs.get('price_t0'),
+                    'shares_outstanding_fdso': irr_inputs.get('shares_outstanding'),
+                    'net_debt_y0': irr_inputs.get('net_debt_t0'),
+                },
+                'valuation_anchor': irr_inputs.get('valuation_anchor', {}),
+                'fundamentals_trajectory': {
+                    'Y0': {
+                        'Revenue': irr_inputs.get('fundamentals_y0', {}).get('revenue', 0),
+                        'EBITDA': irr_inputs.get('fundamentals_y0', {}).get('ebitda', 0),
+                        'EBIT': irr_inputs.get('fundamentals_y0', {}).get('ebit', 0),
+                        'NOPAT': irr_inputs.get('fundamentals_y0', {}).get('nopat', 0),
+                        'FCF_Unlevered': irr_inputs.get('fundamentals_y0', {}).get('fcf', 0),
+                    },
+                    'Y1': {
+                        'Revenue': irr_inputs.get('fundamentals_y1', {}).get('revenue', 0),
+                        'EBITDA': irr_inputs.get('fundamentals_y1', {}).get('ebitda', 0),
+                        'EBIT': irr_inputs.get('fundamentals_y1', {}).get('ebit', 0),
+                        'NOPAT': irr_inputs.get('fundamentals_y1', {}).get('nopat', 0),
+                        'FCF_Unlevered': irr_inputs.get('fundamentals_y1', {}).get('fcf', 0),
+                    },
+                },
+                'scenarios_finalized': irr_inputs.get('scenarios_finalized', []),
+            }
         }
     }
 
@@ -5441,11 +5536,18 @@ if __name__ == "__main__":
     # Execute IRR workflow
     print("Executing IRR workflow...")
     try:
+        # Extract multiple_selection from A.13
+        multiple_selection = a13_resolution_timeline.get('multiple_selection')
+
         a14_result = execute_irr_workflow(
-            cvr_state4_bundle=cvr_state4_bundle,
+            kg=cvr_state4_bundle['A.2_ANALYTIC_KG'],
+            a7_summary=cvr_state4_bundle['A.7_LIGHTWEIGHT_VALUATION_SUMMARY'],
+            a9_scenario_output=cvr_state4_bundle['A.10_SCENARIO_MODEL_OUTPUT'],
+            a11_integration_trace=cvr_state4_bundle['A.12_INTEGRATION_TRACE'],
             rho_estimates=rho_estimates,
+            hurdle_rate=irr_inputs.get('hurdle_rate', 0.15),
             convergence_rate=convergence_rate,
-            hurdle_rate=irr_inputs.get('hurdle_rate', 0.15)
+            multiple_selection=multiple_selection
         )
 
         # Write A.14 output

@@ -1,0 +1,1898 @@
+{
+  "schema_version": "G3_2.2.5e_IRR",
+  "metadata": {
+    "company_name": "",
+    "ticker": "",
+    "analysis_date": "",
+    "current_price_p0": 215.25,
+    "horizon": "T+1",
+    "source_cvr_state": "STATE_4",
+    "hurdle_rate": 0.15,
+    "pipeline_fit_grade": "UNKNOWN",
+    "pipeline_fit_caveat": "Pipeline Fit grade not available from Integration stage; interpret with caution.",
+    "methodology": "TRANSITION_FACTOR"
+  },
+  "transition_factor_analysis": {
+    "market_multiple_t0": 20.013709677419357,
+    "dcf_multiple_t0": 18.516935483870967,
+    "market_dcf_ratio": 1.080832716345107,
+    "transition_factor": 0.7147989127133837,
+    "market_multiple_t1_null": 14.30577791678068,
+    "dcf_multiple_t1": 13.23588535065484,
+    "ivps_deterministic": 199.25,
+    "e_ivps_state4": 206.34,
+    "ivps_t1": 225.65062500000002,
+    "dr_static": 0.1325,
+    "calculation_trace": "T0: Equity=$2889.1M + Net_Debt=$-19.0M = EV=$2870.1M\nT0: Metric=$155.0M, DCF_Multiple=18.52x\nT1: IVPS=$225.65 (IVPS_T0 \u00d7 1.13)\nT1: Equity=$3271.9M, Net_Debt=$-139.0M (policy: RETAIN_FCF)\nT1: EV=$3132.9M, Metric=$236.7M, DCF_Multiple=13.24x\nTF = 13.24x / 18.52x = 0.715\nMultiple compresses by 28.5%",
+    "convergence_rate_applied": 0.21,
+    "gap_t1": -1.0698925661258407,
+    "cr_contribution": -0.22467743888642655,
+    "adjusted_market_multiple_t1": 14.081100477894253
+  },
+  "null_case_analysis": {
+    "fundamentals_t1": {
+      "revenue": 807.8,
+      "ebitda": 236.7,
+      "fcf": 120.0,
+      "nopat": 169.6,
+      "revenue_growth": 0.4822018348623853,
+      "ebitda_margin": 0.29301807378063877
+    },
+    "market_multiple_t0": 20.013709677419357,
+    "dcf_implied_multiple_t0": 18.516935483870967,
+    "market_dcf_ratio_t0": 1.080832716345107,
+    "transition_factor": 0.7147989127133837,
+    "market_multiple_t1_null": 14.30577791678068,
+    "dcf_implied_multiple_t1": 13.23588535065484,
+    "null_case_irr": 0.11241827325646025,
+    "expected_price_t1_null": 239.44803331845307,
+    "interpretation": "Market overvalued vs DCF (ratio=1.08). Null IRR of 11.2% below DR (13.2%) as expected - reflects potential for multiple compression."
+  },
+  "fork_analysis": {
+    "multiple_selection": {
+      "primary": {
+        "metric": "EV_EBITDA",
+        "weight": 0.5
+      },
+      "secondary": {
+        "metric": "EV_FCF",
+        "weight": 0.5
+      },
+      "rationale": "Mature profitable company; cash generation focus"
+    },
+    "scenario_multiple_impacts": {
+      "S1_REG_SETTLEMENT": -3.2032319391634982,
+      "S2_BNPL_SUCCESS": 1.8739121250528097,
+      "S3_BANK_TRANSITION": 2.60901985635826,
+      "S4_ACQUISITION": 2.4503591043515
+    },
+    "forks": [
+      {
+        "fork_id": "BASE",
+        "scenarios_active": [],
+        "fork_probability": 0.043545600000000004,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 807.8,
+          "ebitda": 236.7,
+          "fcf": 120.0,
+          "metric_used": 236.7,
+          "is_base_case": true,
+          "adjustments_applied": []
+        },
+        "valuation_t1": {
+          "ev": 3335.5289188215897,
+          "net_debt": -139.0,
+          "equity_value": 3474.5289188215897,
+          "shares_outstanding": 14.5,
+          "price_t1": 239.44803331845307
+        },
+        "price_t1": 239.44803331845307,
+        "fork_irr": 0.11241827325646025,
+        "cumulative_probability": 0.21313919999999997
+      },
+      {
+        "fork_id": "S1_REG_SETTLEMENT",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT"
+        ],
+        "fork_probability": 0.1177344,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 757.0999999999999,
+          "ebitda": 215.74124999999998,
+          "fcf": 109.5,
+          "metric_used": 215.74124999999998,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 605.0,
+              "rho": 0.25,
+              "adjustment": -50.69999999999999,
+              "final_value": 757.0999999999999
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 152.865,
+              "rho": 0.25,
+              "adjustment": -20.958749999999995,
+              "final_value": 215.74124999999998
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 109.0,
+              "rho": 0.25,
+              "adjustment": -15.149999999999999,
+              "final_value": 154.45
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 78.0,
+              "rho": 0.25,
+              "adjustment": -10.5,
+              "final_value": 109.5
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 3040.1824180723206,
+          "net_debt": -139.0,
+          "equity_value": 3179.1824180723206,
+          "shares_outstanding": 14.5,
+          "price_t1": 226.37553331845305
+        },
+        "price_t1": 226.37553331845305,
+        "fork_irr": 0.051686565939387086,
+        "cumulative_probability": 0.1177344
+      },
+      {
+        "fork_id": "S2_BNPL_SUCCESS",
+        "scenarios_active": [
+          "S2_BNPL_SUCCESS"
+        ],
+        "fork_probability": 0.0082944,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 871.481,
+          "ebitda": 267.123273,
+          "fcf": 125.475,
+          "metric_used": 267.123273,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.3,
+              "adjustment": 63.681000000000026,
+              "final_value": 871.481
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 338.11091000000005,
+              "rho": 0.3,
+              "adjustment": 30.423273000000016,
+              "final_value": 267.123273
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 243.64,
+              "rho": 0.3,
+              "adjustment": 22.211999999999996,
+              "final_value": 191.81199999999998
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 138.25,
+              "rho": 0.3,
+              "adjustment": 5.475,
+              "final_value": 125.475
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 3764.247579137196,
+          "net_debt": -139.0,
+          "equity_value": 3903.247579137196,
+          "shares_outstanding": 14.5,
+          "price_t1": 248.6250333184531
+        },
+        "price_t1": 248.6250333184531,
+        "fork_irr": 0.15505241959792365,
+        "cumulative_probability": 0.7039584
+      },
+      {
+        "fork_id": "S1_REG_SETTLEMENT_S2_BNPL_SUCCESS",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT",
+          "S2_BNPL_SUCCESS"
+        ],
+        "fork_probability": 0.0224256,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 820.781,
+          "ebitda": 246.164523,
+          "fcf": 114.975,
+          "metric_used": 246.164523,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 605.0,
+              "rho": 0.25,
+              "adjustment": -50.69999999999999,
+              "final_value": 757.0999999999999
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 152.865,
+              "rho": 0.25,
+              "adjustment": -20.958749999999995,
+              "final_value": 215.74124999999998
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 109.0,
+              "rho": 0.25,
+              "adjustment": -15.149999999999999,
+              "final_value": 154.45
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 78.0,
+              "rho": 0.25,
+              "adjustment": -10.5,
+              "final_value": 109.5
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.3,
+              "adjustment": 63.681000000000026,
+              "final_value": 820.781
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 338.11091000000005,
+              "rho": 0.3,
+              "adjustment": 30.423273000000016,
+              "final_value": 246.164523
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 243.64,
+              "rho": 0.3,
+              "adjustment": 22.211999999999996,
+              "final_value": 176.66199999999998
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 138.25,
+              "rho": 0.3,
+              "adjustment": 5.475,
+              "final_value": 114.975
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 3468.901078387927,
+          "net_debt": -139.0,
+          "equity_value": 3607.901078387927,
+          "shares_outstanding": 14.5,
+          "price_t1": 235.55253331845307
+        },
+        "price_t1": 235.55253331845307,
+        "fork_irr": 0.0943207122808505,
+        "cumulative_probability": 0.16959359999999998
+      },
+      {
+        "fork_id": "S3_BANK_TRANSITION",
+        "scenarios_active": [
+          "S3_BANK_TRANSITION"
+        ],
+        "fork_probability": 0.1378944,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 865.5079999999999,
+          "ebitda": 263.994694,
+          "fcf": 127.60549999999999,
+          "metric_used": 263.994694,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 972.68,
+              "rho": 0.35,
+              "adjustment": 57.70799999999999,
+              "final_value": 865.5079999999999
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 314.68484,
+              "rho": 0.35,
+              "adjustment": 27.294694000000007,
+              "final_value": 263.994694
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 226.53,
+              "rho": 0.35,
+              "adjustment": 19.9255,
+              "final_value": 189.5255
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 141.73,
+              "rho": 0.35,
+              "adjustment": 7.605499999999996,
+              "final_value": 127.60549999999999
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 3720.16027145102,
+          "net_debt": -139.0,
+          "equity_value": 3859.16027145102,
+          "shares_outstanding": 14.5,
+          "price_t1": 254.35453331845306
+        },
+        "price_t1": 254.35453331845306,
+        "fork_irr": 0.18167030577678545,
+        "cumulative_probability": 0.9128672
+      },
+      {
+        "fork_id": "S1_REG_SETTLEMENT_S3_BANK_TRANSITION",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT",
+          "S3_BANK_TRANSITION"
+        ],
+        "fork_probability": 0.37282560000000003,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 814.8079999999999,
+          "ebitda": 243.03594399999997,
+          "fcf": 117.10549999999999,
+          "metric_used": 243.03594399999997,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 605.0,
+              "rho": 0.25,
+              "adjustment": -50.69999999999999,
+              "final_value": 757.0999999999999
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 152.865,
+              "rho": 0.25,
+              "adjustment": -20.958749999999995,
+              "final_value": 215.74124999999998
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 109.0,
+              "rho": 0.25,
+              "adjustment": -15.149999999999999,
+              "final_value": 154.45
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 78.0,
+              "rho": 0.25,
+              "adjustment": -10.5,
+              "final_value": 109.5
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 972.68,
+              "rho": 0.35,
+              "adjustment": 57.70799999999999,
+              "final_value": 814.8079999999999
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 314.68484,
+              "rho": 0.35,
+              "adjustment": 27.294694000000007,
+              "final_value": 243.03594399999997
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 226.53,
+              "rho": 0.35,
+              "adjustment": 19.9255,
+              "final_value": 174.3755
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 141.73,
+              "rho": 0.35,
+              "adjustment": 7.605499999999996,
+              "final_value": 117.10549999999999
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 3424.8137707017504,
+          "net_debt": -139.0,
+          "equity_value": 3563.8137707017504,
+          "shares_outstanding": 14.5,
+          "price_t1": 241.28203331845305
+        },
+        "price_t1": 241.28203331845305,
+        "fork_irr": 0.12093859845971229,
+        "cumulative_probability": 0.5859648
+      },
+      {
+        "fork_id": "S2_BNPL_SUCCESS_S3_BANK_TRANSITION",
+        "scenarios_active": [
+          "S2_BNPL_SUCCESS",
+          "S3_BANK_TRANSITION"
+        ],
+        "fork_probability": 0.0262656,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 929.189,
+          "ebitda": 294.417967,
+          "fcf": 133.0805,
+          "metric_used": 294.417967,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.3,
+              "adjustment": 63.681000000000026,
+              "final_value": 871.481
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 338.11091000000005,
+              "rho": 0.3,
+              "adjustment": 30.423273000000016,
+              "final_value": 267.123273
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 243.64,
+              "rho": 0.3,
+              "adjustment": 22.211999999999996,
+              "final_value": 191.81199999999998
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 138.25,
+              "rho": 0.3,
+              "adjustment": 5.475,
+              "final_value": 125.475
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 972.68,
+              "rho": 0.35,
+              "adjustment": 57.70799999999999,
+              "final_value": 929.189
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 314.68484,
+              "rho": 0.35,
+              "adjustment": 27.294694000000007,
+              "final_value": 294.417967
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 226.53,
+              "rho": 0.35,
+              "adjustment": 19.9255,
+              "final_value": 211.73749999999998
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 141.73,
+              "rho": 0.35,
+              "adjustment": 7.605499999999996,
+              "final_value": 133.0805
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 4148.878931766626,
+          "net_debt": -139.0,
+          "equity_value": 4287.878931766626,
+          "shares_outstanding": 14.5,
+          "price_t1": 263.53153331845306
+        },
+        "price_t1": 263.53153331845306,
+        "fork_irr": 0.22430445211824887,
+        "cumulative_probability": 0.9934336
+      },
+      {
+        "fork_id": "S1_REG_SETTLEMENT_S2_BNPL_SUCCESS_S3_BANK_TRANSITION",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT",
+          "S2_BNPL_SUCCESS",
+          "S3_BANK_TRANSITION"
+        ],
+        "fork_probability": 0.0710144,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 878.4889999999999,
+          "ebitda": 273.459217,
+          "fcf": 122.58049999999999,
+          "metric_used": 273.459217,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 605.0,
+              "rho": 0.25,
+              "adjustment": -50.69999999999999,
+              "final_value": 757.0999999999999
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 152.865,
+              "rho": 0.25,
+              "adjustment": -20.958749999999995,
+              "final_value": 215.74124999999998
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 109.0,
+              "rho": 0.25,
+              "adjustment": -15.149999999999999,
+              "final_value": 154.45
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 78.0,
+              "rho": 0.25,
+              "adjustment": -10.5,
+              "final_value": 109.5
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.3,
+              "adjustment": 63.681000000000026,
+              "final_value": 820.781
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 338.11091000000005,
+              "rho": 0.3,
+              "adjustment": 30.423273000000016,
+              "final_value": 246.164523
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 243.64,
+              "rho": 0.3,
+              "adjustment": 22.211999999999996,
+              "final_value": 176.66199999999998
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 138.25,
+              "rho": 0.3,
+              "adjustment": 5.475,
+              "final_value": 114.975
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 972.68,
+              "rho": 0.35,
+              "adjustment": 57.70799999999999,
+              "final_value": 878.4889999999999
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 314.68484,
+              "rho": 0.35,
+              "adjustment": 27.294694000000007,
+              "final_value": 273.459217
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 226.53,
+              "rho": 0.35,
+              "adjustment": 19.9255,
+              "final_value": 196.58749999999998
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 141.73,
+              "rho": 0.35,
+              "adjustment": 7.605499999999996,
+              "final_value": 122.58049999999999
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 3853.532431017358,
+          "net_debt": -139.0,
+          "equity_value": 3992.532431017358,
+          "shares_outstanding": 14.5,
+          "price_t1": 250.45903331845307
+        },
+        "price_t1": 250.45903331845307,
+        "fork_irr": 0.1635727448011757,
+        "cumulative_probability": 0.7749728
+      },
+      {
+        "fork_id": "S4_ACQUISITION",
+        "scenarios_active": [
+          "S4_ACQUISITION"
+        ],
+        "fork_probability": 0.010886400000000001,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 839.6405,
+          "ebitda": 245.8966365,
+          "fcf": 119.5035,
+          "metric_used": 245.8966365,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.15,
+              "adjustment": 31.840500000000013,
+              "final_value": 839.6405
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 298.01091,
+              "rho": 0.15,
+              "adjustment": 9.196636500000006,
+              "final_value": 245.8966365
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 213.56,
+              "rho": 0.15,
+              "adjustment": 6.594000000000001,
+              "final_value": 176.194
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 116.69,
+              "rho": 0.15,
+              "adjustment": -0.49650000000000033,
+              "final_value": 119.5035
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 3465.126075567007,
+          "net_debt": -139.0,
+          "equity_value": 3604.126075567007,
+          "shares_outstanding": 14.5,
+          "price_t1": 245.44803331845307
+        },
+        "price_t1": 245.44803331845307,
+        "fork_irr": 0.14029283771639056,
+        "cumulative_probability": 0.6024575999999999
+      },
+      {
+        "fork_id": "S1_REG_SETTLEMENT_S4_ACQUISITION",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT",
+          "S4_ACQUISITION"
+        ],
+        "fork_probability": 0.0294336,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 788.9404999999999,
+          "ebitda": 224.9378865,
+          "fcf": 109.0035,
+          "metric_used": 224.9378865,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 605.0,
+              "rho": 0.25,
+              "adjustment": -50.69999999999999,
+              "final_value": 757.0999999999999
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 152.865,
+              "rho": 0.25,
+              "adjustment": -20.958749999999995,
+              "final_value": 215.74124999999998
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 109.0,
+              "rho": 0.25,
+              "adjustment": -15.149999999999999,
+              "final_value": 154.45
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 78.0,
+              "rho": 0.25,
+              "adjustment": -10.5,
+              "final_value": 109.5
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.15,
+              "adjustment": 31.840500000000013,
+              "final_value": 788.9404999999999
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 298.01091,
+              "rho": 0.15,
+              "adjustment": 9.196636500000006,
+              "final_value": 224.9378865
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 213.56,
+              "rho": 0.15,
+              "adjustment": 6.594000000000001,
+              "final_value": 161.04399999999998
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 116.69,
+              "rho": 0.15,
+              "adjustment": -0.49650000000000033,
+              "final_value": 109.0035
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 3169.7795748177373,
+          "net_debt": -139.0,
+          "equity_value": 3308.7795748177373,
+          "shares_outstanding": 14.5,
+          "price_t1": 232.37553331845305
+        },
+        "price_t1": 232.37553331845305,
+        "fork_irr": 0.07956113039931739,
+        "cumulative_probability": 0.147168
+      },
+      {
+        "fork_id": "S2_BNPL_SUCCESS_S4_ACQUISITION",
+        "scenarios_active": [
+          "S2_BNPL_SUCCESS",
+          "S4_ACQUISITION"
+        ],
+        "fork_probability": 0.0020736,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 903.3215,
+          "ebitda": 276.3199095,
+          "fcf": 124.9785,
+          "metric_used": 276.3199095,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.3,
+              "adjustment": 63.681000000000026,
+              "final_value": 871.481
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 338.11091000000005,
+              "rho": 0.3,
+              "adjustment": 30.423273000000016,
+              "final_value": 267.123273
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 243.64,
+              "rho": 0.3,
+              "adjustment": 22.211999999999996,
+              "final_value": 191.81199999999998
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 138.25,
+              "rho": 0.3,
+              "adjustment": 5.475,
+              "final_value": 125.475
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.15,
+              "adjustment": 31.840500000000013,
+              "final_value": 903.3215
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 298.01091,
+              "rho": 0.15,
+              "adjustment": 9.196636500000006,
+              "final_value": 276.3199095
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 213.56,
+              "rho": 0.15,
+              "adjustment": 6.594000000000001,
+              "final_value": 198.40599999999998
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 116.69,
+              "rho": 0.15,
+              "adjustment": -0.49650000000000033,
+              "final_value": 124.9785
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 3893.844735882613,
+          "net_debt": -139.0,
+          "equity_value": 4032.844735882613,
+          "shares_outstanding": 14.5,
+          "price_t1": 254.62503331845306
+        },
+        "price_t1": 254.62503331845306,
+        "fork_irr": 0.182926984057854,
+        "cumulative_probability": 0.9149408
+      },
+      {
+        "fork_id": "S1_REG_SETTLEMENT_S2_BNPL_SUCCESS_S4_ACQUISITION",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT",
+          "S2_BNPL_SUCCESS",
+          "S4_ACQUISITION"
+        ],
+        "fork_probability": 0.0056064,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 852.6215,
+          "ebitda": 255.3611595,
+          "fcf": 114.4785,
+          "metric_used": 255.3611595,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 605.0,
+              "rho": 0.25,
+              "adjustment": -50.69999999999999,
+              "final_value": 757.0999999999999
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 152.865,
+              "rho": 0.25,
+              "adjustment": -20.958749999999995,
+              "final_value": 215.74124999999998
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 109.0,
+              "rho": 0.25,
+              "adjustment": -15.149999999999999,
+              "final_value": 154.45
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 78.0,
+              "rho": 0.25,
+              "adjustment": -10.5,
+              "final_value": 109.5
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.3,
+              "adjustment": 63.681000000000026,
+              "final_value": 820.781
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 338.11091000000005,
+              "rho": 0.3,
+              "adjustment": 30.423273000000016,
+              "final_value": 246.164523
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 243.64,
+              "rho": 0.3,
+              "adjustment": 22.211999999999996,
+              "final_value": 176.66199999999998
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 138.25,
+              "rho": 0.3,
+              "adjustment": 5.475,
+              "final_value": 114.975
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.15,
+              "adjustment": 31.840500000000013,
+              "final_value": 852.6215
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 298.01091,
+              "rho": 0.15,
+              "adjustment": 9.196636500000006,
+              "final_value": 255.3611595
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 213.56,
+              "rho": 0.15,
+              "adjustment": 6.594000000000001,
+              "final_value": 183.25599999999997
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 116.69,
+              "rho": 0.15,
+              "adjustment": -0.49650000000000033,
+              "final_value": 114.4785
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 3598.498235133344,
+          "net_debt": -139.0,
+          "equity_value": 3737.498235133344,
+          "shares_outstanding": 14.5,
+          "price_t1": 241.55253331845307
+        },
+        "price_t1": 241.55253331845307,
+        "fork_irr": 0.12219527674078082,
+        "cumulative_probability": 0.5915712
+      },
+      {
+        "fork_id": "S3_BANK_TRANSITION_S4_ACQUISITION",
+        "scenarios_active": [
+          "S3_BANK_TRANSITION",
+          "S4_ACQUISITION"
+        ],
+        "fork_probability": 0.0344736,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 897.3485,
+          "ebitda": 273.1913305,
+          "fcf": 127.109,
+          "metric_used": 273.1913305,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 972.68,
+              "rho": 0.35,
+              "adjustment": 57.70799999999999,
+              "final_value": 865.5079999999999
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 314.68484,
+              "rho": 0.35,
+              "adjustment": 27.294694000000007,
+              "final_value": 263.994694
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 226.53,
+              "rho": 0.35,
+              "adjustment": 19.9255,
+              "final_value": 189.5255
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 141.73,
+              "rho": 0.35,
+              "adjustment": 7.605499999999996,
+              "final_value": 127.60549999999999
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.15,
+              "adjustment": 31.840500000000013,
+              "final_value": 897.3485
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 298.01091,
+              "rho": 0.15,
+              "adjustment": 9.196636500000006,
+              "final_value": 273.1913305
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 213.56,
+              "rho": 0.15,
+              "adjustment": 6.594000000000001,
+              "final_value": 196.1195
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 116.69,
+              "rho": 0.15,
+              "adjustment": -0.49650000000000033,
+              "final_value": 127.109
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 3849.7574281964366,
+          "net_debt": -139.0,
+          "equity_value": 3988.7574281964366,
+          "shares_outstanding": 14.5,
+          "price_t1": 260.3545333184531
+        },
+        "price_t1": 260.3545333184531,
+        "fork_irr": 0.20954487023671578,
+        "cumulative_probability": 0.967168
+      },
+      {
+        "fork_id": "S1_REG_SETTLEMENT_S3_BANK_TRANSITION_S4_ACQUISITION",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT",
+          "S3_BANK_TRANSITION",
+          "S4_ACQUISITION"
+        ],
+        "fork_probability": 0.09320640000000001,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 846.6484999999999,
+          "ebitda": 252.23258049999998,
+          "fcf": 116.609,
+          "metric_used": 252.23258049999998,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 605.0,
+              "rho": 0.25,
+              "adjustment": -50.69999999999999,
+              "final_value": 757.0999999999999
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 152.865,
+              "rho": 0.25,
+              "adjustment": -20.958749999999995,
+              "final_value": 215.74124999999998
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 109.0,
+              "rho": 0.25,
+              "adjustment": -15.149999999999999,
+              "final_value": 154.45
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 78.0,
+              "rho": 0.25,
+              "adjustment": -10.5,
+              "final_value": 109.5
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 972.68,
+              "rho": 0.35,
+              "adjustment": 57.70799999999999,
+              "final_value": 814.8079999999999
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 314.68484,
+              "rho": 0.35,
+              "adjustment": 27.294694000000007,
+              "final_value": 243.03594399999997
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 226.53,
+              "rho": 0.35,
+              "adjustment": 19.9255,
+              "final_value": 174.3755
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 141.73,
+              "rho": 0.35,
+              "adjustment": 7.605499999999996,
+              "final_value": 117.10549999999999
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.15,
+              "adjustment": 31.840500000000013,
+              "final_value": 846.6484999999999
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 298.01091,
+              "rho": 0.15,
+              "adjustment": 9.196636500000006,
+              "final_value": 252.23258049999998
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 213.56,
+              "rho": 0.15,
+              "adjustment": 6.594000000000001,
+              "final_value": 180.96949999999998
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 116.69,
+              "rho": 0.15,
+              "adjustment": -0.49650000000000033,
+              "final_value": 116.609
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 3554.4109274471675,
+          "net_debt": -139.0,
+          "equity_value": 3693.4109274471675,
+          "shares_outstanding": 14.5,
+          "price_t1": 247.28203331845305
+        },
+        "price_t1": 247.28203331845305,
+        "fork_irr": 0.14881316291964258,
+        "cumulative_probability": 0.695664
+      },
+      {
+        "fork_id": "S2_BNPL_SUCCESS_S3_BANK_TRANSITION_S4_ACQUISITION",
+        "scenarios_active": [
+          "S2_BNPL_SUCCESS",
+          "S3_BANK_TRANSITION",
+          "S4_ACQUISITION"
+        ],
+        "fork_probability": 0.0065664,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 961.0295,
+          "ebitda": 303.6146035,
+          "fcf": 132.584,
+          "metric_used": 303.6146035,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.3,
+              "adjustment": 63.681000000000026,
+              "final_value": 871.481
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 338.11091000000005,
+              "rho": 0.3,
+              "adjustment": 30.423273000000016,
+              "final_value": 267.123273
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 243.64,
+              "rho": 0.3,
+              "adjustment": 22.211999999999996,
+              "final_value": 191.81199999999998
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 138.25,
+              "rho": 0.3,
+              "adjustment": 5.475,
+              "final_value": 125.475
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 972.68,
+              "rho": 0.35,
+              "adjustment": 57.70799999999999,
+              "final_value": 929.189
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 314.68484,
+              "rho": 0.35,
+              "adjustment": 27.294694000000007,
+              "final_value": 294.417967
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 226.53,
+              "rho": 0.35,
+              "adjustment": 19.9255,
+              "final_value": 211.73749999999998
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 141.73,
+              "rho": 0.35,
+              "adjustment": 7.605499999999996,
+              "final_value": 133.0805
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.15,
+              "adjustment": 31.840500000000013,
+              "final_value": 961.0295
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 298.01091,
+              "rho": 0.15,
+              "adjustment": 9.196636500000006,
+              "final_value": 303.6146035
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 213.56,
+              "rho": 0.15,
+              "adjustment": 6.594000000000001,
+              "final_value": 218.33149999999998
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 116.69,
+              "rho": 0.15,
+              "adjustment": -0.49650000000000033,
+              "final_value": 132.584
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 4278.476088512043,
+          "net_debt": -139.0,
+          "equity_value": 4417.476088512043,
+          "shares_outstanding": 14.5,
+          "price_t1": 269.53153331845306
+        },
+        "price_t1": 269.53153331845306,
+        "fork_irr": 0.2521790165781792,
+        "cumulative_probability": 1.0
+      },
+      {
+        "fork_id": "S1_REG_SETTLEMENT_S2_BNPL_SUCCESS_S3_BANK_TRANSITION_S4_ACQUISITION",
+        "scenarios_active": [
+          "S1_REG_SETTLEMENT",
+          "S2_BNPL_SUCCESS",
+          "S3_BANK_TRANSITION",
+          "S4_ACQUISITION"
+        ],
+        "fork_probability": 0.0177536,
+        "multiple_assignment": {
+          "market_multiple_t0": 20.013709677419357,
+          "transition_factor": 0.7147989127133837,
+          "base_multiple_t1": 14.30577791678068,
+          "scenario_adjustment": 0.0,
+          "fork_market_multiple_t1": 14.091799403555513,
+          "expected_multiple_t1": 14.091799403555513,
+          "calculation_trace": "Base: 20.01x \u00d7 TF=0.715 = 14.31x\nConvergence (CV=0.20): +-0.21x\nFinal Market Multiple T1: 14.09x",
+          "valuation_metric": "EV_EBITDA",
+          "valuation_fallback_flag": false
+        },
+        "fork_fundamentals": {
+          "revenue": 910.3294999999999,
+          "ebitda": 282.65585350000003,
+          "fcf": 122.08399999999999,
+          "metric_used": 282.65585350000003,
+          "is_base_case": false,
+          "adjustments_applied": [
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 605.0,
+              "rho": 0.25,
+              "adjustment": -50.69999999999999,
+              "final_value": 757.0999999999999
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 152.865,
+              "rho": 0.25,
+              "adjustment": -20.958749999999995,
+              "final_value": 215.74124999999998
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 109.0,
+              "rho": 0.25,
+              "adjustment": -15.149999999999999,
+              "final_value": 154.45
+            },
+            {
+              "scenario_id": "S1_REG_SETTLEMENT",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 78.0,
+              "rho": 0.25,
+              "adjustment": -10.5,
+              "final_value": 109.5
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.3,
+              "adjustment": 63.681000000000026,
+              "final_value": 820.781
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 338.11091000000005,
+              "rho": 0.3,
+              "adjustment": 30.423273000000016,
+              "final_value": 246.164523
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 243.64,
+              "rho": 0.3,
+              "adjustment": 22.211999999999996,
+              "final_value": 176.66199999999998
+            },
+            {
+              "scenario_id": "S2_BNPL_SUCCESS",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 138.25,
+              "rho": 0.3,
+              "adjustment": 5.475,
+              "final_value": 114.975
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 972.68,
+              "rho": 0.35,
+              "adjustment": 57.70799999999999,
+              "final_value": 878.4889999999999
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 314.68484,
+              "rho": 0.35,
+              "adjustment": 27.294694000000007,
+              "final_value": 273.459217
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 226.53,
+              "rho": 0.35,
+              "adjustment": 19.9255,
+              "final_value": 196.58749999999998
+            },
+            {
+              "scenario_id": "S3_BANK_TRANSITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 141.73,
+              "rho": 0.35,
+              "adjustment": 7.605499999999996,
+              "final_value": 122.58049999999999
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "revenue",
+              "base_value": 807.8,
+              "scenario_value": 1020.07,
+              "rho": 0.15,
+              "adjustment": 31.840500000000013,
+              "final_value": 910.3294999999999
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "ebitda",
+              "base_value": 236.7,
+              "scenario_value": 298.01091,
+              "rho": 0.15,
+              "adjustment": 9.196636500000006,
+              "final_value": 282.65585350000003
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "nopat",
+              "base_value": 169.6,
+              "scenario_value": 213.56,
+              "rho": 0.15,
+              "adjustment": 6.594000000000001,
+              "final_value": 203.18149999999997
+            },
+            {
+              "scenario_id": "S4_ACQUISITION",
+              "metric": "fcf",
+              "base_value": 120.0,
+              "scenario_value": 116.69,
+              "rho": 0.15,
+              "adjustment": -0.49650000000000033,
+              "final_value": 122.08399999999999
+            }
+          ]
+        },
+        "valuation_t1": {
+          "ev": 3983.129587762775,
+          "net_debt": -139.0,
+          "equity_value": 4122.1295877627745,
+          "shares_outstanding": 14.5,
+          "price_t1": 256.45903331845307
+        },
+        "price_t1": 256.45903331845307,
+        "fork_irr": 0.191447309261106,
+        "cumulative_probability": 0.9326944
+      }
+    ]
+  },
+  "irr_integration": {
+    "e_irr": 0.13311204793706422,
+    "irr_distribution": {
+      "p10": 0.051686565939387086,
+      "p25": 0.12093859845971229,
+      "p50_median": 0.12093859845971229,
+      "p75": 0.1635727448011757,
+      "p90": 0.18167030577678545,
+      "standard_deviation": 0.044388594665847714
+    },
+    "probability_above_hurdle": 0.304336,
+    "probability_of_loss": 0,
+    "return_attribution": {
+      "null_case_irr": 0.11241827325646025,
+      "scenario_resolution_contribution": 0.02069377468060396,
+      "total_e_irr": 0.13311204793706422
+    }
+  },
+  "sanity_checks": {
+    "value_trap_test": {
+      "irr_zero_convergence": 0.5238880469847127,
+      "hurdle_rate": 0.15,
+      "passes_hurdle": true,
+      "interpretation": "PASS: Returns exceed hurdle even without multiple expansion"
+    },
+    "fork_independence_check": {
+      "multiple_cv": 0.0,
+      "irr_cv": 0.3463903237189087,
+      "correlation_flag": "True",
+      "interpretation": "WARNING: Fork multiples cluster tightly (CV=0.000). Possible correlation bias."
+    },
+    "diagnostic_flags": {
+      "average_rho": 0.2625,
+      "average_rho_above_50": "False",
+      "all_fork_irrs_positive": true,
+      "convergence_above_40": false,
+      "flags_triggered": [
+        "All fork IRRs positive (optimism check)"
+      ]
+    }
+  },
+  "confidence_assessment": {
+    "overall_confidence": "MEDIUM",
+    "pipeline_fit_grade": "UNKNOWN",
+    "pipeline_fit_caveat": "Pipeline Fit grade not available from Integration stage; interpret with caution.",
+    "key_uncertainties": [
+      "No major uncertainties identified"
+    ],
+    "highest_leverage_assumptions": [
+      {
+        "assumption": "Convergence Rate",
+        "current_value": "21%",
+        "sensitivity": "Direct impact on multiple expansion component of return"
+      },
+      {
+        "assumption": "Fair Multiple Estimate",
+        "current_value": "13.2x",
+        "sensitivity": "Determines magnitude of re-rating opportunity"
+      },
+      {
+        "assumption": "Scenario Probabilities",
+        "current_value": "Per A.10/A.12",
+        "sensitivity": "Scenario resolution contributes 2.1% to E[IRR]"
+      }
+    ],
+    "flags_triggered_count": 1,
+    "recommendation_summary": "MEDIUM CONFIDENCE: Some uncertainties present. Consider IRR distribution range rather than point estimate."
+  }
+}

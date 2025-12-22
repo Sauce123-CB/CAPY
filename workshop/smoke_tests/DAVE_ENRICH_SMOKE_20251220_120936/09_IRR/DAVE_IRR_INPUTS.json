@@ -1,0 +1,142 @@
+{
+  "schema_version": "G3_2.2.5eIRR_INPUTS",
+  "metadata": {
+    "company_name": "Dave Inc.",
+    "ticker": "NASDAQ:DAVE",
+    "analysis_date": "2025-12-22",
+    "price_source": "WebSearch (Investing.com, TradingView, Yahoo Finance)",
+    "price_timestamp": "2025-12-22"
+  },
+  "price_t0": 215.25,
+  "shares_outstanding": 14.5,
+  "net_debt_t0": -19.0,
+  "fundamentals_y0": {
+    "revenue": 545.0,
+    "ebitda": 155.0,
+    "ebit": 148.0,
+    "nopat": 111.0,
+    "fcf": 104.0,
+    "ebitda_margin": 0.284,
+    "ebit_margin": 0.272
+  },
+  "fundamentals_y1": {
+    "revenue": 807.8,
+    "ebitda": 236.7,
+    "ebit": 226.2,
+    "nopat": 169.6,
+    "fcf": 120.0,
+    "ebitda_margin": 0.293,
+    "ebit_margin": 0.280,
+    "growth_rate_y0_to_y1": 0.482
+  },
+  "valuation_anchor": {
+    "e_ivps_state4": 206.34,
+    "dr_static": 0.1325,
+    "base_case_ivps_state2": 199.25,
+    "terminal_g": 0.0425,
+    "terminal_roic": 0.409
+  },
+  "market_context": {
+    "market_cap_m": 3121.125,
+    "enterprise_value_m": 3102.125,
+    "ev_revenue_y0": 5.69,
+    "ev_ebitda_y0": 20.01,
+    "ev_revenue_y1": 3.84,
+    "ev_ebitda_y1": 13.10
+  },
+  "scenarios_finalized": [
+    {
+      "scenario_id": "S1_REG_SETTLEMENT",
+      "scenario_name": "Regulatory Settlement",
+      "p_posterior": 0.73,
+      "ivps_impact": -52.29,
+      "ivps_scenario": 146.96,
+      "rho": 0.25,
+      "effective_magnitude": -13.07,
+      "fundamentals_y1_intervened": {
+        "revenue": 605.0,
+        "ebit": 145.0,
+        "ebit_margin": 0.240,
+        "nopat": 109.0,
+        "fcf_unlevered": 78.0
+      }
+    },
+    {
+      "scenario_id": "S2_BNPL_SUCCESS",
+      "scenario_name": "BNPL Product Success",
+      "p_posterior": 0.16,
+      "ivps_impact": 30.59,
+      "ivps_scenario": 229.84,
+      "rho": 0.30,
+      "effective_magnitude": 9.18,
+      "fundamentals_y1_intervened": {
+        "revenue": 1020.07,
+        "ebit": 324.85,
+        "ebit_margin": 0.318,
+        "nopat": 243.64,
+        "fcf_unlevered": 138.25
+      }
+    },
+    {
+      "scenario_id": "S3_BANK_TRANSITION",
+      "scenario_name": "Bank Charter Transition",
+      "p_posterior": 0.76,
+      "ivps_impact": 42.59,
+      "ivps_scenario": 241.84,
+      "rho": 0.35,
+      "effective_magnitude": 14.91,
+      "fundamentals_y1_intervened": {
+        "revenue": 972.68,
+        "ebit": 302.04,
+        "ebit_margin": 0.311,
+        "nopat": 226.53,
+        "fcf_unlevered": 141.73
+      }
+    },
+    {
+      "scenario_id": "S4_ACQUISITION",
+      "scenario_name": "M&A/Acquisition",
+      "p_posterior": 0.20,
+      "ivps_impact": 40.00,
+      "ivps_scenario": 239.25,
+      "rho": 0.15,
+      "effective_magnitude": 6.00,
+      "fundamentals_y1_intervened": {
+        "revenue": 1020.07,
+        "ebit": 284.75,
+        "ebit_margin": 0.279,
+        "nopat": 213.56,
+        "fcf_unlevered": 116.69
+      }
+    }
+  ],
+  "irr_parameters": {
+    "hurdle_rate": 0.15,
+    "convergence_rate": 0.21,
+    "horizon_years": 1,
+    "multiple_selection": {
+      "primary_metric": "EV_EBITDA",
+      "secondary_metric": "EV_Revenue",
+      "weighting": {
+        "primary": 0.70,
+        "secondary": 0.30
+      }
+    }
+  },
+  "sse_context": {
+    "state_count": 16,
+    "feasible_state_count": 16,
+    "probability_sum": 1.0,
+    "e_ivps": 206.34,
+    "p10": 146.96,
+    "p50": 188.00,
+    "p90": 239.00,
+    "skewness": "RIGHT",
+    "modality": "MULTIMODAL"
+  },
+  "source_artifacts": {
+    "a2_analytic_kg_s4": "08_INTEGRATION/DAVE_A2_ANALYTIC_KG_S4.json",
+    "a7_valuation_s4": "08_INTEGRATION/DAVE_A7_VALUATION_S4.json",
+    "a10_scenario_model_s4_final": "08_INTEGRATION/DAVE_A10_SCENARIO_MODEL_S4_FINAL.json"
+  }
+}
