@@ -579,6 +579,7 @@ Run on the 1st of each month:
 | SCENARIO | G3_SCENARIO_2_2_1e.md | HISTORICAL | DAVE_20241210 | CVR_KERNEL_SCEN_2_2_1e.py |
 | INTEGRATION | G3_INTEGRATION_2.2.3e_*.md (atomized) | CANONICAL | DAVE_ENRICH_SMOKE_20251220 | CVR_KERNEL_INT_2_2_2e.py |
 | INTEGRATION | G3_INTEGRATION_2_2_2e.md | HISTORICAL | DAVE_20241210 | CVR_KERNEL_INT_2_2_2e.py |
+| IRR | G3_IRR_2.2.5e_*.md (atomized) | EXPERIMENTAL | - | CVR_KERNEL_IRR_2.2.5e.py |
 | IRR | G3_IRR_2_2_4e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_IRR_2_2_4e.py |
 
 ### Orchestration & Workflow
@@ -607,6 +608,8 @@ Run on the 1st of each month:
 | INT T1 Validator | INT_T1_VALIDATOR.md | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
 | INT T2 Validator | INT_T2_VALIDATOR.md | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
 | INT T3 Validator | INT_T3_VALIDATOR.md | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
+| IRR T1 Validator | IRR_T1_VALIDATOR.md | EXPERIMENTAL | - |
+| IRR T2 Validator | IRR_T2_VALIDATOR.md | EXPERIMENTAL | - |
 
 ### BASE Stage Atomized Files (CANONICAL)
 
@@ -1629,3 +1632,329 @@ Use Task tool with model="opus" for each step. See Stage Flow above for exact pr
 **Status:** EXPERIMENTAL - awaiting smoke test.
 
 **Subagent loading:** Load all 3 prompt files. Kernel attached for T1 context, executed via Bash in T2.
+
+---
+
+## IRR Stage Orchestration (INTEGRATION → IRR)
+
+The IRR stage is the **final stage (8/8)** of the CAPY pipeline. It transitions the CVR from State 4 (Finalized Intrinsic Value) to State 5 (Expected Return).
+
+### Purpose and Context
+
+**What happened before IRR:**
+1. **ENRICH** produced deterministic IVPS (State 2)
+2. **SCENARIO** added probabilistic scenarios (State 3)
+3. **SILICON COUNCIL** audited across 6 dimensions
+4. **INTEGRATION** adjudicated findings and finalized artifacts (State 4)
+
+**What IRR does:**
+The upstream stages answer "What is it worth?" IRR answers **"What will I make?"**
+
+This requires:
+1. Fetching **live market price** (mandatory WebSearch)
+2. Estimating **resolution percentage (ρ)** for each scenario - how much resolves by T+1
+3. Deriving **Convergence Rate (CR)** via B.13 rubric - recognition speed factors only
+4. Executing kernel to calculate **E[IRR]** and distribution via Transition Factor methodology
+
+### Architecture (v2.2.5e)
+
+**Two-Shot Execution:**
+
+| Turn | Name | Purpose | Key Output |
+|------|------|---------|------------|
+| T1 | Analytical | ρ estimation, CR derivation, live price fetch, input extraction | A.13 + IRR_INPUTS.json + T1.md |
+| T2 | Computational | Kernel execution via Bash (Pattern 6) | A.14 + T2.md (FINAL: A.13 + A.14 + N7) |
+
+**Key Design Decisions:**
+- **Two-shot not three-shot:** T2 IS the final output (no T3 needed)
+- **WebSearch mandatory:** T1 MUST fetch live price - stale prices = wrong IRR
+- **N7 is new narrative:** Completes the N1-N6 chain from INTEGRATION
+- **ρ is LLM judgment:** Resolution percentage cannot be automated - requires timeline evidence analysis
+
+### Directory Structure
+
+```
+{analysis_dir}/
+├── 08_INTEGRATION/                      ← INPUT: State 4 artifacts
+│   ├── {TICKER}_A2_ANALYTIC_KG_S4.json
+│   ├── {TICKER}_A5_GESTALT_IMPACT_MAP_S4.json
+│   ├── {TICKER}_A6_DR_DERIVATION_TRACE_S4.json
+│   ├── {TICKER}_A7_VALUATION_S4.json
+│   ├── {TICKER}_A10_SCENARIO_MODEL_S4.json
+│   ├── {TICKER}_N1_N6_NARRATIVES_S4.md
+│   └── {TICKER}_INT_T3_{DATE}.md
+├── 09_IRR/                              ← IRR stage outputs
+│   ├── {TICKER}_IRR_T1_{DATE}.md            ← T1: Analytical output
+│   ├── {TICKER}_A13_RESOLUTION_TIMELINE.json ← T1: ρ estimates, CR, inputs
+│   ├── {TICKER}_IRR_INPUTS.json             ← T1: Extracted kernel inputs
+│   ├── {TICKER}_IRR_T2_{DATE}.md            ← T2: FINAL OUTPUT (A.13+A.14+N7)
+│   └── {TICKER}_A14_IRR_ANALYSIS.json       ← T2: Kernel output
+└── pipeline_state.json
+```
+
+### Stage Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 0: AUTO-DISCOVERY AND INPUT VALIDATION                                 │
+│                                                                             │
+│ Locate most recent complete INTEGRATION run:                                │
+│   find smoke_tests/ -path "*/08_INTEGRATION/*A7*.json" | sort -r | head -5  │
+│                                                                             │
+│ Verify folder contains ALL required artifact files:                         │
+│   - {TICKER}_A2_ANALYTIC_KG_S4.json                                         │
+│   - {TICKER}_A7_VALUATION_S4.json                                           │
+│   - {TICKER}_A10_SCENARIO_MODEL_S4.json                                     │
+│                                                                             │
+│ READ key files to extract baseline metrics:                                 │
+│   - E[IVPS] from A7 or A10                                                  │
+│   - DR from A6 or A7                                                        │
+│   - Scenario count from A10                                                 │
+│                                                                             │
+│ Set {analysis_dir} to the pipeline run folder.                              │
+│ Create 09_IRR/ if it doesn't exist.                                         │
+└──────────────────────┬──────────────────────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 1: IRR T1 — ANALYTICAL                                                 │
+│                                                                             │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│ TASK: Spawn Opus subagent to perform analytical judgment                    │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│                                                                             │
+│ PROMPT FILES TO ATTACH:                                                     │
+│   1. prompts/irr/G3_IRR_2.2.5e_PROMPT.md                                    │
+│   2. prompts/irr/G3_IRR_2.2.5e_SCHEMAS.md                                   │
+│   3. prompts/irr/G3_IRR_2.2.5e_NORMDEFS.md                                  │
+│   4. kernels/CVR_KERNEL_IRR_2.2.5e.py (FOR CONTEXT ONLY - DO NOT EXECUTE)   │
+│                                                                             │
+│ INPUT FILES TO ATTACH (Individual JSON files - NOT embedded T3):            │
+│   • {analysis_dir}/08_INTEGRATION/{TICKER}_A2_ANALYTIC_KG_S4.json           │
+│   • {analysis_dir}/08_INTEGRATION/{TICKER}_A7_VALUATION_S4.json             │
+│   • {analysis_dir}/08_INTEGRATION/{TICKER}_A10_SCENARIO_MODEL_S4.json       │
+│   • {analysis_dir}/08_INTEGRATION/{TICKER}_INT_T3_{DATE}.md (context only)  │
+│   • {analysis_dir}/08_INTEGRATION/{TICKER}_N1_N6_NARRATIVES_S4.md (context) │
+│                                                                             │
+│ WHY INDIVIDUAL JSON FILES:                                                  │
+│   T3.md may have truncated embedded artifacts (especially A5 GIM).          │
+│   The _S4.json files are complete - written directly, not embedded.         │
+│   This prevents kernel failures from insufficient inputs.                   │
+│                                                                             │
+│ INSTRUCTION TO SUBAGENT:                                                    │
+│   "Execute IRR Turn 1 for {TICKER}.                                         │
+│                                                                             │
+│    MANDATORY FIRST STEP: WebSearch for '{TICKER} stock price' to get        │
+│    current market price. Record source and timestamp. This live price       │
+│    OVERRIDES any price in the State 4 bundle.                               │
+│                                                                             │
+│    Your analytical tasks:                                                   │
+│    1. Extract and validate inputs from State 4 JSON files                   │
+│    2. For each scenario in A10, estimate ρ (resolution percentage):         │
+│       - Identify primary driver (legal, product, macro, earnings)           │
+│       - Identify key dates/milestones before T+1                            │
+│       - Default ρ ≤ 0.30 unless timeline evidence supports higher           │
+│    3. Derive Convergence Rate (CR) via B.13 rubric:                         │
+│       - Base rate = 0.20                                                    │
+│       - Adjust ONLY for recognition factors (Categories 1-4)                │
+│       - DO NOT adjust for fundamental factors (double-counting)             │
+│       - Final CR in [0.10, 0.40]                                            │
+│    4. Select valuation multiple per B.10 rubric                             │
+│    5. Complete anti-narrative check (3 reasons market may not re-rate)      │
+│                                                                             │
+│    DO NOT execute the kernel. It is provided for context only.              │
+│                                                                             │
+│    Write 3 output files:                                                    │
+│    1. {output_dir}/{TICKER}_IRR_T1_{DATE}.md (reasoning narrative)          │
+│    2. {output_dir}/{TICKER}_A13_RESOLUTION_TIMELINE.json (kernel input)     │
+│    3. {output_dir}/{TICKER}_IRR_INPUTS.json (extracted State 4 data)        │
+│                                                                             │
+│    Return confirmation and list of filepaths written."                      │
+│                                                                             │
+│ OUTPUT PRODUCED (3 files):                                                  │
+│   • {TICKER}_IRR_T1_{DATE}.md - Reasoning, ρ derivation, CR derivation      │
+│   • {TICKER}_A13_RESOLUTION_TIMELINE.json - ρ per scenario, CR, inputs      │
+│   • {TICKER}_IRR_INPUTS.json - Extracted market data, fundamentals,         │
+│     scenarios for kernel consumption                                        │
+│                                                                             │
+│ PATTERN: Direct-Write (Pattern 1) - subagent writes to disk, returns paths │
+└──────────────────────┬──────────────────────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 2: IRR T1 VALIDATOR                                                    │
+│                                                                             │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│ TASK: Spawn Opus subagent to validate T1 output                             │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│                                                                             │
+│ PROMPT FILE:                                                                │
+│   validators/IRR_T1_VALIDATOR.md                                            │
+│                                                                             │
+│ INPUT FILES:                                                                │
+│   • {output_dir}/{TICKER}_IRR_T1_{DATE}.md                                  │
+│   • {output_dir}/{TICKER}_A13_RESOLUTION_TIMELINE.json                      │
+│   • {output_dir}/{TICKER}_IRR_INPUTS.json                                   │
+│                                                                             │
+│ VALIDATION CHECKS:                                                          │
+│   • A.13 schema compliance (G3_2.2.5eIRR)                                   │
+│   • All scenarios have ρ estimates                                          │
+│   • ρ values in [0, 1], ρ > 0.30 has evidence                               │
+│   • CR derived from recognition factors only (no double-counting)           │
+│   • CR in [0.10, 0.40] or has deviation_rationale                           │
+│   • Anti-narrative check has 3 substantive reasons                          │
+│   • Live price documented (WebSearch evidence)                              │
+│   • IRR_INPUTS.json complete and consistent with A.13                       │
+│                                                                             │
+│ IF FAIL: Stop. Report issues. Do not proceed to T2.                         │
+│ IF PASS: Proceed to Step 3.                                                 │
+└──────────────────────┬──────────────────────────────────────────────────────┘
+                       │ (proceed only if PASS)
+                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 3: IRR T2 — COMPUTATIONAL (KERNEL EXECUTION)                           │
+│                                                                             │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│ TASK: Spawn Opus subagent to execute kernel and produce final output        │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│                                                                             │
+│ PROMPT FILES TO ATTACH:                                                     │
+│   1. prompts/irr/G3_IRR_2.2.5e_PROMPT.md                                    │
+│   2. kernels/CVR_KERNEL_IRR_2.2.5e.py (EXECUTABLE)                          │
+│                                                                             │
+│ INPUT FILES TO ATTACH:                                                      │
+│   • {output_dir}/{TICKER}_IRR_T1_{DATE}.md (T1 reasoning)                   │
+│   • {output_dir}/{TICKER}_A13_RESOLUTION_TIMELINE.json                      │
+│   • {output_dir}/{TICKER}_IRR_INPUTS.json                                   │
+│                                                                             │
+│ INSTRUCTION TO SUBAGENT:                                                    │
+│   "Execute IRR Turn 2 for {TICKER}.                                         │
+│                                                                             │
+│    CRITICAL: Manual calculation is PROHIBITED. You MUST use Bash kernel.    │
+│    CRITICAL: T2 performs NO reasoning. All judgment is locked in A.13.      │
+│                                                                             │
+│    1. Validate A.13 and IRR_INPUTS.json are well-formed (repair if needed)  │
+│    2. Execute kernel via Bash (Pattern 6):                                  │
+│                                                                             │
+│       python3 kernels/CVR_KERNEL_IRR_2.2.5e.py \                            │
+│         --a13 {TICKER}_A13_RESOLUTION_TIMELINE.json \                       │
+│         --inputs {TICKER}_IRR_INPUTS.json \                                 │
+│         --output {TICKER}_A14_IRR_ANALYSIS.json                             │
+│                                                                             │
+│    3. Produce FINAL OUTPUT containing:                                      │
+│       - A.13 (from T1, copied/embedded)                                     │
+│       - A.14 (kernel output)                                                │
+│       - N7: IRR Narrative (executive summary of expected return analysis)   │
+│                                                                             │
+│    Write 2 output files:                                                    │
+│    1. {output_dir}/{TICKER}_A14_IRR_ANALYSIS.json (kernel output)           │
+│    2. {output_dir}/{TICKER}_IRR_T2_{DATE}.md (FINAL: A.13 + A.14 + N7)      │
+│                                                                             │
+│    Return confirmation and filepaths."                                      │
+│                                                                             │
+│ OUTPUT PRODUCED (2 files):                                                  │
+│   • {TICKER}_A14_IRR_ANALYSIS.json - Kernel output (E[IRR], distribution)   │
+│   • {TICKER}_IRR_T2_{DATE}.md - FINAL OUTPUT containing:                    │
+│     - A.13_RESOLUTION_TIMELINE (from T1)                                    │
+│     - A.14_IRR_ANALYSIS (from kernel)                                       │
+│     - N7: IRR Narrative (executive summary)                                 │
+│                                                                             │
+│ PATTERN: Bash Kernel (Pattern 6) - execute kernel via Bash, not manual calc │
+│ PATTERN: Direct-Write (Pattern 1) - subagent writes to disk, returns paths  │
+└──────────────────────┬──────────────────────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STEP 4: IRR T2 VALIDATOR                                                    │
+│                                                                             │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│ TASK: Spawn Opus subagent to validate final IRR output                      │
+│ ═══════════════════════════════════════════════════════════════════════════ │
+│                                                                             │
+│ PROMPT FILE:                                                                │
+│   validators/IRR_T2_VALIDATOR.md                                            │
+│                                                                             │
+│ INPUT FILES:                                                                │
+│   • {output_dir}/{TICKER}_IRR_T2_{DATE}.md                                  │
+│   • {output_dir}/{TICKER}_A14_IRR_ANALYSIS.json                             │
+│   • {output_dir}/{TICKER}_A13_RESOLUTION_TIMELINE.json (cross-validation)   │
+│                                                                             │
+│ VALIDATION CHECKS:                                                          │
+│   • A.14 schema compliance (G3_2.2.5eIRR)                                   │
+│   • Kernel execution verified (Bash command trace, no fabrication)          │
+│   • Transition Factor analysis complete                                     │
+│   • Null case IRR vs DR relationship is economically sensible               │
+│   • All forks generated, probabilities sum to 1.0                           │
+│   • ρ values from A.13 correctly applied                                    │
+│   • Distribution statistics complete (E[IRR], P10-P90)                      │
+│   • Sanity checks executed                                                  │
+│   • N7 narrative present and coherent with A.14                             │
+│                                                                             │
+│ IF FAIL: Report issues. May need T2 re-execution.                           │
+│ IF PASS: IRR stage complete. CVR is now State 5 (Expected Return).          │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Execution Commands (DEV: SMOKE TEST IRR {TICKER})
+
+**Step 0: Auto-Discovery**
+```bash
+# Find most recent INTEGRATION output
+find smoke_tests/ -path "*/08_INTEGRATION/*A7*.json" | sort -r | head -5
+
+# Or check production
+find production/analyses/ -path "*/08_INTEGRATION/*A7*.json" | sort -r | head -5
+
+# Verify required files exist
+ls {analysis_dir}/08_INTEGRATION/{TICKER}_A2_ANALYTIC_KG_S4.json
+ls {analysis_dir}/08_INTEGRATION/{TICKER}_A7_VALUATION_S4.json
+ls {analysis_dir}/08_INTEGRATION/{TICKER}_A10_SCENARIO_MODEL_S4.json
+
+# Create output directory
+mkdir -p {analysis_dir}/09_IRR/
+```
+
+**Steps 1-4: Spawn Subagents**
+Use Task tool with model="opus" for each step. See Stage Flow above for exact prompts and inputs.
+
+### Critical Patterns Applied
+
+| Pattern | Application |
+|---------|-------------|
+| Pattern 1: Direct-Write | T1/T2 subagents write to disk, return paths only |
+| Pattern 3: Two-Shot | T1=analytical judgment, T2=kernel execution |
+| Pattern 5: JSON Repair | T2 can repair malformed A.13 before kernel |
+| Pattern 6: Bash Kernel | `python3 CVR_KERNEL_IRR_2.2.5e.py --a13 ... --inputs ... --output ...` |
+| Pattern 7: Validators | Opus validator after T1 AND T2 |
+| Pattern 8: Atomized Prompts | PROMPT + SCHEMAS + NORMDEFS + kernel |
+| Pattern 10: Input Validation | READ individual _S4.json files, verify E[IVPS]/DR before T1 |
+
+### IRR Stage Files
+
+| File | Location | Purpose |
+|------|----------|---------|
+| G3_IRR_2.2.5e_PROMPT.md | prompts/irr/ | Core instructions (Sections I-V) |
+| G3_IRR_2.2.5e_SCHEMAS.md | prompts/irr/ | JSON schemas (A.13, A.14) |
+| G3_IRR_2.2.5e_NORMDEFS.md | prompts/irr/ | DSL & financial definitions (B.10-B.14) |
+| CVR_KERNEL_IRR_2.2.5e.py | kernels/ | IRR kernel with CLI interface |
+| IRR_T1_VALIDATOR.md | validators/ | T1 analytical validator |
+| IRR_T2_VALIDATOR.md | validators/ | T2 kernel/final output validator |
+
+### IRR Stage Atomized Files (CANONICAL)
+
+| File | Purpose | Size |
+|------|---------|------|
+| `G3_IRR_2.2.5e_PROMPT.md` | Core instructions (Sections I-V) | 22KB |
+| `G3_IRR_2.2.5e_SCHEMAS.md` | JSON schemas (A.13, A.14) | 10KB |
+| `G3_IRR_2.2.5e_NORMDEFS.md` | DSL & financial definitions (B.10-B.14) | 20KB |
+| `CVR_KERNEL_IRR_2.2.5e.py` | IRR kernel with CLI | 179KB |
+
+**Key updates from 2.2.4e:**
+- 4-file atomization (removed embedded kernel from prompt)
+- CLI interface added to kernel for Pattern 6 compliance
+- Version refs updated to G3_2.2.5eIRR
+- INT compatibility updated to G3INT 2.2.3e
+
+**Status:** EXPERIMENTAL - awaiting smoke test. G3_IRR_2_2_4e.md remains CANONICAL until smoke test passes.
+
+**Subagent loading:** Load all 3 prompt files. Kernel provided for T1 context, executed via Bash in T2.
