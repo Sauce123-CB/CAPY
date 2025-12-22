@@ -1,7 +1,7 @@
 # CAPY Production - Analysis Execution Environment
 
-> **Version:** 0.5.0
-> **Last reviewed:** 2024-12-19
+> **Version:** 0.6.0
+> **Last reviewed:** 2024-12-22
 > **Review cadence:** Weekly during active development, monthly otherwise
 
 This workspace is for **running production analyses** on companies.
@@ -111,19 +111,21 @@ production/
 │       └── *_pages/
 └── analyses/          # Production analysis outputs
     └── {TICKER}_CAPY_{YYYYMMDD}_{HHMMSS}/
-        ├── 00_source/          # Input documents
-        ├── 01_T1/              # Turn 1 outputs
-        ├── 02_REFINE/          # REFINE outputs
-        ├── 03_T2/              # Turn 2 / Kernel outputs
-        ├── 04_RQ/              # RQ_Gen outputs, RQ_Ask results
-        ├── 05_SC/              # Silicon Council deliberation outputs
-        ├── 06_HITL/            # Human audit outputs
-        ├── pipeline_state.json
-        └── README.md
+        ├── 00_source/              # Input documents
+        ├── 01_T1/                  # BASE Turn 1 outputs
+        ├── 02_REFINE/              # BASE REFINE outputs
+        ├── 03_T2/                  # BASE Turn 2 / Kernel outputs
+        ├── 04_RQ/                  # RQ_Gen + RQ_Ask outputs
+        ├── 05_ENRICH/              # ENRICH T1 + T2 outputs
+        ├── 06_SCENARIO/            # SCENARIO outputs + A.10
+        ├── 07_SILICON_COUNCIL/     # SC 6× audit outputs + A.11
+        ├── 08_INTEGRATION/         # INTEGRATION T1-T3 outputs + A.12
+        ├── 09_IRR/                 # IRR outputs + A.13 + A.14
+        ├── PIPELINE_STATE.md       # Progress tracker
+        └── {TICKER}_FINAL_CVR.md   # Consolidated human-readable output
 ```
 
-**Note:** Current architecture is HYBRID - human orchestrator manages RQ/SC/HITL steps manually.
-Future "AUTO CAPY" mode will add workarounds for automated full-pipeline execution.
+**Note:** Full autonomous pipeline available via `CAPY: RUN {TICKER}`. Individual stage commands available for debugging or partial re-runs.
 
 **Folder naming:** `{TICKER}_CAPY_{YYYYMMDD}_{HHMMSS}`
 - Example: `DAVE_CAPY_20241215_143022`
@@ -132,6 +134,64 @@ Future "AUTO CAPY" mode will add workarounds for automated full-pipeline executi
 ---
 
 ## Command Reference
+
+### CAPY: RUN {TICKER}
+
+**Executes the FULL CAPY pipeline from raw PDFs to IRR.**
+
+This is the one-click autonomous execution command. User provides raw PDFs in `source_library/{TICKER}/`; pipeline produces complete CVR with E[IRR].
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  CAPY: RUN {TICKER} (Full Autonomous Pipeline)             │
+├─────────────────────────────────────────────────────────────┤
+│  Stage 0: PDF_PREPROCESSING                                 │
+│     └── Check source_library/{TICKER}/ for raw PDFs        │
+│         If *.extracted.md missing or stale → run SOURCE:   │
+│         UPLOAD preprocessing (pdfplumber + pdf2image)      │
+│         Output: *.extracted.md files ready for analysis    │
+│                                                             │
+│  Stage 1: INIT                                              │
+│     └── Create analysis folder, copy sources to 00_source/ │
+│                                                             │
+│  Stage 2: BASE_PIPELINE (T1 → REFINE → T2)                 │
+│     └── Validate after each turn → FAIL? Stop              │
+│                                                             │
+│  Stage 3: RQ_STAGE (RQ_GEN → 7× parallel RQ_ASK)           │
+│     └── Validate A.8, A.9 → FAIL? Stop                     │
+│                                                             │
+│  Stage 4: ENRICH_STAGE (T1 → T2)                           │
+│     └── Validate → FAIL? Stop                              │
+│                                                             │
+│  Stage 5: SCENARIO_STAGE (T1 → T2)                         │
+│     └── Validate A.10 → FAIL? Stop                         │
+│                                                             │
+│  Stage 6: SILICON_COUNCIL (6× parallel audits → A.11)      │
+│     └── Validate → FAIL? Stop                              │
+│                                                             │
+│  Stage 7: INTEGRATION (T1 → T2 → T3)                       │
+│     └── Validate each turn → FAIL? Stop                    │
+│                                                             │
+│  Stage 8: IRR (T1 → T2)                                    │
+│     └── Validate → COMPLETE                                │
+│                                                             │
+│  Stage 9: FINAL_CVR                                         │
+│     └── Run generate_final_cvr.sh to produce consolidated  │
+│         human-readable document                            │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Behavior:**
+- Runs autonomously without human checkpoints (use individual stage commands for debugging)
+- Updates PIPELINE_STATE.md after each stage
+- On validation failure: Stops and reports
+- On fatal error: Writes error state, stops cleanly
+
+**Prerequisite:** `source_library/{TICKER}/` must exist with raw PDF files (10-K, 10-Q, transcripts, presentations). Stage 0 handles preprocessing.
+
+**Autonomous Permissions:** Requires `.claude/settings.json` with appropriate permissions. See `shared/PATTERNS.md` or use `--dangerously-skip-permissions` flag.
+
+---
 
 ### SOURCE: UPLOAD {TICKER}
 
@@ -1185,37 +1245,41 @@ Last deployment: [Check VERSION.md]
 
 ## Maturity Status
 
-> **This CLAUDE.md is v0.5.0 (DRAFT)**
+> **This CLAUDE.md is v0.6.0 (BETA)**
 
-Current status: BASE_PIPELINE, RQ_STAGE, and ENRICH_STAGE documented. T1 stages work via Opus subagent dispatch. T2 stages require orchestrator-direct kernel execution (subagents fabricate results). RQ_STAGE uses 7 parallel Claude Opus subagents with direct-write protocol. All validators use Opus for consistency.
+Current status: Full pipeline documented (BASE through IRR). All stages use Opus subagent dispatch with direct-write protocol. Kernels execute via Bash (Pattern 6). Validators use Opus. `CAPY: RUN {TICKER}` provides one-click autonomous execution.
 
-Before v1.0:
-- [x] Full smoke test of CC-enabled CAPY production run (2024-12-16, DAVE)
-- [x] Build out complete instructions for BASE pipeline stages (T1, REFINE, T2)
-- [x] Document inter-turn validator integration
-- [x] Validate subagent dispatch patterns work end-to-end (T1, REFINE: yes; T2: no)
-- [x] Document error handling and recovery procedures
-- [x] Document RQ_STAGE with 7-slot architecture (2024-12-19)
-- [x] RQ_STAGE smoke test (DAVE, 7 parallel subagents, ~220K words output)
-- [x] Document ENRICH_STAGE with 4-file atomization (2024-12-19)
-- [ ] ENRICH_STAGE smoke test
-- [ ] Test COMPARE RUNS functionality
-- [ ] Add remaining pipeline stages (SCENARIO, INT, IRR)
-- [ ] Document SC, HITL pause points
+**Pipeline Stages Documented:**
+- [x] BASE_PIPELINE (T1 → REFINE → T2)
+- [x] RQ_STAGE (RQ_GEN → 7× RQ_ASK)
+- [x] ENRICH_STAGE (T1 → T2)
+- [x] SCENARIO_STAGE (referenced in workshop/CLAUDE.md)
+- [x] SILICON_COUNCIL (referenced in workshop/CLAUDE.md)
+- [x] INTEGRATION (referenced in workshop/CLAUDE.md)
+- [x] IRR (referenced in workshop/CLAUDE.md)
 
-**Smoke Test Findings (2024-12-16):**
-- T1: Opus subagent works correctly
-- REFINE: Opus subagent works correctly
-- T2: **Subagent fabricates results** - must run kernel via Bash directly
-- Haiku validator: **False positive on T2** - use Opus for T2 validation
-- Schema mismatches: REFINE outputs `nodes`/`drivers`, kernel expects `DAG`/`GIM`
-- Kernel output revealed DAG/GIM bugs (negative CAGR, 80%+ ROIC) - prompt patches needed in WORKSHOP
+**Smoke Tests Completed:**
+- [x] BASE smoke test (DAVE, 2024-12-16)
+- [x] RQ smoke test (DAVE, 7 parallel subagents)
+- [x] ENRICH smoke test (DAVE, 2024-12-20)
+- [x] SCENARIO smoke test (DAVE, 2024-12-20)
+- [x] INTEGRATION smoke test (DAVE, 2024-12-21)
+- [x] IRR smoke test (DAVE, 2024-12-22)
 
-**Pending WORKSHOP updates (do not apply here):**
-- REFINE v1_2: Add trajectory calibration, enforce kernel schema
-- G3BASE 2.2.2e: Clarify unit conventions, add schema examples
+**Before v1.0:**
+- [ ] Full pipeline smoke test (DAVE: SOURCE→IRR via `CAPY: RUN`)
+- [ ] Apply mega-patch Phase 2 kernel/prompt fixes
+- [ ] Test autonomous permissions (.claude/settings.json)
 
-**Do not rely on these instructions for production analyses until v1.0.**
+**Key Patterns Applied:**
+- Pattern 1: Direct-Write (subagents write to disk, return paths only)
+- Pattern 6: Bash Kernel (execute Python via Bash, never fabricate)
+- Pattern 7: Validators (Opus validator after each turn)
+- Pattern 8: Atomized Prompts (PROMPT/SCHEMAS/NORMDEFS)
+- Pattern 12: Canonical Snapshot (copy-forward via cp, not Claude)
+- Pattern 13: Kernel Receipts (execution proof for reproducibility)
+
+See `shared/PATTERNS.md` for full pattern documentation.
 
 ---
 

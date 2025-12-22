@@ -1,7 +1,7 @@
 # CAPY Workshop - Prompt Development Environment
 
-> **Version:** 0.10.0
-> **Last reviewed:** 2024-12-20
+> **Version:** 0.11.0
+> **Last reviewed:** 2024-12-22
 > **Review cadence:** Weekly during active development, monthly otherwise
 
 This workspace is for **developing, testing, and iterating** on CAPY prompts and kernels.
@@ -30,6 +30,13 @@ For **production analysis runs**, use `../production/` instead.
 | Unsure how contexts connect | Read `../shared/BRIDGE.md` |
 
 **Implementation:** Just do it. Don't ask permission to read sibling directories. Report what you found.
+
+**Key Patterns for Pipeline Execution:**
+- Pattern 12: Canonical Snapshot - each stage folder contains COMPLETE artifact set; orchestrator uses `cp` (not Claude) for copy-forward
+- Pattern 13: Kernel Receipts - JSON proof of real kernel execution (sha256, exit_code, timing)
+- See `../shared/PATTERNS.md` for patterns 1-13 documentation
+
+**Canonical Snapshot Naming:** `{TICKER}_{ARTIFACT}_{STAGE}.{ext}` (e.g., `DAVE_A5_GIM_ENRICH.json`)
 
 ---
 
