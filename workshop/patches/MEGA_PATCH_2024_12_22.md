@@ -996,25 +996,43 @@ Re-run DAVE smoke test after fix. Expected:
 - Update production/CLAUDE.md with CAPY: RUN {TICKER} and missing stages
 - Verify: Patterns documented, commands defined
 
-### Phase 2: Full Pipeline Retrofit (BASE→IRR)
-- Apply kernel fixes (terminal g) to all kernels
-- Apply REFINE handshake fix
+### Phase 2a: BASE Stage Retrofit (Isolated Testing)
+- Apply kernel fix (terminal g) to BASE_CVR_KERNEL → 2.2.3e
+- Apply REFINE handshake fix (Equity Bridge) → v1_3
+- Apply DR rubric recalibration to G3BASE_NORMDEFS → 2.2.3e
+- Apply currency auto-detection to G3BASE_PROMPT → 2.2.3e
+- Add ROIC_anchor to G3BASE_SCHEMAS → 2.2.3e
+- Update G3BASE atomized output mandate (Section V)
+- **Smoke test BASE only (DAVE)** - verify IVPS, DR, terminal g
+- If PASS → proceed to Phase 2b
+- If FAIL → debug and iterate on BASE before touching other stages
+
+**Rationale:** BASE touches the most patches (DR, currency, terminal g, ROIC). Testing it in isolation prevents debugging nightmare.
+
+### Phase 2b: Pipeline Propagation (ENRICH→IRR)
+- Propagate kernel fixes to ENRICH, SCENARIO, INT, IRR kernels
+- Propagate DR rubric to ENRICH NORMDEFS
 - Update all stage prompts with atomized output mandate
 - Create/update validators for file presence checks
-- Create concat_stage.sh script
+- Create generate_final_cvr.sh script
 - Full pipeline smoke test (DAVE BASE→IRR)
 
-**Rationale:** Once patterns are established in Phase 1, all stages follow same approach. Full pipeline test validates everything.
+**Rationale:** Once BASE passes, propagate changes. Each stage inherits patterns from BASE.
 
 ---
 
 ## Verification Strategy
 
 1. **Phase 1 validation:** CLAUDE.md changes reviewed, patterns documented
-2. **Phase 2 validation:** Full pipeline test (DAVE BASE→IRR)
-3. **File presence check:** All enumerated files exist at each stage
-4. **Kernel verification:** E[IVPS] and E[IRR] match baseline (within floating point tolerance)
-5. **Terminal g verification:** DAVE terminal g should be ~2-3% (from topline), not anomalous
+2. **Phase 2a validation:** BASE-only smoke test (DAVE)
+   - DR should be ~9.75-10.75% (X ≈ 1.1-1.3)
+   - Terminal g should be ~2-3% (from topline)
+   - IVPS should increase vs baseline (lower DR → higher PV)
+   - Equity Bridge preserved (FDSO, debt, cash)
+3. **Phase 2b validation:** Full pipeline test (DAVE BASE→IRR)
+4. **File presence check:** All enumerated files exist at each stage
+5. **Kernel verification:** E[IVPS] and E[IRR] economically sensible
+6. **Terminal g verification:** DAVE terminal g ~2-3% (from topline), not anomalous
 
 ---
 

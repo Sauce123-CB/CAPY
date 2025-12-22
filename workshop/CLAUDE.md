@@ -593,6 +593,7 @@ Run on the 1st of each month:
 | Silicon Council | G3_SC_2.2.2e_*.md (atomized) | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
 | Silicon Council | G3_SILICON_COUNCIL_2.2.1e.md | HISTORICAL | DAVE_20241210 |
 | HITL Audit | HITL_DIALECTIC_AUDIT_1_0_Goldilocks.md | CANONICAL | DAVE_20241210 |
+| PDF Preprocessing | SOURCE: UPLOAD (production/CLAUDE.md) | CANONICAL | DAVE (source_library has .extracted.md) |
 
 ### Validators
 
