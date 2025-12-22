@@ -1,64 +1,69 @@
 {
-  "schema_version": "G3_2.2.5eIRR_INPUTS",
   "metadata": {
     "company_name": "Dave Inc.",
     "ticker": "NASDAQ:DAVE",
     "analysis_date": "2025-12-22",
-    "price_source": "WebSearch (Investing.com, TradingView, Yahoo Finance)",
-    "price_timestamp": "2025-12-22"
+    "source": "IRR Turn 1 Input Extraction",
+    "purpose": "Kernel inputs for CVR_KERNEL_IRR_2.2.5e.py execution in Turn 2"
   },
-  "price_t0": 215.25,
-  "shares_outstanding": 14.5,
-  "net_debt_t0": -19.0,
+  "market_data": {
+    "price_t0": 215.25,
+    "price_source": "TradingView (NASDAQ:DAVE)",
+    "price_timestamp": "2025-12-22",
+    "price_override_note": "Live price OVERRIDES State 4 bundle price of $225.00 (stale by 15 days)",
+    "shares_outstanding_diluted": 14.5,
+    "market_cap": 3121.125,
+    "net_debt_t0": -19.0,
+    "enterprise_value_market": 3102.125
+  },
   "fundamentals_y0": {
     "revenue": 545.0,
     "ebitda": 155.0,
     "ebit": 148.0,
+    "ebit_margin": 0.272,
     "nopat": 111.0,
-    "fcf": 104.0,
-    "ebitda_margin": 0.284,
-    "ebit_margin": 0.272
+    "fcf_unlevered": 104.0,
+    "mtms": 2.85,
+    "arpu": 220.0,
+    "extracash_originations": 8000.0
   },
   "fundamentals_y1": {
-    "revenue": 807.8,
-    "ebitda": 236.7,
-    "ebit": 226.2,
-    "nopat": 169.6,
-    "fcf": 120.0,
-    "ebitda_margin": 0.293,
-    "ebit_margin": 0.280,
-    "growth_rate_y0_to_y1": 0.482
+    "revenue": 712.8,
+    "ebitda": 199.6,
+    "ebitda_margin": 0.280,
+    "ebit": 192.6,
+    "ebit_margin": 0.270,
+    "nopat": 144.5,
+    "fcf_unlevered": 93.3,
+    "growth_rate_y0_to_y1": 0.308,
+    "note": "Y1 fundamentals extracted from State 4 trajectory. Scenario-specific Y1 fundamentals available in scenarios array below."
   },
   "valuation_anchor": {
     "e_ivps_state4": 206.34,
-    "dr_static": 0.1325,
     "base_case_ivps_state2": 199.25,
+    "dr_static": 0.1325,
     "terminal_g": 0.0425,
-    "terminal_roic": 0.409
+    "terminal_roic": 0.409,
+    "terminal_rr": 0.1039,
+    "ivps_t0": 206.34,
+    "ivps_t1_dcf": 233.68,
+    "note": "IVPS_T1 = IVPS_T0 × (1 + DR) = 206.34 × 1.1325 = 233.68 (intrinsic value compounds at discount rate)"
   },
-  "market_context": {
-    "market_cap_m": 3121.125,
-    "enterprise_value_m": 3102.125,
-    "ev_revenue_y0": 5.69,
-    "ev_ebitda_y0": 20.01,
-    "ev_revenue_y1": 3.84,
-    "ev_ebitda_y1": 13.10
-  },
-  "scenarios_finalized": [
+  "scenarios": [
     {
       "scenario_id": "S1_REG_SETTLEMENT",
-      "scenario_name": "Regulatory Settlement",
+      "scenario_name": "Regulatory Settlement (CFPB/FTC)",
       "p_posterior": 0.73,
       "ivps_impact": -52.29,
       "ivps_scenario": 146.96,
-      "rho": 0.25,
-      "effective_magnitude": -13.07,
+      "rho": 0.35,
+      "effective_magnitude": -18.30,
       "fundamentals_y1_intervened": {
-        "revenue": 605.0,
-        "ebit": 145.0,
-        "ebit_margin": 0.240,
-        "nopat": 109.0,
-        "fcf_unlevered": 78.0
+        "revenue": 839.77,
+        "ebit": 250.73,
+        "ebit_margin": 0.299,
+        "nopat": 188.05,
+        "fcf_unlevered": 137.08
       }
     },
     {
@@ -67,8 +72,8 @@
       "p_posterior": 0.16,
       "ivps_impact": 30.59,
       "ivps_scenario": 229.84,
-      "rho": 0.30,
-      "effective_magnitude": 9.18,
+      "rho": 0.25,
+      "effective_magnitude": 7.65,
       "fundamentals_y1_intervened": {
         "revenue": 1020.07,
         "ebit": 324.85,
@@ -79,12 +84,12 @@
     },
     {
       "scenario_id": "S3_BANK_TRANSITION",
-      "scenario_name": "Bank Charter Transition",
+      "scenario_name": "Coastal Bank Transition Success",
       "p_posterior": 0.76,
       "ivps_impact": 42.59,
       "ivps_scenario": 241.84,
-      "rho": 0.35,
-      "effective_magnitude": 14.91,
+      "rho": 0.30,
+      "effective_magnitude": 12.78,
       "fundamentals_y1_intervened": {
         "revenue": 972.68,
         "ebit": 302.04,
@@ -95,12 +100,12 @@
     },
     {
       "scenario_id": "S4_ACQUISITION",
-      "scenario_name": "M&A/Acquisition",
+      "scenario_name": "Acquisition Premium",
       "p_posterior": 0.20,
       "ivps_impact": 40.00,
       "ivps_scenario": 239.25,
-      "rho": 0.15,
-      "effective_magnitude": 6.00,
+      "rho": 0.10,
+      "effective_magnitude": 4.00,
       "fundamentals_y1_intervened": {
         "revenue": 1020.07,
         "ebit": 284.75,
@@ -110,33 +115,43 @@
       }
     }
   ],
-  "irr_parameters": {
-    "hurdle_rate": 0.15,
-    "convergence_rate": 0.21,
-    "horizon_years": 1,
-    "multiple_selection": {
-      "primary_metric": "EV_EBITDA",
-      "secondary_metric": "EV_Revenue",
-      "weighting": {
-        "primary": 0.70,
-        "secondary": 0.30
-      }
-    }
+  "convergence_rate": {
+    "cr_final": 0.15,
+    "cr_base": 0.20,
+    "total_adjustment": -0.05,
+    "deviation_rationale": "CR below base rate due to regulatory narrative headwind (-0.02 adjustment) and conservative rounding. Implies 4.3-year half-life for convergence (slower than base rate)."
   },
-  "sse_context": {
-    "state_count": 16,
-    "feasible_state_count": 16,
-    "probability_sum": 1.0,
+  "multiple_selection": {
+    "primary_metric": "EV/EBITDA",
+    "secondary_metric": "EV/FCF",
+    "weighting": {
+      "primary": 0.75,
+      "secondary": 0.25
+    },
+    "rationale": "Mature fintech (28% EBITDA margin, 47% FCF conversion). Market prices profitability on EBITDA multiples."
+  },
+  "hurdle_rate": 0.1325,
+  "sse_distribution_reference": {
     "e_ivps": 206.34,
     "p10": 146.96,
-    "p50": 188.00,
+    "p25": 179.96,
+    "p50_median": 188.00,
+    "p75": 215.23,
     "p90": 239.00,
-    "skewness": "RIGHT",
-    "modality": "MULTIMODAL"
+    "standard_deviation": 31.55,
+    "coefficient_of_variation": 0.159,
+    "note": "State 4 distribution statistics from A.10 for reference. Kernel will generate IRR distribution from forks."
   },
-  "source_artifacts": {
-    "a2_analytic_kg_s4": "08_INTEGRATION/DAVE_A2_ANALYTIC_KG_S4.json",
-    "a7_valuation_s4": "08_INTEGRATION/DAVE_A7_VALUATION_S4.json",
-    "a10_scenario_model_s4_final": "08_INTEGRATION/DAVE_A10_SCENARIO_MODEL_S4_FINAL.json"
-  }
+  "capital_allocation_assumption": {
+    "assumption": "RETAIN_FCF",
+    "rationale": "DAVE has no dividend policy. FCF retained on balance sheet, reducing net debt (or increasing net cash). Net_Debt_T1 = Net_Debt_T0 - FCF_Y1.",
+    "net_debt_t1_calculation": "-19.0 - 93.3 = -112.3 (net cash position grows)"
+  },
+  "notes": [
+    "Price T0 of $215.25 is LIVE as of 2025-12-22, overriding State 4 bundle price of $225.00",
+    "Market is trading at 1.04x E[IVPS] (215.25 / 206.34 = 1.043), indicating near fair value",
+    "Average ρ of 0.25 is conservative; only S1 exceeds 0.30 default",
+    "CR of 0.15 below base rate reflects regulatory narrative headwind and lack of positive catalysts",
+    "All inputs validated per Phase 0 checklist in IRR Turn 1 protocol"
+  ]
 }

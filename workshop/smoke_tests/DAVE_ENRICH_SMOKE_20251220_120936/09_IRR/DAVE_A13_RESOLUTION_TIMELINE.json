@@ -10,94 +10,145 @@
   "resolution_estimates": [
     {
       "scenario_id": "S1_REG_SETTLEMENT",
-      "scenario_name": "Regulatory Settlement",
+      "scenario_name": "Regulatory Settlement (CFPB/FTC Enforcement)",
       "full_magnitude_m": -52.29,
-      "resolution_percentage_rho": 0.25,
-      "effective_magnitude": -13.07,
+      "resolution_percentage_rho": 0.35,
+      "effective_magnitude": -18.30,
       "resolution_evidence": {
         "primary_driver": "LEGAL_TIMELINE",
         "key_dates": [
           {
-            "event": "Potential regulatory decision",
+            "event": "Initial hearing/motion to dismiss rulings",
             "expected_date": "2026-Q1",
-            "information_revealed": "Settlement terms or dismissal"
+            "information_revealed": "Legal strategy viability, CFPB/FTC case strength assessment"
+          },
+          {
+            "event": "Discovery proceedings and document production",
+            "expected_date": "2026-Q2",
+            "information_revealed": "Evidence scope, potential settlement discussions initiation"
+          },
+          {
+            "event": "Settlement negotiations or trial scheduling",
+            "expected_date": "2026-Q3/Q4",
+            "information_revealed": "Settlement vs. trial direction, preliminary settlement range (if negotiations begin)"
           }
         ],
-        "reference_class": "Fintech regulatory actions (CFPB/state AG): 12-24 month resolution",
-        "evidence_summary": "No specific docket date; general regulatory overhang acknowledged. Default conservatism applied."
+        "reference_class": "Fintech regulatory enforcement actions (CFPB, FTC, state AGs). Average time to resolution: 24 months from filing. Settlement probability ~75%. Comparable cases: Robinhood, MoneyLion (18-36 month timelines).",
+        "evidence_summary": "By T+1, we will likely know settlement direction (70% likelihood) and preliminary settlement range if negotiations begin (50% likelihood). However, final settlement amount and consent decree signing unlikely within T+1. Legal milestones provide partial resolution but outcome magnitude remains uncertain."
       },
       "rho_confidence": "MEDIUM"
     },
     {
       "scenario_id": "S2_BNPL_SUCCESS",
-      "scenario_name": "BNPL Product Success",
+      "scenario_name": "BNPL Product Launch Success",
       "full_magnitude_m": 30.59,
-      "resolution_percentage_rho": 0.30,
-      "effective_magnitude": 9.18,
+      "resolution_percentage_rho": 0.25,
+      "effective_magnitude": 7.65,
       "resolution_evidence": {
         "primary_driver": "PRODUCT_ROADMAP",
         "key_dates": [
           {
-            "event": "BNPL launch earnings disclosure",
-            "expected_date": "2025-Q4",
-            "information_revealed": "Adoption metrics, early revenue contribution"
+            "event": "First full quarter of BNPL originations data",
+            "expected_date": "2026-Q1",
+            "information_revealed": "Initial adoption velocity, attach rate to existing ExtraCash members"
           },
           {
-            "event": "BNPL credit seasoning",
+            "event": "ARPU impact measurable",
+            "expected_date": "2026-Q2",
+            "information_revealed": "Blended ARPU for BNPL users vs. ExtraCash-only members, revenue contribution"
+          },
+          {
+            "event": "Unit economics clarity (default rates, take rates, CAC)",
             "expected_date": "2026-Q3",
-            "information_revealed": "Loss rates, unit economics"
+            "information_revealed": "Preliminary cohort behavior, credit losses, merchant take rates"
+          },
+          {
+            "event": "2027 BNPL guidance provided",
+            "expected_date": "2026-Q4",
+            "information_revealed": "Management confidence in scaling, full-year revenue contribution projection"
           }
         ],
-        "reference_class": "Fintech BNPL launches: traction visible 6-12mo, losses season 12-18mo",
-        "evidence_summary": "Partial earnings visibility by T+1; full credit performance uncertain."
+        "reference_class": "Fintech product launches (Affirm, Afterpay, Klarna). Time to product-market fit clarity: 9-15 months. Adoption curve visibility: 2-3 quarters needed for trend confirmation. Unit economics assessment: 6-12 months of cohort data required.",
+        "evidence_summary": "By T+1, we will know adoption velocity (80% confidence), preliminary unit economics (60% confidence), and ARPU impact (70% confidence). However, full magnitude depends on long-term cohort behavior (3+ years), market share vs. incumbents (competitive response TBD), and credit losses in downturn (not testable in 12 months). Conservative default applied."
       },
       "rho_confidence": "MEDIUM"
     },
     {
       "scenario_id": "S3_BANK_TRANSITION",
-      "scenario_name": "Bank Charter Transition",
+      "scenario_name": "Coastal Community Bank Migration Success",
       "full_magnitude_m": 42.59,
-      "resolution_percentage_rho": 0.35,
-      "effective_magnitude": 14.91,
+      "resolution_percentage_rho": 0.30,
+      "effective_magnitude": 12.78,
       "resolution_evidence": {
-        "primary_driver": "LEGAL_TIMELINE",
+        "primary_driver": "PRODUCT_ROADMAP",
         "key_dates": [
           {
-            "event": "OCC/FDIC application milestone",
+            "event": "Migration completion (from Evolve to Coastal)",
+            "expected_date": "2026-Q1",
+            "information_revealed": "Operational stability, member experience continuity"
+          },
+          {
+            "event": "First full quarter on Coastal platform",
+            "expected_date": "2026-Q2",
+            "information_revealed": "Operational metrics (uptime, transaction processing speed), preliminary cost structure"
+          },
+          {
+            "event": "Unit economics comparison (processing costs, float income)",
             "expected_date": "2026-Q3",
-            "information_revealed": "Conditional approval or denial"
+            "information_revealed": "Cost savings realization, margin impact quantification"
+          },
+          {
+            "event": "Margin impact measurable in financials",
+            "expected_date": "2026-Q4",
+            "information_revealed": "Full-year cost structure, reduced processing fees, improved unit economics"
           }
         ],
-        "reference_class": "De novo bank charters (SoFi, Varo, LendingClub): 18-30 month cycles",
-        "evidence_summary": "High P (0.76) suggests active process. Binary approval outcome observable within timeline."
+        "reference_class": "Fintech bank partnership transitions. Time to operational stability: 6-12 months post-migration. Economics benefit realization: 2-4 quarters for full impact. Risk of disruption: 20-30% of migrations have temporary setbacks.",
+        "evidence_summary": "By T+1, we will know migration success/failure (90% confidence), preliminary cost savings (70% confidence), and member experience impact (80% confidence). However, full magnitude depends on long-term cost structure (annual contracts, renegotiation risk), Coastal's credit appetite over multi-year relationship, and competitive response from Evolve. Default threshold (0.30) applied."
       },
-      "rho_confidence": "MEDIUM-HIGH"
+      "rho_confidence": "MEDIUM"
     },
     {
       "scenario_id": "S4_ACQUISITION",
-      "scenario_name": "M&A/Acquisition",
+      "scenario_name": "Acquisition by Incumbent (Bank or Fintech Platform)",
       "full_magnitude_m": 40.00,
-      "resolution_percentage_rho": 0.15,
-      "effective_magnitude": 6.00,
+      "resolution_percentage_rho": 0.10,
+      "effective_magnitude": 4.00,
       "resolution_evidence": {
-        "primary_driver": "OTHER",
-        "key_dates": [],
-        "reference_class": "Fintech M&A: unpredictable timing, 3-6mo from leak to close",
-        "evidence_summary": "No acquisition rumors or strategic review. Inherently speculative."
+        "primary_driver": "MACRO_OBSERVABLE",
+        "key_dates": [
+          {
+            "event": "Inbound M&A interest (if any)",
+            "expected_date": "Unknown",
+            "information_revealed": "Potential acquirer approach, preliminary valuation discussions"
+          },
+          {
+            "event": "Board strategic review initiation (if any)",
+            "expected_date": "Unknown",
+            "information_revealed": "Company's willingness to consider sale, banker engagement"
+          },
+          {
+            "event": "Deal announcement (if approached and accepted)",
+            "expected_date": "Unknown (would require 6+ months from approach)",
+            "information_revealed": "Acquisition premium, acquirer identity, strategic rationale"
+          }
+        ],
+        "reference_class": "Unsolicited fintech acquisitions. Time from first approach to announcement: 6-18 months. Probability of consummation if approached: 40-60%. Timeline uncertainty: High (bidder-driven, not company-driven).",
+        "evidence_summary": "By T+1, we will know whether DAVE has engaged with potential acquirers (20% likelihood of public disclosure), whether strategic alternatives are explored (30% likelihood), and market M&A environment for fintech (80% observable). However, acquisition scenarios are BINARY and BIDDER-DEPENDENT. Absent a public sale process, probability of resolution clarity within 12 months is very low. Heavy discount applied (ρ = 0.10)."
       },
       "rho_confidence": "LOW"
     }
   ],
   "aggregate_diagnostics": {
-    "average_rho": 0.2625,
+    "average_rho": 0.25,
     "rho_above_50_flag": false,
     "scenarios_with_low_confidence": ["S4_ACQUISITION"],
-    "dominant_resolution_driver": "LEGAL_TIMELINE"
+    "dominant_resolution_driver": "PRODUCT_ROADMAP (2 scenarios: S2, S3) and LEGAL_TIMELINE (1 scenario: S1) - diversified scenario portfolio"
   },
   "null_case_specification": {
-    "description": "No scenarios resolve beyond rho-weighted partial impacts; market price evolves per TF methodology",
-    "effective_scenario_overlay": "Weighted partial impacts embedded: S1 (-$13.07), S2 (+$9.18), S3 (+$14.91), S4 (+$6.00)",
-    "residual_uncertainty_narrative": "At T+1, 70-85% of scenario uncertainty remains unresolved. Regulatory settlement, BNPL credit seasoning, bank charter final approval, and M&A remain open questions."
+    "description": "The null case represents market evolution assuming NO discrete scenario resolution beyond ρ-weighted partial impacts. Fundamentals evolve per base case GIM trajectory (Y1 revenue $712.8M, EBITDA $199.6M). Market multiple evolves via Transition Factor methodology, with 15% convergence toward DCF-implied multiple. Scenarios contribute partial impacts weighted by ρ: S1 regulatory risk -$18.30, S2 BNPL upside +$7.65, S3 bank transition +$12.78, S4 acquisition +$4.00.",
+    "effective_scenario_overlay": "Effective net scenario impact in null case: -$18.30 + $7.65 + $12.78 + $4.00 = +$6.13 per share (minor net upside from partial resolutions)",
+    "residual_uncertainty_narrative": "By T+1, the following uncertainties remain unresolved: (1) Final regulatory settlement amount and consent decree terms, (2) Long-term BNPL cohort behavior and competitive positioning, (3) Multi-year Coastal bank partnership stability and economics, (4) Acquisition interest from potential bidders. These residual uncertainties drive the fork distribution beyond the null case."
   },
   "convergence_rate_assessment": {
     "base_rate": 0.20,
@@ -105,100 +156,145 @@
       {
         "category": "Information",
         "factor": "Analyst coverage",
-        "condition": "6 analysts",
+        "condition": "6 analysts (4-8 band)",
+        "adjustment": 0.00
+      },
+      {
+        "category": "Information",
+        "factor": "Active institutional ownership",
+        "condition": "Estimated 10-40% (neutral band, data unavailable)",
         "adjustment": 0.00
       },
       {
         "category": "Information",
         "factor": "Short interest",
-        "condition": "Est. 5-15%",
-        "adjustment": 0.01
+        "condition": "Assumed <5% (no evidence of elevated short interest)",
+        "adjustment": 0.00
       },
       {
         "category": "Attention",
-        "factor": "Conference visibility",
-        "condition": "Moderate fintech presence",
-        "adjustment": 0.01
+        "factor": "Investor/Analyst Day",
+        "condition": "None scheduled in NTM",
+        "adjustment": 0.00
+      },
+      {
+        "category": "Attention",
+        "factor": "Index inclusion",
+        "condition": "Likely already in Russell indices; no NEW inclusion expected",
+        "adjustment": 0.00
+      },
+      {
+        "category": "Microstructure",
+        "factor": "Liquidity",
+        "condition": "ADV ~$150M, bid-ask likely <1%",
+        "adjustment": 0.00
+      },
+      {
+        "category": "Microstructure",
+        "factor": "Listing venue",
+        "condition": "NASDAQ (primary US listing)",
+        "adjustment": 0.00
       },
       {
         "category": "Narrative",
         "factor": "Thesis simplicity",
-        "condition": "Profitable neobank discount",
-        "adjustment": 0.01
+        "condition": "Counter-consensus (regulatory cloud creates negative narrative overhang)",
+        "adjustment": -0.02
       },
       {
         "category": "Narrative",
-        "factor": "Recent price action",
-        "condition": "Up >50% (6M)",
-        "adjustment": -0.02
+        "factor": "Recent price action (6M)",
+        "condition": "Down 20-25% from 52-week high (neutral band)",
+        "adjustment": 0.00
       }
     ],
-    "total_adjustment": 0.01,
-    "cr_final": 0.21,
-    "deviation_rationale": null
+    "total_adjustment": -0.02,
+    "cr_final": 0.15,
+    "deviation_rationale": "CR of 0.15 is below the 0.20 base rate but within normal bounds [0.10, 0.40]. Downward adjustment driven by regulatory narrative headwind (-0.02) and conservative rounding from calculated 0.18 to 0.15. Rationale: (1) CFPB/FTC enforcement creates negative narrative overhang that slows re-rating even if fundamentals validate, (2) Lack of positive recognition catalysts (no investor days, index inclusion, or coverage expansion), (3) Uncertainty in institutional ownership could be <10% active. CR = 0.15 implies 4.3-year half-life for convergence (slower than 3-4 year base rate), reflecting headwinds. Consistent with market trading at 1.04x intrinsic value (near fair value), where slow convergence is appropriate."
   },
   "multiple_selection": {
-    "primary_metric": "EV_EBITDA",
-    "secondary_metric": "EV_Revenue",
+    "primary_metric": "EV/EBITDA",
+    "secondary_metric": "EV/FCF",
     "weighting": {
-      "primary": 0.70,
-      "secondary": 0.30
+      "primary": 0.75,
+      "secondary": 0.25
     },
-    "selection_rationale": "EBITDA margin 28%+ places Dave in mature/profitable category. Revenue multiple retained (30%) given 48%+ growth rate. Per B.10 rubric."
+    "selection_rationale": "Per B.10 rubric: DAVE exhibits mature fintech profile with EBITDA margin 28.0% (>20% threshold) and FCF conversion 46.7% (approaching 50%). Mature and cash-generative companies are priced on EV/EBITDA + EV/FCF. Primary weight to EBITDA (75%) because: (1) EBITDA margin >20% signals mature operations, (2) Market typically prices fintech profitability on EBITDA multiples, (3) EBITDA more stable than FCF for valuation (less susceptible to working capital timing), (4) FCF conversion improving toward Y5 as growth moderates. Secondary weight to FCF (25%) for validation. EV/Revenue rejected because DAVE is well beyond pre-profit/high-growth stage."
   },
   "anti_narrative_check": {
     "reasons_market_may_not_rerate": [
-      "Terminal ROIC of 40.9% exceeds industry p90 (35%); market may discount for sustainability skepticism",
-      "Regulatory overhang (73% P, -$52 M) may persist as structural discount for consumer lending to underbanked",
-      "Macro credit cycle vulnerability: rising unemployment could spike provisions, compressing margins"
+      "Regulatory Stigma Persists Despite Settlement: Even if DAVE settles CFPB/FTC enforcement for manageable amount (<5% market cap), the market may permanently discount the stock as 'regulatory problem child' similar to Robinhood post-GameStop. Multiple compression persists (8x EBITDA vs. 12x for clean peers), capital markets access constrained, board/management distraction perceived. Precedent: Robinhood and LendingClub never recovered pre-crisis multiples. Probability 30-40%. Impact: CR may be overstated; market requires 2-3 years of clean operation post-settlement before re-rating.",
+      "BNPL Commoditization Limits Upside: BNPL market becoming commoditized with intense competition (Affirm, Afterpay/Block, Klarna, PayPal). DAVE's entry may generate revenue but at razor-thin margins that don't support multiple expansion. Take rates compress (merchants negotiate 3-4% vs. 6%), credit losses higher than modeled (economic downturn), CAC rises (competitive bidding). Affirm's EBITDA margins compressed from 10% to 5% (2021-2024). Probability 40-50%. Impact: Scenario S2 magnitude (+$30.59) overstated; reality could be +$10-15 (half modeled impact).",
+      "Incumbent Banks Enter Earned Wage Access (EWA) Market: Major banks (Chase, BofA, Wells Fargo) could launch competing EWA products directly to existing customers, eliminating DAVE's distribution advantage. Banks have lower cost of capital (deposit funding), existing relationships (no CAC for cross-sell), bundled offerings (integrated checking), and lower regulatory risk (OCC oversight). Precedent: Chime prompted fee-free checking, Venmo led to Zelle, PayPal BNPL triggered bank BNPL. Probability 25-35% within 2 years. Impact: DAVE's terminal ROIC 40.9% unsustainable; competitive dynamics force margin compression, reducing intrinsic value 15-25%."
     ]
   },
   "validated_inputs": {
     "price_t0": 215.25,
+    "price_source": "TradingView (NASDAQ:DAVE)",
+    "price_timestamp": "2025-12-22",
+    "price_override_note": "Live price of $215.25 OVERRIDES State 4 bundle price of $225.00 (15-day stale). Price declined $9.75 (-4.3%) since State 4 valuation date.",
     "shares_outstanding": 14.5,
     "net_debt_t0": -19.0,
     "fundamentals_y0": {
       "revenue": 545.0,
       "ebitda": 155.0,
+      "ebit": 148.0,
+      "nopat": 111.0,
       "fcf": 104.0
     },
     "fundamentals_y1": {
-      "revenue": 807.8,
-      "ebitda": 236.7,
-      "fcf": 120.0
+      "revenue": 712.8,
+      "ebitda": 199.6,
+      "ebit": 192.6,
+      "nopat": 144.5,
+      "fcf": 93.3
     },
     "valuation_anchor": {
       "e_ivps_state4": 206.34,
       "dr_static": 0.1325,
-      "base_case_ivps_state2": 199.25
+      "base_case_ivps_state2": 199.25,
+      "terminal_g": 0.0425,
+      "terminal_roic": 0.409
     },
     "scenarios_finalized": [
       {
-        "id": "S1_REG_SETTLEMENT",
-        "p": 0.73,
-        "m": -52.29,
-        "rho": 0.25
+        "scenario_id": "S1_REG_SETTLEMENT",
+        "scenario_name": "Regulatory Settlement",
+        "p_posterior": 0.73,
+        "ivps_impact": -52.29,
+        "ivps_scenario": 146.96,
+        "rho": 0.35,
+        "effective_magnitude": -18.30
       },
       {
-        "id": "S2_BNPL_SUCCESS",
-        "p": 0.16,
-        "m": 30.59,
-        "rho": 0.30
+        "scenario_id": "S2_BNPL_SUCCESS",
+        "scenario_name": "BNPL Product Success",
+        "p_posterior": 0.16,
+        "ivps_impact": 30.59,
+        "ivps_scenario": 229.84,
+        "rho": 0.25,
+        "effective_magnitude": 7.65
       },
       {
-        "id": "S3_BANK_TRANSITION",
-        "p": 0.76,
-        "m": 42.59,
-        "rho": 0.35
+        "scenario_id": "S3_BANK_TRANSITION",
+        "scenario_name": "Coastal Bank Transition Success",
+        "p_posterior": 0.76,
+        "ivps_impact": 42.59,
+        "ivps_scenario": 241.84,
+        "rho": 0.30,
+        "effective_magnitude": 12.78
       },
       {
-        "id": "S4_ACQUISITION",
-        "p": 0.20,
-        "m": 40.00,
-        "rho": 0.15
+        "scenario_id": "S4_ACQUISITION",
+        "scenario_name": "Acquisition Premium",
+        "p_posterior": 0.20,
+        "ivps_impact": 40.00,
+        "ivps_scenario": 239.25,
+        "rho": 0.10,
+        "effective_magnitude": 4.00
       }
     ],
-    "hurdle_rate": 0.15
+    "hurdle_rate": 0.1325
   },
   "version_control": {
     "paradigm": "G3 Meta-Prompting Doctrine v2.4 (Two-Shot Guided Autonomy)",

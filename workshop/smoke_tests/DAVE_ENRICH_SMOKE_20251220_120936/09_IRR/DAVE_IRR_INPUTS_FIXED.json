@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "company_name": "Dave Inc.",
+    "ticker": "NASDAQ:DAVE",
+    "analysis_date": "2025-12-22",
+    "source": "IRR Turn 1 Input Extraction",
+    "purpose": "Kernel inputs for CVR_KERNEL_IRR_2.2.5e.py execution in Turn 2"
+  },
+  "price_t0": 215.25,
+  "shares_outstanding": 14.5,
+  "net_debt_t0": -19.0,
+  "price_source": "TradingView (NASDAQ:DAVE)",
+  "price_timestamp": "2025-12-22",
+  "fundamentals_y0": {
+    "revenue": 545.0,
+    "ebitda": 155.0,
+    "ebit": 148.0,
+    "nopat": 111.0,
+    "fcf": 104.0
+  },
+  "fundamentals_y1": {
+    "revenue": 712.8,
+    "ebitda": 199.6,
+    "ebit": 192.6,
+    "nopat": 144.5,
+    "fcf": 93.3
+  },
+  "valuation_anchor": {
+    "e_ivps_state4": 206.34,
+    "base_case_ivps_state2": 199.25,
+    "dr_static": 0.1325,
+    "terminal_g": 0.0425,
+    "terminal_roic": 0.409,
+    "terminal_rr": 0.1039
+  },
+  "scenarios_finalized": [
+    {
+      "scenario_id": "S1_REG_SETTLEMENT",
+      "scenario_name": "Regulatory Settlement",
+      "p_posterior": 0.73,
+      "ivps_impact": -52.29,
+      "ivps_scenario": 146.96,
+      "rho": 0.35,
+      "effective_magnitude": -18.30
+    },
+    {
+      "scenario_id": "S2_BNPL_SUCCESS",
+      "scenario_name": "BNPL Product Success",
+      "p_posterior": 0.16,
+      "ivps_impact": 30.59,
+      "ivps_scenario": 229.84,
+      "rho": 0.25,
+      "effective_magnitude": 7.65
+    },
+    {
+      "scenario_id": "S3_BANK_TRANSITION",
+      "scenario_name": "Coastal Bank Transition Success",
+      "p_posterior": 0.76,
+      "ivps_impact": 42.59,
+      "ivps_scenario": 241.84,
+      "rho": 0.30,
+      "effective_magnitude": 12.78
+    },
+    {
+      "scenario_id": "S4_ACQUISITION",
+      "scenario_name": "Acquisition Premium",
+      "p_posterior": 0.20,
+      "ivps_impact": 40.00,
+      "ivps_scenario": 239.25,
+      "rho": 0.10,
+      "effective_magnitude": 4.00
+    }
+  ],
+  "hurdle_rate": 0.1325
+}

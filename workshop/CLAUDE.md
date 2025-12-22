@@ -579,8 +579,8 @@ Run on the 1st of each month:
 | SCENARIO | G3_SCENARIO_2_2_1e.md | HISTORICAL | DAVE_20241210 | CVR_KERNEL_SCEN_2_2_1e.py |
 | INTEGRATION | G3_INTEGRATION_2.2.3e_*.md (atomized) | CANONICAL | DAVE_ENRICH_SMOKE_20251220 | CVR_KERNEL_INT_2_2_2e.py |
 | INTEGRATION | G3_INTEGRATION_2_2_2e.md | HISTORICAL | DAVE_20241210 | CVR_KERNEL_INT_2_2_2e.py |
-| IRR | G3_IRR_2.2.5e_*.md (atomized) | EXPERIMENTAL | - | CVR_KERNEL_IRR_2.2.5e.py |
-| IRR | G3_IRR_2_2_4e.md | CANONICAL | DAVE_20241210 | CVR_KERNEL_IRR_2_2_4e.py |
+| IRR | G3_IRR_2.2.5e_*.md (atomized) | CANONICAL | DAVE_ENRICH_SMOKE_20251220 | CVR_KERNEL_IRR_2.2.5e.py |
+| IRR | G3_IRR_2_2_4e.md | HISTORICAL | DAVE_20241210 | CVR_KERNEL_IRR_2_2_4e.py |
 
 ### Orchestration & Workflow
 
@@ -608,8 +608,8 @@ Run on the 1st of each month:
 | INT T1 Validator | INT_T1_VALIDATOR.md | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
 | INT T2 Validator | INT_T2_VALIDATOR.md | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
 | INT T3 Validator | INT_T3_VALIDATOR.md | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
-| IRR T1 Validator | IRR_T1_VALIDATOR.md | EXPERIMENTAL | - |
-| IRR T2 Validator | IRR_T2_VALIDATOR.md | EXPERIMENTAL | - |
+| IRR T1 Validator | IRR_T1_VALIDATOR.md | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
+| IRR T2 Validator | IRR_T2_VALIDATOR.md | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
 
 ### BASE Stage Atomized Files (CANONICAL)
 
@@ -1955,6 +1955,6 @@ Use Task tool with model="opus" for each step. See Stage Flow above for exact pr
 - Version refs updated to G3_2.2.5eIRR
 - INT compatibility updated to G3INT 2.2.3e
 
-**Status:** EXPERIMENTAL - awaiting smoke test. G3_IRR_2_2_4e.md remains CANONICAL until smoke test passes.
+**Status:** CANONICAL - smoke tested 2024-12-22 (DAVE_ENRICH_SMOKE_20251220). G3_IRR_2_2_4e.md is HISTORICAL.
 
 **Subagent loading:** Load all 3 prompt files. Kernel provided for T1 context, executed via Bash in T2.
