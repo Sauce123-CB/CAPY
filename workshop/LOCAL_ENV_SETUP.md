@@ -229,6 +229,17 @@ source ~/Dev/CAPY/.env && echo $GEMINI_API_KEY
 
 If setting up on a new machine or after reset:
 
+### 0. PDF Preprocessing Dependencies
+```bash
+# poppler (required for pdf2image to convert PDF pages to images)
+brew install poppler
+
+# Python packages for PDF extraction
+pip install pdfplumber pdf2image pillow
+```
+
+**Note:** `pdfplumber` handles text-based PDFs (10-Ks, transcripts). `pdf2image` handles visual PDFs (earnings decks, presentations) by converting to images.
+
 ### 1. Install Node.js
 ```bash
 # Download from https://nodejs.org/ or use brew
