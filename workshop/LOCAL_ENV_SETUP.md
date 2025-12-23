@@ -1,6 +1,6 @@
 # CAPY Local Environment Setup
 
-> **Last updated:** 2024-12-18
+> **Last updated:** 2024-12-23
 > **Machine:** Benjamin's Mac
 
 This document captures the local environment configuration for CAPY development.
@@ -17,8 +17,11 @@ USER_NAME=Benjamin
 OS_TYPE=mac
 CAPY_ROOT=~/Dev/CAPY
 SOURCE_DOCS_PATH=~/Dropbox/CAPY-Sources
-GEMINI_API_KEY=AIzaSyAZIIDk4VGYIqtvV4vp77j9yj4UJd36kp4
+GEMINI_API_KEY=<your_api_key>
+POPPLER_PATH=/opt/homebrew/bin
 ```
+
+**Note:** The `.env` file is gitignored (contains secrets). Copy `.env.example` to `.env` and fill in your values.
 
 **Note:** The API key has exhausted free tier quota. See "Deep Research Setup" for paid tier options.
 
@@ -230,13 +233,43 @@ source ~/Dev/CAPY/.env && echo $GEMINI_API_KEY
 If setting up on a new machine or after reset:
 
 ### 0. PDF Preprocessing Dependencies
-```bash
-# poppler (required for pdf2image to convert PDF pages to images)
-brew install poppler
 
-# Python packages for PDF extraction
-pip install pdfplumber pdf2image pillow
+**Step 1: Install Homebrew** (if not already installed)
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
+Follow the prompts, then add to PATH:
+```bash
+echo >> ~/.zprofile
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+**Step 2: Install Poppler** (PDF CLI tools)
+```bash
+brew install poppler
+```
+
+**Step 3: Install Python packages**
+```bash
+pip3 install pdfplumber pdf2image pillow
+```
+
+**Step 4: Verify installation**
+```bash
+/opt/homebrew/bin/pdftotext -v    # Should show poppler version
+python3 -c "import pdfplumber; print(pdfplumber.__version__)"
+python3 -c "from pdf2image import convert_from_path; print('pdf2image OK')"
+```
+
+**Verified versions (2024-12-23):**
+
+| Package | Version | Type | Purpose |
+|---------|---------|------|---------|
+| poppler | 25.12.0 | brew | CLI tools (pdftotext, pdftoppm) |
+| pdfplumber | 0.11.8 | pip3 | Text-based PDF extraction (10-Ks, transcripts) |
+| pdf2image | 1.17.0 | pip3 | PDF to image conversion (earnings decks) |
+| pillow | 12.0.0 | pip3 | Image processing |
 
 **Note:** `pdfplumber` handles text-based PDFs (10-Ks, transcripts). `pdf2image` handles visual PDFs (earnings decks, presentations) by converting to images.
 
@@ -334,3 +367,12 @@ git push origin branch-name
 - Created custom OAuth Desktop App credentials
 - **Blocker:** Need billing for Deep Research agent access
 - Documented roadmap for future sessions
+
+### 2024-12-23 (New Machine Setup)
+- Installed Homebrew on new Mac
+- Installed Poppler 25.12.0 via brew
+- Installed pdfplumber 0.11.8, pdf2image 1.17.0, pillow 12.0.0 via pip3
+- Added POPPLER_PATH to .env
+- Added .env to .gitignore (was exposing API key)
+- Created .env.example template for new users
+- Updated PDF setup documentation with step-by-step instructions

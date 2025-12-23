@@ -1,5 +1,8 @@
 # CAPY Mono-Repo .gitignore
 
+# Environment variables (contains API keys and user-specific paths)
+.env
+
 # Binary source documents (PDFs live in Dropbox, not Git)
 *.pdf
 *.PDF
