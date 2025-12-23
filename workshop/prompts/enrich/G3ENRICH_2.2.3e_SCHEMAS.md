@@ -415,3 +415,124 @@ This file defines the JSON schemas for all ENRICHMENT stage artifacts.
   }
 }
 ```
+
+---
+
+## Kernel Execution Contract (MANDATORY)
+
+**The CVR kernel uses `eval()` on DAG equations.** This section documents the exact schema requirements for kernel compatibility. Violations cause kernel bypass or runtime errors.
+
+### 1. DAG Equation Syntax
+
+**Exogenous drivers MUST have empty equations:**
+```json
+"Revenue_Growth": {
+  "type": "Exogenous_Driver",
+  "parents": [],
+  "equation": ""
+}
+```
+- Exogenous drivers get their values from the GIM, not from equations
+- Non-empty equations on exogenous drivers cause `eval()` errors
+- Pseudo-code like `"f(x, y, z)"` will FAIL
+
+**Derived nodes MUST use executable Python with GET()/PREV():**
+```json
+"Revenue": {
+  "type": "Financial_Line_Item",
+  "parents": ["Revenue_Prior", "Revenue_Growth"],
+  "equation": "PREV('Revenue') * (1 + GET('Revenue_Growth'))"
+}
+```
+- `GET('Var')` retrieves current-period value
+- `PREV('Var')` retrieves prior-period value
+- Equation must be valid Python that can be passed to `eval()`
+
+### 2. GIM-DAG Name Matching (CRITICAL)
+
+**GIM driver names MUST exactly match DAG node names:**
+```json
+// DAG
+"Revenue_SaaS_Growth": {
+  "type": "Exogenous_Driver",
+  "parents": [],
+  "equation": ""
+}
+
+// GIM - MUST use identical key
+"Revenue_SaaS_Growth": {
+  "mode": "LINEAR_FADE",
+  "params": {...}
+}
+```
+- Kernel loads GIM values using DAG node names as keys
+- Mismatched names (e.g., `"SaaS_Growth"` vs `"Revenue_SaaS_Growth"`) cause silent failures
+- Kernel code: `if handle in dag:` - names must match exactly
+
+### 3. EXPLICIT_SCHEDULE Key Format
+
+**Schedule keys MUST be numeric strings, not year labels:**
+```json
+// CORRECT
+"params": {
+  "schedule": {
+    "1": 837,
+    "2": 0,
+    "3": 0
+  }
+}
+
+// WRONG - will cause ValueError
+"params": {
+  "schedule": {
+    "Y1": 837,
+    "Y2": 0,
+    "Y3": 0
+  }
+}
+```
+- Kernel parses keys with `int(key)`
+- `"Y1"` causes `ValueError: invalid literal for int() with base 10: 'Y1'`
+
+### 4. Coverage Manifest Requirements
+
+**coverage_manifest MUST list ALL nodes present in Y0_data:**
+```json
+"coverage_manifest": {
+  "Revenue": "Total revenue",
+  "Revenue_SaaS": "SaaS segment revenue",
+  "EBIT": "Earnings before interest and taxes",
+  // ... every node in Y0_data needs an entry
+}
+```
+- Kernel validates that all Y0_data keys have manifest entries
+- Missing entries cause `RuntimeError: DAG Coverage Warning`
+- Include even "obvious" items like `Revenue`, `EBIT`, `NOPAT`
+
+### 5. A.6 DR Trace Key Path
+
+**DR trace MUST use `derivation_trace` as top-level key:**
+```json
+{
+  "schema_version": "G3_2.2.3e",
+  "derivation_trace": {
+    "DR_Static": 0.20,
+    "RFR": 0.045,
+    "ERP": 0.05,
+    "X": 1.8
+  }
+}
+```
+- Kernel accesses: `dr_trace['derivation_trace']['DR_Static']`
+- Using `"dr_derivation"` or other keys causes `KeyError`
+
+### Kernel Contract Checklist
+
+Before kernel execution, verify:
+
+- [ ] All `Exogenous_Driver` nodes have `"equation": ""`
+- [ ] All derived nodes have executable Python equations with `GET()`/`PREV()`
+- [ ] GIM keys exactly match DAG node names
+- [ ] EXPLICIT_SCHEDULE uses numeric keys (`"1"`, `"2"`, not `"Y1"`, `"Y2"`)
+- [ ] coverage_manifest includes ALL Y0_data node names
+- [ ] A.6 uses `derivation_trace.DR_Static` key path
