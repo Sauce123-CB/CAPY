@@ -10,7 +10,7 @@
 
 The ENRICH stage integrates research findings from the RQ stage into the CVR, transitioning from State 1 (BASE output) to State 2. Research insights modify the Analytic KG, Causal DAG, GIM assumptions, and DR factors. The kernel then recalculates valuation with enriched inputs.
 
-### Architecture (v2.2.2e)
+### Architecture (v2.2.3e - EXPERIMENTAL)
 
 **Two-Shot Execution:**
 
@@ -119,10 +119,10 @@ done
 │ ═══════════════════════════════════════════════════════════════════════════ │
 │                                                                             │
 │ PROMPT FILES TO ATTACH:                                                     │
-│   1. prompts/enrich/G3ENRICH_2.2.2e_PROMPT.md                               │
-│   2. prompts/enrich/G3ENRICH_2.2.2e_SCHEMAS.md                              │
-│   3. prompts/enrich/G3ENRICH_2.2.2e_NORMDEFS.md                             │
-│   4. kernels/CVR_KERNEL_ENRICH_2.2.2e.py (FOR CONTEXT ONLY - DO NOT EXECUTE)│
+│   1. prompts/enrich/G3ENRICH_2.2.3e_PROMPT.md                               │
+│   2. prompts/enrich/G3ENRICH_2.2.3e_SCHEMAS.md                              │
+│   3. prompts/enrich/G3ENRICH_2.2.3e_NORMDEFS.md                             │
+│   4. kernels/CVR_KERNEL_ENRICH_2.2.3e.py (FOR CONTEXT ONLY - DO NOT EXECUTE)│
 │                                                                             │
 │ INPUT FILES TO ATTACH (from 05_ENRICH/):                                    │
 │   • {analysis_dir}/05_ENRICH/{TICKER}_A1-A7_ENRICH.json (7 artifacts)       │
@@ -205,8 +205,8 @@ done
 │ ═══════════════════════════════════════════════════════════════════════════ │
 │                                                                             │
 │ PROMPT FILES TO ATTACH:                                                     │
-│   1. prompts/enrich/G3ENRICH_2.2.2e_PROMPT.md (T2 section)                  │
-│   2. kernels/CVR_KERNEL_ENRICH_2.2.2e.py (EXECUTABLE)                       │
+│   1. prompts/enrich/G3ENRICH_2.2.3e_PROMPT.md (T2 section)                  │
+│   2. kernels/CVR_KERNEL_ENRICH_2.2.3e.py (EXECUTABLE)                       │
 │                                                                             │
 │ INPUT FILES TO ATTACH (from 05_ENRICH/):                                    │
 │   • {analysis_dir}/05_ENRICH/{TICKER}_A5_GIM_ENRICH.json                    │
@@ -222,7 +222,7 @@ done
 │    1. Validate A.5 and A.6 are well-formed (repair if needed - Pattern 5)   │
 │    2. Execute kernel via Bash (Pattern 6):                                  │
 │                                                                             │
-│       python3 kernels/CVR_KERNEL_ENRICH_2.2.2e.py \                         │
+│       python3 kernels/CVR_KERNEL_ENRICH_2.2.3e.py \                         │
 │         --a5 {TICKER}_A5_GIM_ENRICH.json \                                  │
 │         --a6 {TICKER}_A6_DR_ENRICH.json \                                   │
 │         --output {TICKER}_A7_VALUATION_ENRICH.json                          │
@@ -326,23 +326,24 @@ Use Task tool with model="opus" for each step. See Stage Flow above for exact pr
 | Pattern 12: Canonical Snapshot | 05_ENRICH/ contains complete State 2 with _ENRICH suffix |
 | Pattern 13: Kernel Receipts | T2 generates {TICKER}_KERNEL_RECEIPT_ENRICH.json |
 
-### ENRICH Stage Atomized Files (CANONICAL)
+### ENRICH Stage Atomized Files (EXPERIMENTAL)
 
-The ENRICH prompt v2.2.2e is split into 3 atomic files plus kernel, mirroring the BASE pattern:
+The ENRICH prompt v2.2.3e is split into 3 atomic files plus kernel, mirroring the BASE pattern:
 
-| File | Purpose | Size |
-|------|---------|------|
-| `G3ENRICH_2.2.2e_PROMPT.md` | Core instructions (Sections I-V) | 22KB |
-| `G3ENRICH_2.2.2e_SCHEMAS.md` | JSON schemas (Appendix A) | 16KB |
-| `G3ENRICH_2.2.2e_NORMDEFS.md` | DSL & financial definitions (Appendix B) | 13KB |
-| `CVR_KERNEL_ENRICH_2.2.2e.py` | Valuation kernel | 39KB |
+| File | Purpose | Size | Changes in 2.2.3e |
+|------|---------|------|-------------------|
+| `G3ENRICH_2.2.3e_PROMPT.md` | Core instructions (Sections I-V) | ~24KB | Kernel receipt instructions |
+| `G3ENRICH_2.2.3e_SCHEMAS.md` | JSON schemas (Appendix A) | 16KB | (unchanged from 2.2.2e) |
+| `G3ENRICH_2.2.3e_NORMDEFS.md` | DSL & financial definitions (Appendix B) | ~14KB | DR global calibration |
+| `CVR_KERNEL_ENRICH_2.2.3e.py` | Valuation kernel | ~40KB | Terminal g from topline growth |
 
-**Key updates from 2.2.1e:**
-- 7-slot RQ architecture references (M-1, M-2, M-3a, M-3b, D-1, D-2, D-3)
-- 4-file atomization for context management
-- Version refs updated to G3_2.2.2e
+**Key updates from 2.2.2e:**
+- Kernel receipt generation instructions (Pattern 13)
+- DR calibration against global securities universe (not S&P 500)
+- Terminal g derived from topline growth (revenue + EBIT), not ROIC
+- Version refs updated to G3_2.2.3e
 
-**Status:** CANONICAL - smoke tested 2024-12-20. G3ENRICH_2.2.1e.md is HISTORICAL.
+**Status:** EXPERIMENTAL - pending smoke test. G3ENRICH_2.2.2e remains CANONICAL until smoke test passes.
 
 **Subagent loading:** Load all 3 prompt files. Kernel executed via Bash in T2 (not embedded in subagent context).
 

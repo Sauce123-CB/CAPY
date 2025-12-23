@@ -10,7 +10,7 @@
 
 The BASE stage transforms raw source documents (10-Ks, 10-Qs, transcripts, presentations) into State 1: the foundational Company Valuation Report with epistemic anchors, causal structure, financial model, and initial valuation.
 
-### Architecture (v2.2.2e)
+### Architecture (v2.2.3e - EXPERIMENTAL)
 
 **Three-Shot Execution:**
 
@@ -117,10 +117,10 @@ done
 │ ═══════════════════════════════════════════════════════════════════════════ │
 │                                                                             │
 │ PROMPT FILES TO ATTACH:                                                     │
-│   1. prompts/base/G3BASE_2.2.2e_PROMPT.md                                   │
-│   2. prompts/base/G3BASE_2.2.2e_SCHEMAS.md                                  │
-│   3. prompts/base/G3BASE_2.2.2e_NORMDEFS.md                                 │
-│   4. kernels/BASE_CVR_KERNEL_2.2.2e.py (FOR CONTEXT ONLY - DO NOT EXECUTE)  │
+│   1. prompts/base/G3BASE_2.2.3e_PROMPT.md                                   │
+│   2. prompts/base/G3BASE_2.2.3e_SCHEMAS.md                                  │
+│   3. prompts/base/G3BASE_2.2.3e_NORMDEFS.md                                 │
+│   4. kernels/BASE_CVR_KERNEL_2.2.3e.py (FOR CONTEXT ONLY - DO NOT EXECUTE)  │
 │                                                                             │
 │ INPUT FILES TO ATTACH:                                                      │
 │   • All files from {analysis_dir}/00_source/*.extracted.md                  │
@@ -270,8 +270,8 @@ done
 │ ═══════════════════════════════════════════════════════════════════════════ │
 │                                                                             │
 │ PROMPT FILES TO ATTACH:                                                     │
-│   1. prompts/base/G3BASE_2.2.2e_PROMPT.md (T2 section only)                 │
-│   2. kernels/BASE_CVR_KERNEL_2.2.2e.py (EXECUTABLE)                         │
+│   1. prompts/base/G3BASE_2.2.3e_PROMPT.md (T2 section only)                 │
+│   2. kernels/BASE_CVR_KERNEL_2.2.3e.py (EXECUTABLE)                         │
 │                                                                             │
 │ INPUT FILES TO ATTACH (from 02_REFINE/):                                    │
 │   • {analysis_dir}/02_REFINE/{TICKER}_A5_GIM_BASE.json                      │
@@ -286,7 +286,7 @@ done
 │    1. Validate A.5 and A.6 are well-formed (repair if needed - Pattern 5)   │
 │    2. Execute kernel via Bash (Pattern 6):                                  │
 │                                                                             │
-│       python3 kernels/BASE_CVR_KERNEL_2.2.2e.py \                           │
+│       python3 kernels/BASE_CVR_KERNEL_2.2.3e.py \                           │
 │         --a5 {TICKER}_A5_GIM_BASE.json \                                    │
 │         --a6 {TICKER}_A6_DR_BASE.json \                                     │
 │         --output {TICKER}_A7_VALUATION_BASE.json                            │
@@ -383,18 +383,18 @@ Use Task tool with model="opus" for each step. See Stage Flow above for exact pr
 | Pattern 12: Canonical Snapshot | 03_T2/ contains complete State 1 with _BASE suffix |
 | Pattern 13: Kernel Receipts | T2 generates {TICKER}_KERNEL_RECEIPT_BASE.json |
 
-### BASE Stage Atomized Files (CANONICAL)
+### BASE Stage Atomized Files (EXPERIMENTAL)
 
-The BASE prompt v2.2.2e is split into 3 atomic files for improved context management:
+The BASE prompt v2.2.3e is split into 3 atomic files for improved context management:
 
-| File | Purpose | Size |
-|------|---------|------|
-| `G3BASE_2.2.2e_PROMPT.md` | Core instructions (Sections I-V) | 16KB |
-| `G3BASE_2.2.2e_SCHEMAS.md` | JSON schemas (Appendix A) | 9KB |
-| `G3BASE_2.2.2e_NORMDEFS.md` | DSL definitions (Appendix B) | 5KB |
-| `BASE_CVR_KERNEL_2.2.2e.py` | Valuation kernel | 32KB |
+| File | Purpose | Size | Changes in 2.2.3e |
+|------|---------|------|-------------------|
+| `G3BASE_2.2.3e_PROMPT.md` | Core instructions (Sections I-V) | ~18KB | Currency detection, kernel receipts |
+| `G3BASE_2.2.3e_SCHEMAS.md` | JSON schemas (Appendix A) | ~10KB | ROIC_anchor, currency fields |
+| `G3BASE_2.2.3e_NORMDEFS.md` | DSL definitions (Appendix B) | ~6KB | DR global calibration |
+| `BASE_CVR_KERNEL_2.2.3e.py` | Valuation kernel | ~33KB | Terminal g from topline growth |
 
-**Status:** CANONICAL - smoke tested 2024-12-20. G3BASE_2.2.1e.md is HISTORICAL.
+**Status:** EXPERIMENTAL - pending smoke test. G3BASE_2.2.2e remains CANONICAL until smoke test passes.
 
 **Subagent loading:** Load all 3 prompt files + kernel reference. The embedded kernel (old Appendix C) has been removed.
 

@@ -1,6 +1,6 @@
 # CAPY Workshop - Prompt Development Environment
 
-> **Version:** 0.14.0
+> **Version:** 0.14.1
 > **Last reviewed:** 2024-12-23
 > **Review cadence:** Weekly during active development, monthly otherwise
 
@@ -718,11 +718,13 @@ Each artifact gets a stage suffix indicating when it was created or last modifie
 
 | Stage | Prompt | Status | Smoke Test | Kernel |
 |-------|--------|--------|------------|--------|
+| BASE | G3BASE_2.2.3e_*.md (atomized) | **EXPERIMENTAL** | Pending | BASE_CVR_KERNEL_2.2.3e.py |
 | BASE | G3BASE_2.2.2e_*.md (atomized) | CANONICAL | DAVE_20241220 | BASE_CVR_KERNEL_2.2.2e.py |
 | BASE | G3BASE_2.2.1e.md | HISTORICAL | DAVE_20241210 | BASE_CVR_KERNEL_2.2.1e.py |
-| REFINE | BASE_T1_REFINE_v1_3.md | EXPERIMENTAL | - | - |
+| REFINE | BASE_T1_REFINE_v1_3.md | **EXPERIMENTAL** | Pending | - |
 | REFINE | BASE_T1_REFINE_v1_2.md | CANONICAL | DAVE_20241220 | - |
 | REFINE | BASE_T1_REFINE_v1_1.md | HISTORICAL | DAVE_20241210 | - |
+| ENRICH | G3ENRICH_2.2.3e_*.md (atomized) | **EXPERIMENTAL** | Pending | CVR_KERNEL_ENRICH_2.2.3e.py |
 | ENRICH | G3ENRICH_2.2.2e_*.md (atomized) | CANONICAL | DAVE_ENRICH_20241220 | CVR_KERNEL_ENRICH_2.2.2e.py |
 | ENRICH | G3ENRICH_2.2.1e.md | HISTORICAL | DAVE_20241210 | CVR_KERNEL_ENRICH_2.2.1e.py |
 | SCENARIO | G3_SCENARIO_2.2.2e_*.md (atomized) | CANONICAL | DAVE_ENRICH_SMOKE_20251220 | CVR_KERNEL_SCEN_2_2_2e.py |
@@ -736,6 +738,9 @@ Each artifact gets a stage suffix indicating when it was created or last modifie
 
 | Component | File | Status | Smoke Test |
 |-----------|------|--------|------------|
+| SOURCE Stage | orchestration/SOURCE_STAGE.md | **EXPERIMENTAL** | Pending |
+| BASE Stage | orchestration/BASE_STAGE.md | **EXPERIMENTAL** (updated for 2.2.3e) | Pending |
+| ENRICH Stage | orchestration/ENRICH_STAGE.md | **EXPERIMENTAL** (updated for 2.2.3e) | Pending |
 | Research Question Gen | RQ_Gen_2_2_3e.md | CANONICAL | DAVE_RQ_CLAUDE_TEST |
 | Research Question Gen (legacy) | RQ_Gen_2_2_2e.md | HISTORICAL | - |
 | RQ Executor | RQ_ASK_KERNEL_2_2_3e.py | CANONICAL | DAVE_RQ_CLAUDE_TEST |
@@ -743,7 +748,7 @@ Each artifact gets a stage suffix indicating when it was created or last modifie
 | Silicon Council | G3_SC_2.2.2e_*.md (atomized) | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
 | Silicon Council | G3_SILICON_COUNCIL_2.2.1e.md | HISTORICAL | DAVE_20241210 |
 | HITL Audit | HITL_DIALECTIC_AUDIT_1_0_Goldilocks.md | CANONICAL | DAVE_20241210 |
-| PDF Preprocessing | SOURCE: UPLOAD (production/CLAUDE.md) | CANONICAL | DAVE (source_library has .extracted.md) |
+| PDF Preprocessing | SOURCE: UPLOAD (workshop/CLAUDE.md) | **EXPERIMENTAL** | Pending |
 
 ### Validators
 
