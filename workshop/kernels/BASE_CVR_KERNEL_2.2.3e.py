@@ -367,8 +367,16 @@ def execute_scm(kg, dag, seq, gim):
 # 1.5 APV (Adjusted Present Value) Valuation Engine
 
 
-def calculate_apv(forecast_df, dr, kg):
-    """Calculates the Intrinsic Value Per Share (IVPS) using the APV methodology."""
+def calculate_apv(forecast_df, dr, kg, unit_multiplier=1):
+    """Calculates the Intrinsic Value Per Share (IVPS) using the APV methodology.
+
+    Args:
+        forecast_df: DataFrame with forecasted financials
+        dr: Discount rate
+        kg: Analytic Knowledge Graph (A.2)
+        unit_multiplier: Scale factor for GIM units (1000 for 'thousands', etc.)
+                        Applied to equity_value before dividing by FDSO.
+    """
 
 
     # 1. Extract Required Data
@@ -483,7 +491,9 @@ def calculate_apv(forecast_df, dr, kg):
 
 
     # 8. Calculate Intrinsic Value Per Share (IVPS)
-    ivps = equity_value / fdso
+    # PATCH 2.2.3e: Apply unit_multiplier to convert GIM-denominated equity to actual currency
+    # e.g., if GIM is in thousands, equity_value is in thousands → multiply by 1000 before per-share
+    ivps = (equity_value * unit_multiplier) / fdso
 
 
     # 9. Package Results
@@ -894,7 +904,18 @@ def execute_cvr_workflow(kg, dag_artifact, gim_artifact, dr_trace, sensitivity_s
 
 # Extract structures from artifacts
     dag = dag_artifact.get('DAG', {})
-    gim = gim_artifact.get('GIM', {})
+
+    # Handle both wrapped {"A.5_GESTALT_IMPACT_MAP": {...}} and unwrapped {...} formats
+    inner_a5 = gim_artifact.get('A.5_GESTALT_IMPACT_MAP', gim_artifact)
+    gim = inner_a5.get('GIM', {})
+
+    # PATCH 2.2.3e: Extract unit multiplier for per-share calculations
+    # GIM values (Revenue, EBIT, etc.) may be in thousands/millions - must scale before dividing by share count
+    unit_str = inner_a5.get('unit', 'units').lower()
+    UNIT_MULTIPLIERS = {'thousands': 1000, 'millions': 1_000_000, 'billions': 1_000_000_000}
+    unit_multiplier = UNIT_MULTIPLIERS.get(unit_str, 1)
+    if unit_multiplier != 1:
+        logger.info(f"GIM unit='{unit_str}' → multiplier={unit_multiplier:,}")
 
 
     # 0.5 Validate DAG Coverage
@@ -936,7 +957,7 @@ def execute_cvr_workflow(kg, dag_artifact, gim_artifact, dr_trace, sensitivity_s
     # 4. Execute APV Valuation
     print("Executing APV Valuation...")
     try:
-        valuation_results = calculate_apv(forecast_df, dr, kg)
+        valuation_results = calculate_apv(forecast_df, dr, kg, unit_multiplier)
     except Exception as e:
         logger.error(f"APV Valuation Failed: {e}")
         raise

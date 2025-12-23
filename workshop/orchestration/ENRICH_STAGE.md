@@ -219,7 +219,7 @@ done
 │    CRITICAL: Manual calculation is PROHIBITED. You MUST use Bash kernel.    │
 │    CRITICAL: T2 performs NO reasoning. All judgment is locked in T1.        │
 │                                                                             │
-│    1. Validate A.5 and A.6 are well-formed (repair if needed - Pattern 5)   │
+│    1. Validate A.5 and A.6 are well-formed (if repair needed, use Opus)     │
 │    2. Execute kernel via Bash (Pattern 6):                                  │
 │                                                                             │
 │       python3 kernels/CVR_KERNEL_ENRICH_2.2.3e.py \                         │

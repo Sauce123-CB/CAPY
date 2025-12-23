@@ -138,9 +138,12 @@ Subagent writes DAVE_ENRICH_T1.md  ← Too vague, mechanism unclear
 
 **Solution:** T2 has explicit authority to repair JSON before kernel execution.
 
+**CRITICAL: Repair MUST be done by Opus subagent.**
+Haiku is NOT smart enough for JSON repair. When spawning a repair subagent, ALWAYS use `model: "opus"`. The reasoning required to understand schema intent and fix malformed structures exceeds Haiku's capabilities.
+
 **T2 Validation Responsibilities:**
 1. Parse all JSON artifacts from T1
-2. If parse fails: Repair malformation (missing brackets, trailing commas, etc.)
+2. If parse fails: Spawn Opus subagent to repair malformation (missing brackets, trailing commas, truncated structures, etc.)
 3. Verify internal consistency:
    - DAG coverage (all GIM drivers appear in DAG)
    - GIM-KG alignment (driver params reference valid KG fields)

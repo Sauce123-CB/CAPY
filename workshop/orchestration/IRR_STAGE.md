@@ -262,7 +262,7 @@ done
 │    CRITICAL: Manual calculation is PROHIBITED. You MUST use Bash kernel.    │
 │    CRITICAL: T2 performs NO reasoning. All judgment is locked in A.13.      │
 │                                                                             │
-│    1. Validate A.13 and IRR_INPUTS are well-formed (repair if needed)       │
+│    1. Validate A.13 and IRR_INPUTS are well-formed (if repair needed, Opus) │
 │    2. Execute kernel via Bash (Pattern 6):                                  │
 │                                                                             │
 │       python3 kernels/CVR_KERNEL_IRR_2.2.5e.py \                            │

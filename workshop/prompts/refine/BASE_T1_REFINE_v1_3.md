@@ -364,7 +364,7 @@ If no corrections needed (rare), emit T1's artifacts unchanged with explicit jus
 - Your job is to EXPAND, not validate. Assume T1 under-decomposed.
 - Calibration is a hard gate. Never sacrifice calibration for complexity.
 - Every expansion must cite source data. No hallucinated decompositions.
-- Target 12-15 exogenous nodes. Justify deviations in either direction.
+- Target ≤20 exogenous nodes. Justify deviations above this cap.
 - "It's simpler" is not a valid reason to reject a calibratable decomposition.
 - **Trajectory calibration catches DAG/GIM bugs BEFORE kernel execution.**
 - **Schema compliance is mandatory. Wrong keys = kernel failure.**

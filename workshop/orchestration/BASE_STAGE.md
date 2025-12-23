@@ -45,7 +45,7 @@ The BASE stage transforms raw source documents (10-Ks, 10-Qs, transcripts, prese
 ├── 02_REFINE/                               ← REFINE outputs (SOURCE OF TRUTH)
 │   ├── {TICKER}_A1_EPISTEMIC_ANCHORS_BASE.json  (refined)
 │   ├── {TICKER}_A2_ANALYTIC_KG_BASE.json        (refined)
-│   ├── {TICKER}_A3_CAUSAL_DAG_BASE.json         (refined, ≤15 nodes)
+│   ├── {TICKER}_A3_CAUSAL_DAG_BASE.json         (refined, ≤20 exogenous nodes)
 │   ├── {TICKER}_A5_GIM_BASE.json                (refined, Y0 calibrated)
 │   ├── {TICKER}_A6_DR_BASE.json                 (refined)
 │   ├── {TICKER}_N1_THESIS_BASE.md               (refined)
@@ -131,7 +131,7 @@ done
 │    Your analytical tasks:                                                   │
 │    1. Extract epistemic anchors from source documents (A.1)                 │
 │    2. Build Analytic Knowledge Graph with causal relationships (A.2)        │
-│    3. Construct Causal DAG with ≤15 nodes (A.3)                             │
+│    3. Construct Causal DAG with ≤20 exogenous nodes (A.3)                   │
 │    4. Build Gestalt Impact Map (GIM) with 5-year forecast (A.5)             │
 │    5. Derive Discount Rate using B.3 rubric (A.6)                           │
 │    6. Write narratives N1-N4 (Thesis, IC, Economic Governor, Risk)          │
@@ -165,7 +165,7 @@ done
 │                                                                             │
 │ VALIDATION CHECKS:                                                          │
 │   • A.1-A.6 present and extractable                                         │
-│   • A.3 DAG has ≤15 nodes                                                   │
+│   • A.3 DAG has ≤20 exogenous nodes                                         │
 │   • A.5 GIM has 5-year forecast with required rows                          │
 │   • A.6 DR in reasonable range (8-18% typically)                            │
 │   • N1-N4 narratives present                                                │
@@ -199,7 +199,7 @@ done
 │    Your calibration tasks:                                                  │
 │    1. Extract A.1-A.6 from T1 into standalone JSON files                    │
 │    2. Y0 Calibration: Verify model Y0 matches reported financials (±2%)     │
-│    3. DAG Validation: Ensure ≤15 nodes, no orphans, coherent structure      │
+│    3. DAG Validation: Ensure ≤20 exogenous nodes, no orphans, coherent      │
 │    4. Equity Bridge Check: Preserve FDSO, Total_Debt, Excess_Cash,          │
 │       Minority_Interest unchanged from T1                                   │
 │    5. Extract N1-N4 narratives into standalone markdown files               │
@@ -253,7 +253,7 @@ done
 │ VALIDATION CHECKS:                                                          │
 │   • ALL 10 REFINE OUTPUT FILES EXIST (block T2 if any missing)              │
 │   • Y0 calibration within ±2% for Revenue, EBIT, IC                         │
-│   • DAG has ≤15 nodes                                                       │
+│   • DAG has ≤20 exogenous nodes                                             │
 │   • Equity Bridge preserved: FDSO, Total_Debt, Excess_Cash, Minority_Int    │
 │   • JSON files are valid and contain required fields                        │
 │                                                                             │
@@ -283,7 +283,7 @@ done
 │    CRITICAL: Manual calculation is PROHIBITED. You MUST use Bash kernel.    │
 │    CRITICAL: T2 performs NO reasoning. All judgment is locked in REFINE.    │
 │                                                                             │
-│    1. Validate A.5 and A.6 are well-formed (repair if needed - Pattern 5)   │
+│    1. Validate A.5 and A.6 are well-formed (if repair needed, use Opus)     │
 │    2. Execute kernel via Bash (Pattern 6):                                  │
 │                                                                             │
 │       python3 kernels/BASE_CVR_KERNEL_2.2.3e.py \                           │

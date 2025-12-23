@@ -382,8 +382,16 @@ def execute_scm(kg, dag, seq, gim):
 # ------------------------------------------------------------------------------
 # 1.3 APV (Adjusted Present Value) Valuation Engine
 # ------------------------------------------------------------------------------
-def calculate_apv(forecast_df, dr, kg):
-    """Calculates the Intrinsic Value Per Share (IVPS) using the APV methodology."""
+def calculate_apv(forecast_df, dr, kg, unit_multiplier=1):
+    """Calculates the Intrinsic Value Per Share (IVPS) using the APV methodology.
+
+    Args:
+        forecast_df: DataFrame with forecasted financials
+        dr: Discount rate
+        kg: Analytic Knowledge Graph (A.2)
+        unit_multiplier: Scale factor for GIM units (1000 for 'thousands', etc.)
+                        Applied to equity_value before dividing by FDSO.
+    """
     # 1. Validate Required Columns
     required_cols = ['FCF_Unlevered', 'ROIC', 'NOPAT']
     for col in required_cols:
@@ -477,7 +485,9 @@ def calculate_apv(forecast_df, dr, kg):
     net_debt = total_debt_y0 - excess_cash_y0
     equity_value = enterprise_value - net_debt - minority_interest_y0
     # 9. Calculate IVPS
-    ivps = equity_value / fdso
+    # PATCH 2.2.3e: Apply unit_multiplier to convert GIM-denominated equity to actual currency
+    # e.g., if GIM is in thousands, equity_value is in thousands → multiply by 1000 before per-share
+    ivps = (equity_value * unit_multiplier) / fdso
     # 10. Package Results
     results = {
         "IVPS": ivps,
@@ -536,7 +546,7 @@ def calculate_implied_multiples(valuation_results, forecast_summary, kg, schema_
         "current_market_price": current_price,
         "implied_multiples": implied_multiples
     }
-def run_sensitivity_analysis(kg, dag, seq, gim, dr, base_results, scenarios, schema_version=KERNEL_VERSION):
+def run_sensitivity_analysis(kg, dag, seq, gim, dr, base_results, scenarios, schema_version=KERNEL_VERSION, unit_multiplier=1):
     """
     Runs sensitivity analysis (Tornado chart) by modifying GIM assumptions or DR.
     Extended for S_CURVE and MULTI_STAGE_FADE modes.
@@ -600,7 +610,7 @@ def run_sensitivity_analysis(kg, dag, seq, gim, dr, base_results, scenarios, sch
                     continue
                 # Re-run the SCM and APV
                 forecast_df = execute_scm(kg, dag, seq, temp_gim)
-                valuation_results = calculate_apv(forecast_df, temp_dr, kg)
+                valuation_results = calculate_apv(forecast_df, temp_dr, kg, unit_multiplier)
                 scenario_ivps = valuation_results['IVPS']
                 if direction == 'low':
                     ivps_low = scenario_ivps
@@ -784,7 +794,18 @@ def execute_cvr_workflow(kg, dag_artifact, gim_artifact, dr_trace, sensitivity_s
     schema_version = KERNEL_VERSION
     # Extract structures from artifacts
     dag = dag_artifact.get('DAG', {})
-    gim = gim_artifact.get('GIM', {})
+
+    # Handle both wrapped {"A.5_GESTALT_IMPACT_MAP": {...}} and unwrapped {...} formats
+    inner_a5 = gim_artifact.get('A.5_GESTALT_IMPACT_MAP', gim_artifact)
+    gim = inner_a5.get('GIM', {})
+
+    # PATCH 2.2.3e: Extract unit multiplier for per-share calculations
+    # GIM values (Revenue, EBIT, etc.) may be in thousands/millions - must scale before dividing by share count
+    unit_str = inner_a5.get('unit', 'units').lower()
+    UNIT_MULTIPLIERS = {'thousands': 1000, 'millions': 1_000_000, 'billions': 1_000_000_000}
+    unit_multiplier = UNIT_MULTIPLIERS.get(unit_str, 1)
+    if unit_multiplier != 1:
+        logger.info(f"GIM unit='{unit_str}' → multiplier={unit_multiplier:,}")
     # 0.5 Validate DAG Coverage (P5 - Warning only for ENRICHMENT)
     print("Validating DAG coverage against Y0_data (P5 Doctrine)...")
     try:
@@ -814,7 +835,7 @@ def execute_cvr_workflow(kg, dag_artifact, gim_artifact, dr_trace, sensitivity_s
     # 4. Execute APV Valuation
     print("Executing APV Valuation...")
     try:
-        valuation_results = calculate_apv(forecast_df, dr, kg)
+        valuation_results = calculate_apv(forecast_df, dr, kg, unit_multiplier)
     except Exception as e:
         logger.error(f"APV Valuation Failed: {e}")
         raise
@@ -840,7 +861,7 @@ def execute_cvr_workflow(kg, dag_artifact, gim_artifact, dr_trace, sensitivity_s
         print("Executing Sensitivity Analysis...")
         try:
             sensitivity_results = run_sensitivity_analysis(
-                kg, dag, seq, gim, dr, valuation_results, sensitivity_scenarios, schema_version
+                kg, dag, seq, gim, dr, valuation_results, sensitivity_scenarios, schema_version, unit_multiplier
             )
         except Exception as e:
             logger.warning(f"Sensitivity Analysis Failed: {e}")

@@ -537,7 +537,7 @@ def execute_scm(kg, dag, seq, gim):
 # ------------------------------------------------------------------------------
 
 
-def calculate_apv(forecast_df, dr, kg):
+def calculate_apv(forecast_df, dr, kg, unit_multiplier=1):
     """Calculates the Intrinsic Value Per Share (IVPS) using the APV methodology."""
 
 
@@ -646,8 +646,8 @@ def calculate_apv(forecast_df, dr, kg):
     equity_value = enterprise_value - net_debt - minority_interest_y0
 
 
-    # 9. Calculate IVPS
-    ivps = equity_value / fdso
+    # 9. Calculate IVPS (PATCH 2.2.6e: apply unit multiplier for per-share calculation)
+    ivps = (equity_value * unit_multiplier) / fdso
 
 
     # 10. Package Results
@@ -740,7 +740,7 @@ def calculate_implied_multiples(valuation_results, forecast_summary, kg, schema_
     }
 
 
-def run_sensitivity_analysis(kg, dag, seq, gim, dr, base_results, scenarios, schema_version=KERNEL_VERSION):
+def run_sensitivity_analysis(kg, dag, seq, gim, dr, base_results, scenarios, schema_version=KERNEL_VERSION, unit_multiplier=1):
     """
     Runs sensitivity analysis (Tornado chart) by modifying GIM assumptions or DR.
     Extended for S_CURVE and MULTI_STAGE_FADE modes.
@@ -830,7 +830,7 @@ def run_sensitivity_analysis(kg, dag, seq, gim, dr, base_results, scenarios, sch
 
                 # Re-run the SCM and APV
                 forecast_df = execute_scm(kg, dag, seq, temp_gim)
-                valuation_results = calculate_apv(forecast_df, temp_dr, kg)
+                valuation_results = calculate_apv(forecast_df, temp_dr, kg, unit_multiplier)
                 scenario_ivps = valuation_results['IVPS']
 
 
@@ -1082,7 +1082,16 @@ def execute_cvr_workflow(kg, dag_artifact, gim_artifact, dr_trace, sensitivity_s
 
     # Extract structures from artifacts
     dag = dag_artifact.get('DAG', {})
-    gim = gim_artifact.get('GIM', {})
+    # Handle both wrapped {"A.5_GESTALT_IMPACT_MAP": {...}} and unwrapped {...} formats
+    inner_a5 = gim_artifact.get('A.5_GESTALT_IMPACT_MAP', gim_artifact)
+    gim = inner_a5.get('GIM', {})
+
+    # PATCH 2.2.6e: Extract unit multiplier for per-share calculations
+    unit_str = inner_a5.get('unit', 'units').lower()
+    UNIT_MULTIPLIERS = {'thousands': 1000, 'millions': 1_000_000, 'billions': 1_000_000_000}
+    unit_multiplier = UNIT_MULTIPLIERS.get(unit_str, 1)
+    if unit_multiplier != 1:
+        logger.info(f"GIM unit='{unit_str}' → multiplier={unit_multiplier:,}")
 
 
     # 0.5 Validate DAG Coverage (P5 - Warning only for ENRICHMENT)
@@ -1122,7 +1131,7 @@ def execute_cvr_workflow(kg, dag_artifact, gim_artifact, dr_trace, sensitivity_s
     # 4. Execute APV Valuation
     print("Executing APV Valuation...")
     try:
-        valuation_results = calculate_apv(forecast_df, dr, kg)
+        valuation_results = calculate_apv(forecast_df, dr, kg, unit_multiplier)
     except Exception as e:
         logger.error(f"APV Valuation Failed: {e}")
         raise
@@ -1154,7 +1163,7 @@ def execute_cvr_workflow(kg, dag_artifact, gim_artifact, dr_trace, sensitivity_s
         print("Executing Sensitivity Analysis...")
         try:
             sensitivity_results = run_sensitivity_analysis(
-                kg, dag, seq, gim, dr, valuation_results, sensitivity_scenarios, schema_version
+                kg, dag, seq, gim, dr, valuation_results, sensitivity_scenarios, schema_version, unit_multiplier
             )
         except Exception as e:
             logger.warning(f"Sensitivity Analysis Failed: {e}")
@@ -1361,7 +1370,7 @@ def apply_structural_modifications(base_dag, modifications):
 # ==========================================================================================
 
 
-def execute_scenario_intervention(kg, dag, gim, dr_trace, intervention_def, dr_override=None):
+def execute_scenario_intervention(kg, dag, gim, dr_trace, intervention_def, dr_override=None, unit_multiplier=1):
     """
     Executes a single scenario intervention and returns the deterministic IVPS.
 
@@ -1450,7 +1459,7 @@ def execute_scenario_intervention(kg, dag, gim, dr_trace, intervention_def, dr_o
 
     # 6. Calculate APV valuation
     try:
-        valuation_results = calculate_apv(forecast_df, dr, kg)
+        valuation_results = calculate_apv(forecast_df, dr, kg, unit_multiplier)
     except Exception as e:
         raise RuntimeError(f"APV calculation failed for scenario: {e}")
 
@@ -2413,7 +2422,7 @@ def generate_scenario_summary(sse_result, scenarios, base_ivps, base_dr):
 # ==========================================================================================
 
 
-def execute_full_scenario_analysis(kg, dag, gim, dr_trace, base_ivps, scenario_definitions, constraints):
+def execute_full_scenario_analysis(kg, dag, gim, dr_trace, base_ivps, scenario_definitions, constraints, unit_multiplier=1):
     """
     Convenience wrapper that executes the complete scenario analysis pipeline.
 
@@ -2479,7 +2488,8 @@ def execute_full_scenario_analysis(kg, dag, gim, dr_trace, base_ivps, scenario_d
             gim=gim,
             dr_trace=dr_trace,
             intervention_def=scenario_def.get('intervention', {}),
-            dr_override=scenario_def.get('dr_override')
+            dr_override=scenario_def.get('dr_override'),
+            unit_multiplier=unit_multiplier
         )
 
 

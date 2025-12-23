@@ -296,8 +296,7 @@ complexity.]{.mark}
 [- Every expansion must cite source data. No hallucinated
 decompositions.]{.mark}
 
-[- Target 12-15 exogenous nodes. Justify deviations in either
-direction.]{.mark}
+[- Target ≤20 exogenous nodes. Justify deviations above this cap.]{.mark}
 
 [- \"It\'s simpler\" is not a valid reason to reject a calibratable
 decomposition.]{.mark}

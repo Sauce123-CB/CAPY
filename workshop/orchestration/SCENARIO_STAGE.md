@@ -154,7 +154,7 @@ Instruct: "Execute SCENARIO T2 for {TICKER}.
 
 CRITICAL: Manual calculation is PROHIBITED. You MUST use Bash kernel.
 
-1. Validate T1 JSON is well-formed (repair if needed - Pattern 5)
+1. Validate T1 JSON is well-formed (if repair needed, use Opus subagent)
 2. Execute kernel via Bash (Pattern 6):
 
    python3 kernels/CVR_KERNEL_SCEN_2_2_2e.py \
