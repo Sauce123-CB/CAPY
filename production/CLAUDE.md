@@ -229,9 +229,17 @@ Auto-find, organize, and preprocess PDF documents for a company.
 6. Report: "Found {N} PDFs. Processed and organized into source_library/{TICKER}/. Ready for CAPY: INIT."
 
 **Preprocessing Details:**
-- `/pdf-extract`: Converts PDF to markdown using `pdftoppm` + OCR pipeline
-- `/pdf-visual`: Extracts each page as PNG for charts, diagrams, visual data
+- Text extraction: Uses `pdfplumber` (Python) to extract text → `{filename}.extracted.md`
+- Visual extraction: Uses `pdf2image` (Python wrapper for `pdftoppm`) → `{filename}_pages/` directory with PNG images
 - Both are required for full CAPY analysis (text for financials, images for charts)
+
+**Dependencies:**
+```bash
+brew install poppler              # Provides pdftoppm, pdftotext
+pip3 install pdfplumber pdf2image pillow
+```
+
+See `workshop/LOCAL_ENV_SETUP.md` for full installation instructions.
 
 **Usage Notes:**
 - Researchers can drop PDFs anywhere in production/ - no specific location needed
