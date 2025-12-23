@@ -1,7 +1,7 @@
 # CAPY Workshop - Prompt Development Environment
 
-> **Version:** 0.13.0
-> **Last reviewed:** 2024-12-22
+> **Version:** 0.14.0
+> **Last reviewed:** 2024-12-23
 > **Review cadence:** Weekly during active development, monthly otherwise
 
 This workspace is for **developing, testing, and iterating** on CAPY prompts and kernels.
@@ -270,6 +270,98 @@ Copy all CANONICAL files to `../../production/`:
 
 ---
 
+## Source Document Commands
+
+These commands handle PDF preprocessing - converting raw PDFs into machine-readable text for analysis.
+
+### SOURCE: UPLOAD {TICKER}
+
+Auto-find, organize, and preprocess PDF documents for a company.
+
+**Trigger:** User says `SOURCE: UPLOAD {TICKER}` after dropping PDFs into the repository.
+
+**Steps:**
+
+1. **Scan for unprocessed PDFs:**
+   - Check `../production/source_library/{TICKER}/` for existing docs
+   - Find any `*.pdf` files NOT yet having corresponding `*.extracted.md`
+
+2. Create `../production/source_library/{TICKER}/` if it doesn't exist
+
+3. **Auto-preprocess each PDF:**
+   - Text extraction: `pdfplumber` → `{filename}.extracted.md`
+   - Visual extraction: `pdf2image` → `{filename}_pages/` (PNG images)
+   - Both outputs saved alongside the PDF
+
+4. Generate/update inventory file `source_library/{TICKER}/INVENTORY.md`:
+   ```markdown
+   # {TICKER} Source Documents
+
+   Last updated: {YYYY-MM-DD HH:MM}
+
+   ## Documents
+   | PDF | Extracted Text | Page Images | Pages |
+   |-----|----------------|-------------|-------|
+   | filename.pdf | filename.extracted.md | filename_pages/ | N |
+   ```
+
+5. Report: "Found {N} PDFs. Processed into source_library/{TICKER}/. Ready for CAPY: RUN."
+
+**Preprocessing Implementation:**
+
+```python
+import pdfplumber
+from pdf2image import convert_from_path
+from pathlib import Path
+
+def extract_text(pdf_path: Path) -> str:
+    """Extract text from PDF using pdfplumber."""
+    text_parts = []
+    with pdfplumber.open(pdf_path) as pdf:
+        for i, page in enumerate(pdf.pages, 1):
+            text = page.extract_text() or ""
+            text_parts.append(f"--- Page {i} ---\n{text}")
+    return "\n\n".join(text_parts)
+
+def extract_images(pdf_path: Path, output_dir: Path) -> int:
+    """Convert PDF pages to PNG images."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    images = convert_from_path(pdf_path, dpi=150)
+    for i, img in enumerate(images, 1):
+        img.save(output_dir / f"page_{i:03d}.png", "PNG")
+    return len(images)
+
+def preprocess_pdf(pdf_path: Path):
+    """Full preprocessing: text + images."""
+    # Text extraction
+    text = extract_text(pdf_path)
+    md_path = pdf_path.with_suffix(".extracted.md")
+    md_path.write_text(f"# {pdf_path.stem}\n\nExtracted: {datetime.now().isoformat()}\n\n{text}")
+
+    # Image extraction
+    img_dir = pdf_path.parent / f"{pdf_path.stem}_pages"
+    page_count = extract_images(pdf_path, img_dir)
+
+    return {"text_file": md_path, "image_dir": img_dir, "pages": page_count}
+```
+
+**Dependencies:**
+```bash
+brew install poppler              # Provides pdftoppm for pdf2image
+pip3 install pdfplumber pdf2image pillow
+```
+
+See `LOCAL_ENV_SETUP.md` for full installation instructions.
+
+**Usage Notes:**
+- Source documents live in `../production/source_library/` (shared between workshop and production)
+- Workshop smoke tests copy from source_library to analysis 00_source/
+- Multiple filings per company supported (10-K, 10-Q, transcripts, presentations)
+- If preprocessing fails, PDF is kept but flagged in INVENTORY.md
+- Running again will find any new PDFs and add to existing folder
+
+---
+
 ## Pipeline Execution Commands
 
 These commands execute the CAPY analysis pipeline. They can be run in either workshop (for smoke tests) or production (for real analyses).
@@ -528,14 +620,15 @@ This is non-negotiable. Do NOT edit, write, or modify files without explicit use
 
 | Stage | File | Pipeline Position |
 |-------|------|-------------------|
-| BASE | `orchestration/BASE_STAGE.md` | 1/8 (SOURCE → BASE) |
-| RQ | `orchestration/RQ_STAGE.md` | 2/8 (BASE → RQ) |
-| ENRICH | `orchestration/ENRICH_STAGE.md` | 4/8 (RQ → ENRICH) |
-| SCENARIO | `orchestration/SCENARIO_STAGE.md` | 5/8 (ENRICH → SCENARIO) |
-| SILICON COUNCIL | `orchestration/SC_STAGE.md` | 6/8 (SCENARIO → SC) |
-| INTEGRATION | `orchestration/INTEGRATION_STAGE.md` | 7/8 (SC → INTEGRATION) |
-| IRR | `orchestration/IRR_STAGE.md` | 8/8 (INTEGRATION → IRR) |
-| FINAL CVR | `orchestration/FINAL_CVR_STAGE.md` | 9/9 (Post-IRR concatenation) |
+| SOURCE | `orchestration/SOURCE_STAGE.md` | 0/9 (PDF → SOURCE) |
+| BASE | `orchestration/BASE_STAGE.md` | 1/9 (SOURCE → BASE) |
+| RQ | `orchestration/RQ_STAGE.md` | 2/9 (BASE → RQ) |
+| ENRICH | `orchestration/ENRICH_STAGE.md` | 3/9 (RQ → ENRICH) |
+| SCENARIO | `orchestration/SCENARIO_STAGE.md` | 4/9 (ENRICH → SCENARIO) |
+| SILICON COUNCIL | `orchestration/SC_STAGE.md` | 5/9 (SCENARIO → SC) |
+| INTEGRATION | `orchestration/INTEGRATION_STAGE.md` | 6/9 (SC → INTEGRATION) |
+| IRR | `orchestration/IRR_STAGE.md` | 7/9 (INTEGRATION → IRR) |
+| FINAL CVR | `orchestration/FINAL_CVR_STAGE.md` | 8/9 (Post-IRR concatenation) |
 
 ### When to Read Stage Files
 
