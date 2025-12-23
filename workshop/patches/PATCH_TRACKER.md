@@ -97,6 +97,7 @@ These require kernel code changes before prompts will work correctly:
 
 | Date | Patch # | Applied By | Result | Notes |
 |------|---------|------------|--------|-------|
+| 2024-12-23 | 31 | Claude | Success | Kernel CLI wrappers (all 5 kernels) |
 | 2024-12-14 | 8 | Initial | Success | CLAUDE.md created |
 | 2024-12-14 | 9 | Initial | Success | DAVE smoke test complete |
 | 2024-12-15 | 13 | Initial | Success | Three-folder architecture |
@@ -682,3 +683,117 @@ When describing subagent tasks, always specify:
 - [x] Pattern 1 enhanced with anti-patterns and documentation standard
 - [x] All subagent sections in production/CLAUDE.md use explicit protocol
 - [x] Step numbering fixed (no duplicate step numbers)
+
+---
+
+## PATCH-2024-12-23-001: Kernel CLI Wrapper Scripts (#31)
+
+**Date:** 2024-12-23
+**Source:** ZENV smoke test kernel execution failure
+**Status:** COMPLETE
+
+### Problem Statement
+
+**All 5 CVR kernels lack CLI interfaces.** They are designed as importable Python modules only:
+
+```python
+# Kernel entry point (NO argparse)
+def execute_cvr_workflow(kg, dag_artifact, gim_artifact, dr_trace, ...):
+    ...
+
+# NO if __name__ == '__main__': block
+```
+
+But orchestration expects CLI execution:
+```bash
+python3 BASE_CVR_KERNEL_2.2.3e.py --a2 ... --a5 ... --output ...
+```
+
+**Failure Mode:** When T2 subagent attempted to run kernel via Bash, it failed because no CLI interface exists. This is a **systematic gap** affecting all kernels, not a one-off bug.
+
+### Root Cause
+
+The kernels were originally designed for notebook/import usage, not orchestrated pipeline execution. The orchestration pattern (Pattern 12/13) requires Bash execution with JSON file I/O, but kernels only accept in-memory Python objects.
+
+### Solution: CLI Wrapper Scripts
+
+Created 5 wrapper scripts in `workshop/scripts/` that provide argparse interfaces for all kernels:
+
+| Wrapper | Kernel | Key Inputs | Output |
+|---------|--------|------------|--------|
+| `run_base_kernel.py` | BASE_CVR_KERNEL_2.2.3e | A2, A3, A5, A6 | A7 |
+| `run_enrich_kernel.py` | CVR_KERNEL_ENRICH_2.2.3e | A2, A3, A5, A6 | A7 |
+| `run_scen_kernel.py` | CVR_KERNEL_SCEN_2_2_2e | A2, A3, A5, A6, A7, args | A10 |
+| `run_int_kernel.py` | CVR_KERNEL_INT_2_2_2e | A2, A3, A5, A6, A10, cascade | A7 (recalc) |
+| `run_irr_kernel.py` | CVR_KERNEL_IRR_2.2.5e | A2, A7, A10, A13 | A14 |
+
+### Technical Implementation
+
+Each wrapper handles:
+
+1. **Artifact Unwrapping:** Accepts both `{"A.X_...": {...}}` wrapped format and raw JSON
+   ```python
+   kg = a2_raw.get('A.2_ANALYTIC_KG', a2_raw)  # Handle both formats
+   ```
+
+2. **DR Schema Normalization:** Finds DR value in multiple locations
+   ```python
+   dr_value = a6_inner.get('DR') or a6_inner.get('DR_Static')
+   if 'derivation_trace' in a6_inner:
+       dr_value = a6_inner['derivation_trace'].get('DR_Static', dr_value)
+   dr_trace = {'derivation_trace': {'DR_Static': dr_value}}
+   ```
+
+3. **importlib.util Loading:** Kernel filenames have dots (e.g., `2.2.3e.py`) which break `__import__`
+   ```python
+   spec = importlib.util.spec_from_file_location("kernel", kernel_file)
+   kernel = importlib.util.module_from_spec(spec)
+   spec.loader.exec_module(kernel)
+   ```
+
+4. **Exit Codes:** Returns 0 on success, 1 on failure for orchestrator validation
+
+### Usage Example
+
+```bash
+python3 scripts/run_base_kernel.py \
+    --a2 03_T2/ZENV_A2_ANALYTIC_KG_BASE.json \
+    --a3 03_T2/ZENV_A3_CAUSAL_DAG_BASE.json \
+    --a5 03_T2/ZENV_A5_GIM_BASE.json \
+    --a6 03_T2/ZENV_A6_DR_BASE.json \
+    --output 03_T2/ZENV_A7_VALUATION_BASE.json
+```
+
+### Smoke Test Evidence
+
+**ZENV BASE T2:** IVPS = 4.31 BRL/share (validated as reasonable for ZENV)
+
+### Files Created
+
+| File | Lines | Status |
+|------|-------|--------|
+| `scripts/run_base_kernel.py` | 154 | Tested ✅ |
+| `scripts/run_enrich_kernel.py` | 146 | Ready |
+| `scripts/run_scen_kernel.py` | 170 | Ready |
+| `scripts/run_int_kernel.py` | 191 | Ready |
+| `scripts/run_irr_kernel.py` | 139 | Ready |
+
+### Commit
+
+`bf09d3b` - feat(scripts): add CLI wrappers for all 5 CVR kernels
+
+### Acceptance Criteria
+
+- [x] All 5 kernels have CLI wrappers
+- [x] Wrappers handle artifact unwrapping (wrapped/raw formats)
+- [x] Wrappers handle DR schema normalization
+- [x] Wrappers use importlib.util for dot-versioned filenames
+- [x] Wrappers return proper exit codes
+- [x] BASE wrapper tested with ZENV (IVPS=4.31)
+- [x] Committed and pushed to master
+
+### Future Considerations
+
+1. **Wrapper versioning:** If kernel API changes, wrappers may need updates
+2. **Kernel receipt integration:** Wrappers could generate Pattern 13 receipts
+3. **Unit test suite:** Automated tests for wrappers with mock data
