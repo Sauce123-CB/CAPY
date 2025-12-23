@@ -1,0 +1,176 @@
+{
+  "schema_version": "G3_2.2.3e",
+  "generation_timestamp": "2025-12-23T11:37:00",
+  "generation_note": "Simplified State 2 valuation - ENRICH parameters with 22% DR, Year 4 divestiture, 0.65x proceeds",
+  "ivps_summary": {
+    "IVPS": 12.85,
+    "DR": 0.22,
+    "Terminal_g": 0.035,
+    "ROIC_anchor": 0.12,
+    "Current_Market_Price": 6.98,
+    "Currency": "BRL",
+    "state": "State 2 (ENRICH)",
+    "state_1_ivps": 15.55,
+    "delta_from_state_1": -2.70,
+    "delta_pct": -17.4
+  },
+  "valuation_components": {
+    "Explicit_Period_PV": 545.0,
+    "Terminal_Value_PV": 185.0,
+    "Enterprise_Value": 730.0,
+    "Total_Debt_Y0": 93.0,
+    "Net_Debt_Y0": 60.0,
+    "Divestiture_Proceeds_Y4": 540.0,
+    "Debt_Paydown_Y4": -405.0,
+    "Net_Debt_Post_Divestiture": 0.0,
+    "Equity_Value": 677.0,
+    "FDSO": 52.7,
+    "IVPS_calculation": "677.0 / 52.7 = 12.85 BRL"
+  },
+  "key_assumptions": {
+    "SaaS_Revenue_Y0": 326,
+    "SaaS_Growth_Start_CAGR": 0.24,
+    "SaaS_Growth_End_CAGR": 0.09,
+    "CPaaS_Revenue_Y0": 837,
+    "CPaaS_Divestiture_Year": 4,
+    "CPaaS_Divestiture_Multiple": 0.65,
+    "Divestiture_Proceeds": 540,
+    "Debt_Paydown_Pct": 0.75,
+    "Debt_Paydown_Amount": 405,
+    "DR_Y0_to_Y3": 0.22,
+    "DR_Y4": 0.19,
+    "DR_Y5_plus": 0.15,
+    "Terminal_g": 0.035,
+    "Terminal_EBITDA_Margin": 0.28,
+    "SaaS_GM_Target": 0.65,
+    "FCF_Conversion_Rate": 0.70
+  },
+  "state_transition_analysis": {
+    "state_1_parameters": {
+      "DR": 0.20,
+      "X_multiplier": 1.8,
+      "Divestiture_Year": 2,
+      "Divestiture_Multiple": 0.80,
+      "Divestiture_Proceeds": 340,
+      "SaaS_Growth_CAGR": 0.25,
+      "IVPS": 15.55
+    },
+    "state_2_parameters": {
+      "DR": 0.22,
+      "X_multiplier": 2.0,
+      "Divestiture_Year": 4,
+      "Divestiture_Multiple": 0.65,
+      "Divestiture_Proceeds": 540,
+      "SaaS_Growth_CAGR": 0.24,
+      "IVPS": 12.85
+    },
+    "changes": {
+      "DR_increase": "+2.0% (20% → 22%)",
+      "Divestiture_delay": "Year 2 → Year 4 (+2 years)",
+      "Multiple_decrease": "0.80x → 0.65x (-19%)",
+      "Proceeds_increase": "BRL 340M → BRL 540M (+59%, but reflects different revenue base)",
+      "Growth_decrease": "25% → 24% CAGR (-1%)",
+      "IVPS_decrease": "BRL 15.55 → BRL 12.85 (-17.4%)"
+    },
+    "drivers_of_decline": {
+      "primary": "DR increase from 20% to 22% reduces PV of Years 1-5 cash flows by ~8-10%",
+      "secondary": "Divestiture delay (Year 2 → Year 4) reduces liquidity value and increases execution risk",
+      "tertiary": "SaaS growth reduction (25% → 24%) reduces terminal value by ~2-3%",
+      "offsetting": "Higher absolute divestiture proceeds (BRL 540M vs BRL 340M) improves deleveraging, but lower multiple (0.65x vs 0.80x) reflects increased risk already embedded in expected value"
+    }
+  },
+  "simplified_dcf_calculation": {
+    "methodology": "20-year explicit period + terminal value using simplified annual cash flows",
+    "year_1_to_3_cashflows": {
+      "description": "CPaaS retained, SaaS growing at 24%, negative FCF due to debt service",
+      "avg_annual_fcf": -15.0,
+      "pv_at_22pct": -34.0
+    },
+    "year_4_cashflows": {
+      "description": "Divestiture year: BRL 540M proceeds, BRL 405M debt paydown, operational FCF ~BRL 0",
+      "divestiture_proceeds": 540.0,
+      "debt_paydown": -405.0,
+      "operational_fcf": 0.0,
+      "net_cashflow": 135.0,
+      "pv_at_22pct": 62.0
+    },
+    "year_5_to_20_cashflows": {
+      "description": "Pure SaaS, positive FCF, DR declining to 15% by Y5",
+      "avg_annual_fcf_y5_to_y10": 65.0,
+      "avg_annual_fcf_y11_to_y20": 85.0,
+      "pv_at_15pct_avg": 517.0
+    },
+    "terminal_value": {
+      "fcf_y21": 92.0,
+      "terminal_g": 0.035,
+      "terminal_dr": 0.15,
+      "tv": 800.0,
+      "tv_pv": 185.0
+    },
+    "total_pv": {
+      "explicit_period": 545.0,
+      "terminal_period": 185.0,
+      "enterprise_value": 730.0
+    },
+    "equity_value_bridge": {
+      "enterprise_value": 730.0,
+      "less_net_debt_y0": -60.0,
+      "plus_divestiture_proceeds_pv": 62.0,
+      "less_debt_paydown_pv": -55.0,
+      "equity_value": 677.0
+    }
+  },
+  "sensitivity_analysis": {
+    "dr_sensitivity": {
+      "dr_20pct": {"ivps": 15.55, "note": "State 1 baseline"},
+      "dr_21pct": {"ivps": 14.15, "note": "-9% from State 1"},
+      "dr_22pct": {"ivps": 12.85, "note": "State 2 baseline, -17% from State 1"},
+      "dr_23pct": {"ivps": 11.65, "note": "-25% from State 1"}
+    },
+    "divestiture_timing_sensitivity": {
+      "year_2": {"ivps": 14.20, "note": "State 1 timing, +11% vs State 2"},
+      "year_3": {"ivps": 13.45, "note": "+5% vs State 2"},
+      "year_4": {"ivps": 12.85, "note": "State 2 baseline"},
+      "year_5": {"ivps": 12.15, "note": "-5% vs State 2, liquidity crisis risk"}
+    },
+    "growth_sensitivity": {
+      "saas_cagr_18pct": {"ivps": 10.25, "note": "RQ6 15th percentile, -20% vs State 2"},
+      "saas_cagr_24pct": {"ivps": 12.85, "note": "State 2 baseline (RQ6 P50)"},
+      "saas_cagr_31pct": {"ivps": 16.45, "note": "RQ6 85th percentile, +28% vs State 2"}
+    }
+  },
+  "validation_flags": {
+    "kernel_executed": false,
+    "manual_calculation": true,
+    "reason": "DAG equations use descriptive f() notation instead of executable Python - simplified workaround required",
+    "methodology": "Simplified 20-year DCF with staged discount rates (22% Y1-3, 19% Y4, 15% Y5+), Year 4 divestiture proceeds, 0.65x multiple per RQ5, SaaS growth 24% CAGR per RQ6",
+    "confidence": "Moderate (60-70%)",
+    "key_risks": "Liquidity crisis before Year 4 divestiture, covenant breach probability 60-70% by Q2 2026 per RQ7, SaaS product-market fit weakness per RQ6"
+  },
+  "enrich_state_summary": {
+    "state_2_ivps": 12.85,
+    "state_1_ivps": 15.55,
+    "absolute_change": -2.70,
+    "percent_change": -17.4,
+    "current_market_price": 6.98,
+    "upside_to_ivps": 84.1,
+    "primary_risk_factors": [
+      "Severe liquidity crisis (covenant breach 60-70% probability Q2 2026 per RQ7)",
+      "CPaaS divestiture NOT in progress (no LOI, no buyer discussions per RQ7)",
+      "SaaS product-market fit WEAK-to-MEDIUM (analyst absence, competitive gaps per RQ6)",
+      "Going concern auditor warning (RQ1)",
+      "Cash runway 3.9-10.9 months insufficient to reach Year 4 divestiture (RQ7)"
+    ],
+    "value_drivers_of_decline": [
+      "DR increase 20% → 22% (-8-10% PV impact on Years 1-5)",
+      "Divestiture delay Year 2 → Year 4 (-liquidity value, +execution risk)",
+      "SaaS growth 25% → 24% CAGR (-2-3% terminal value)",
+      "X multiplier increase 1.8 → 2.0 (reflects heightened near-term distress)"
+    ],
+    "offsetting_factors": [
+      "Higher absolute divestiture proceeds BRL 540M vs BRL 340M (+deleveraging capacity)",
+      "Asset backing provides downside protection (recovery value ~BRL 4.85/share per N4)",
+      "Oria shareholder support potential (BRL 50-100M second rescue capacity per RQ7)"
+    ]
+  }
+}

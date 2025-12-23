@@ -1,0 +1,49 @@
+{
+  "metadata": {
+    "company_name": "Zenvia Inc.",
+    "ticker": "NASDAQ:ZENV",
+    "analysis_date": "2025-12-23"
+  },
+  "core_data": {
+    "Y0_data": {
+      "Revenue_SaaS": 326,
+      "Revenue_CPaaS": 837,
+      "Revenue_Total": 1163,
+      "Revenue": 1163,
+      "Gross_Profit": 236,
+      "OpEx_G_A": 96,
+      "OpEx_R_D": 40,
+      "S_M_Direct_Sales": 80,
+      "S_M_Franchise": 28,
+      "OpEx_Sales_Marketing": 108,
+      "EBITDA": 100,
+      "D_A": 86,
+      "EBIT": 14,
+      "NOPAT": 10,
+      "WC_Receivables": 207,
+      "WC_Payables": 232,
+      "WC_Prepayments": 14,
+      "Working_Capital": -39,
+      "Delta_Working_Capital": 0,
+      "CapEx": 18,
+      "Invested_Capital": 1056,
+      "ROIC": 0.01,
+      "FCF_Unlevered": -36,
+      "Debt_Service_Interest": 14,
+      "Debt_Service_Principal": 100,
+      "Debt_Service": 114,
+      "Net_Debt": 60,
+      "Total_Debt": 93,
+      "Excess_Cash": 33,
+      "Minority_Interest": 0,
+      "ROIC_anchor": 0.12
+    }
+  },
+  "market_context": {
+    "Current_Stock_Price": 6.98,
+    "RFR": 0.045
+  },
+  "share_data": {
+    "FDSO": 52.7
+  }
+}

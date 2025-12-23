@@ -50,8 +50,19 @@ compliance with methodological mandates.
 The pipeline uses Simplified APV with 20-Year Explicit Forecast and Static DR:
 
 - **Discounting Convention**: End-of-year
-- **Discount Rate**: Static DR = RFR + (ERP × X), where X is Risk Multiplier (0.5 to 2.2)
+- **Discount Rate**: Static DR = RFR + (ERP × X), where X is Risk Multiplier (0.5 to 2.0)
 - **ERP Convention**: Set statically to 5.0%
+
+**DR Methodology (CRITICAL):** See G3BASE_2.2.3e_NORMDEFS.md Section B.3 for complete DR specification, including:
+- Discount Rate Philosophy (practitioner utility function, NOT WACC)
+- Currency-Matched RFR requirement (RFR MUST match reporting currency)
+- Global Universe X calibration (50,000+ securities, NOT S&P 500)
+- Calibration anchors table
+
+When auditing DR, verify:
+1. RFR matches the company's REPORTING CURRENCY (not trading exchange)
+2. No extra premia added (size, EM, illiquidity) - these are already in RFR + X
+3. X calibrated against global universe (S&P 500 ≈ X=0.8-0.9, not 1.0)
 - **PV of Explicit FCF**: Σ(FCF_t / (1 + DR)^t) for t = 1 to 20
 - **Terminal Value**: TV = FCF_21 / (DR - g_terminal), where FCF_21 = FCF_20 × (1 + g_terminal)
 - **Enterprise Value**: EV = PV_Explicit_FCF + PV_Terminal

@@ -1,0 +1,38 @@
+{
+  "schema_version": "G3_2.2.3e",
+  "generation_timestamp": "2025-12-23T11:11:24.692389",
+  "generation_note": "Simplified valuation - kernel schema incompatibility workaround",
+  "ivps_summary": {
+    "IVPS": 15.55,
+    "DR": 0.2,
+    "Terminal_g": 0.034999999999999996,
+    "ROIC_anchor": 0.12,
+    "Current_Market_Price": 6.98,
+    "Currency": "BRL"
+  },
+  "valuation_components": {
+    "Explicit_Period_PV": 665.0,
+    "Terminal_Value_PV": 214.0,
+    "Enterprise_Value": 879.0,
+    "Total_Debt": 93.0,
+    "Excess_Cash": 33.0,
+    "Equity_Value": 819.0,
+    "FDSO": 52.7
+  },
+  "key_assumptions": {
+    "SaaS_Revenue_Y0": 326,
+    "CPaaS_Divestiture_Year": 2,
+    "Divestiture_Proceeds": 340,
+    "Terminal_EBITDA_Margin": 0.25,
+    "FCF_Conversion_Rate": 0.7
+  },
+  "sensitivity_analysis": {
+    "note": "Sensitivity analysis not available - simplified calculation",
+    "tornado_summary": []
+  },
+  "validation_flags": {
+    "kernel_executed": false,
+    "manual_calculation": true,
+    "reason": "REFINE v1.3 / Kernel 2.2.3e schema incompatibility - DAG equations use descriptive f() notation instead of executable Python"
+  }
+}

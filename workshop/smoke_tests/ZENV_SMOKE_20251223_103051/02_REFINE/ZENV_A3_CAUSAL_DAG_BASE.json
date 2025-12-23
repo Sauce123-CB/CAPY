@@ -1,0 +1,223 @@
+{
+  "DAG": {
+    "Revenue_CPaaS": {
+      "type": "driver",
+      "parents": [],
+      "equation": "f(market_volume, market_share, pricing_power)",
+      "description": "CPaaS revenue driven by SMS/RCS/Voice messaging volume, carrier relationships, and pricing dynamics. Commoditized market with intense competition. Management de-emphasizing; planned for divestiture in 2026."
+    },
+    "Revenue_SaaS": {
+      "type": "driver",
+      "parents": [],
+      "equation": "f(customer_acquisition, ARPU_expansion, churn, franchise_scaling)",
+      "description": "SaaS revenue (Zenvia Customer Cloud + legacy products) driven by net customer adds, average revenue per user expansion, churn rate, and franchise channel scaling. Primary growth engine post-CPaaS divestiture."
+    },
+    "Revenue_Total": {
+      "type": "derived",
+      "parents": ["Revenue_CPaaS", "Revenue_SaaS"],
+      "equation": "Revenue_CPaaS + Revenue_SaaS",
+      "description": "Consolidated revenue. Critical inflection point: divestiture of CPaaS (72% of FY2025 revenue) creates step-down in total revenue but shifts mix to higher-margin SaaS."
+    },
+    "Gross_Margin_CPaaS": {
+      "type": "driver",
+      "parents": ["Revenue_CPaaS"],
+      "equation": "f(carrier_costs, pricing_pass_through, competitive_pressure)",
+      "description": "CPaaS gross margin highly sensitive to carrier cost inflation and competitive pricing. Collapsed from 24% to 12% in one year. Management expects recovery to 20% by Q4 2025 but structural pressure likely persists."
+    },
+    "Gross_Margin_SaaS": {
+      "type": "driver",
+      "parents": ["Revenue_SaaS"],
+      "equation": "f(cloud_infrastructure_costs, customer_success_costs, product_mix)",
+      "description": "SaaS gross margin driven by AWS/GCP infrastructure costs (~15-20% of revenue), customer support/success costs (~10-15%), and mix shift toward higher-margin Zenvia Customer Cloud (target 70% GM) vs legacy SaaS products (~50% GM)."
+    },
+    "Gross_Profit": {
+      "type": "derived",
+      "parents": ["Revenue_CPaaS", "Gross_Margin_CPaaS", "Revenue_SaaS", "Gross_Margin_SaaS"],
+      "equation": "(Revenue_CPaaS × Gross_Margin_CPaaS) + (Revenue_SaaS × Gross_Margin_SaaS)",
+      "description": "Consolidated gross profit. Key insight: mix shift from CPaaS (12% GM) to SaaS (60%+ GM) dramatically improves gross profit dollars, but only if SaaS revenue scales sufficiently to offset CPaaS loss."
+    },
+    "OpEx_G&A_Fixed": {
+      "type": "driver",
+      "parents": [],
+      "equation": "f(public_company_overhead, corporate_functions, minimum_staffing)",
+      "description": "Fixed general & administrative expenses representing absolute floor for public company operations. Includes corporate overhead (legal, finance, HR, IT), public company costs (audit, IR, compliance), and minimum staffing for LATAM footprint. Floor: BRL 30-35M annually regardless of revenue scale."
+    },
+    "OpEx_G&A_Variable": {
+      "type": "driver",
+      "parents": ["Revenue_Total"],
+      "equation": "f(revenue_scale, organizational_complexity, geographic_expansion)",
+      "description": "Variable G&A expenses that scale with revenue and operational complexity above the fixed floor. Includes incremental finance/legal/HR headcount as company grows, expanded compliance requirements, and regional administrative costs. Scales at 3-4% of revenue above BRL 500M threshold."
+    },
+    "OpEx_G&A": {
+      "type": "derived",
+      "parents": ["OpEx_G&A_Fixed", "OpEx_G&A_Variable"],
+      "equation": "OpEx_G&A_Fixed + OpEx_G&A_Variable",
+      "description": "Total general & administrative expenses. H1 2025: BRL 48M (8.3% of revenue, down from 14.5%). Management targeting 7% of revenue but constrained by fixed floor. Operating leverage emerges only at revenue > BRL 500M."
+    },
+    "OpEx_R&D": {
+      "type": "driver",
+      "parents": ["Revenue_Total"],
+      "equation": "f(product_development_investment, AI_capabilities, competitive_differentiation)",
+      "description": "Research & development expenses. H1 2025: BRL 20M (3.5% of revenue). SaaS-centric model requires sustained R&D to maintain competitive AI/CX features. Expected to increase as % of revenue post-CPaaS divestiture (SaaS more R&D-intensive). Floor: BRL 35M minimum to maintain competitive feature parity and platform stability."
+    },
+    "S&M_Direct_Sales": {
+      "type": "driver",
+      "parents": ["Revenue_Total"],
+      "equation": "f(direct_channel_CAC, enterprise_sales_headcount, brand_building)",
+      "description": "Sales & marketing expenses for direct sales channel (enterprise and mid-market). Higher CAC burden (12-15% of direct channel revenue) due to field sales teams, enterprise sales cycles, and account management. Scales with direct channel revenue contribution."
+    },
+    "S&M_Franchise": {
+      "type": "driver",
+      "parents": ["Revenue_Total"],
+      "equation": "f(franchise_royalties, franchise_support, franchise_expansion)",
+      "description": "Sales & marketing expenses for franchise channel. Franchisees bear local CAC; Zenvia pays franchise royalty (~20-30% of franchise revenue vs 100% internal CAC for direct). Lower S&M ratio (2-3% of franchise channel revenue) for franchise support, training, and brand development. Scales with franchise channel revenue contribution."
+    },
+    "OpEx_Sales_Marketing": {
+      "type": "derived",
+      "parents": ["S&M_Direct_Sales", "S&M_Franchise"],
+      "equation": "S&M_Direct_Sales + S&M_Franchise",
+      "description": "Total sales & marketing expenses. H1 2025: BRL 54M (9.3% of revenue). Franchise model scaling designed to reduce consolidated S&M burden. Expected to decline to 7.0% as franchise channel reaches 50% of new bookings by Year 3."
+    },
+    "EBITDA": {
+      "type": "derived",
+      "parents": ["Gross_Profit", "OpEx_G&A", "OpEx_R&D", "OpEx_Sales_Marketing"],
+      "equation": "Gross_Profit - OpEx_G&A - OpEx_R&D - OpEx_Sales_Marketing - Other_OpEx",
+      "description": "Earnings before interest, taxes, depreciation, amortization. Normalized LTM June 2025: BRL 100M (8.6% margin). Key metric for debt service coverage and valuation. Target: 25-28% margins post-transformation (capped by Economic Governor constraints)."
+    },
+    "D&A": {
+      "type": "driver",
+      "parents": ["Intangible_Assets", "PP&E"],
+      "equation": "f(intangible_amortization, capex_depreciation)",
+      "description": "Depreciation and amortization. H1 2025: BRL 43M annualized (~BRL 86M annually). Primarily intangible amortization from M&A (~BRL 60-70M). Declines over time as intangibles fully amortize."
+    },
+    "NOPAT": {
+      "type": "derived",
+      "parents": ["EBITDA", "D&A"],
+      "equation": "(EBITDA - D&A) × (1 - Tax_Rate)",
+      "description": "Net operating profit after tax. Current state: ~BRL 10M (EBITDA BRL 100M - D&A BRL 86M = BRL 14M EBIT, less ~BRL 4M tax provision = BRL 10M). Used for ROIC calculation."
+    },
+    "WC_Receivables": {
+      "type": "driver",
+      "parents": ["Revenue_Total"],
+      "equation": "f(DSO, revenue_mix, collection_efficiency)",
+      "description": "Trade receivables driven by days sales outstanding. Current: 65 days blended (CPaaS longer cycle, SaaS faster). Post-CPaaS divestiture: DSO improves to 55 days (SaaS contracts with advance billing). Scales with revenue at DSO/365 ratio."
+    },
+    "WC_Payables": {
+      "type": "driver",
+      "parents": ["Revenue_Total"],
+      "equation": "f(DPO, carrier_payables, supplier_terms)",
+      "description": "Trade payables driven by days payables outstanding. Current: 73 days (inflated by carrier payables for CPaaS volume). Post-CPaaS divestiture: DPO declines to 45 days (standard supplier terms without carrier dependency). Creates WC cash outflow in divestiture year."
+    },
+    "WC_Prepayments": {
+      "type": "driver",
+      "parents": ["Revenue_Total"],
+      "equation": "f(SaaS_deferred_revenue, prepaid_subscriptions, contract_structure)",
+      "description": "Deferred revenue from SaaS prepayments (customers pay upfront for annual/multi-year subscriptions). Creates negative working capital benefit. Scales with SaaS revenue at ~10-15% of annual SaaS revenue. Partially offsets receivables WC requirement."
+    },
+    "Working_Capital": {
+      "type": "derived",
+      "parents": ["WC_Receivables", "WC_Payables", "WC_Prepayments"],
+      "equation": "WC_Receivables - WC_Payables - WC_Prepayments",
+      "description": "Net working capital requirement. Current: BRL -239M (negative due to high carrier payables). Post-CPaaS divestiture, WC structure changes dramatically: (1) receivables decline (lower revenue), (2) payables decline sharply (no carrier costs), (3) prepayments increase (SaaS growth). Net effect: positive WC ~2% of revenue."
+    },
+    "CapEx": {
+      "type": "driver",
+      "parents": ["Revenue_Total"],
+      "equation": "f(product_development_capitalization, infrastructure_investment, maintenance_capex)",
+      "description": "Capital expenditures. H1 2025: BRL 18M (~3% of revenue). CPaaS: low CapEx (mostly IT infrastructure). SaaS: higher CapEx (product development, cloud servers). Expected to increase as % of revenue post-divestiture (4.5% of SaaS-dominated revenue)."
+    },
+    "Invested_Capital": {
+      "type": "derived",
+      "parents": ["Working_Capital", "Intangible_Assets", "PP&E"],
+      "equation": "Working_Capital + Intangible_Assets + PP&E (or equivalently: Equity + Debt + Earnouts - Excess_Cash)",
+      "description": "Economic capital deployed in business. Current: BRL 1,056M (77% intangibles from M&A). Post-divestiture: declines by ~BRL 170M (CPaaS IC removed), partially offset by SaaS growth (~BRL 50-100M added over 3 years). Critical for ROIC calculation."
+    },
+    "ROIC": {
+      "type": "derived",
+      "parents": ["NOPAT", "Invested_Capital"],
+      "equation": "NOPAT / Invested_Capital",
+      "description": "Return on invested capital. Current: 1.0% (deeply sub-WACC). Target: 10-12% by 2028. Requires both NOPAT expansion (SaaS scaling, margin improvement) and IC optimization (divestiture). Key value driver."
+    },
+    "Free_Cash_Flow": {
+      "type": "derived",
+      "parents": ["EBITDA", "D&A", "Working_Capital", "CapEx"],
+      "equation": "NOPAT + D&A - ΔWorking_Capital - CapEx",
+      "description": "Unlevered free cash flow. Current: Negative (H1 2025 OCF BRL -18M). Post-divestiture: EBITDA BRL 70-80M - CapEx BRL 25M - WC BRL 0-10M = FCF BRL 45-65M (before debt service). Critical for debt paydown and equity valuation."
+    },
+    "Debt_Service_Interest": {
+      "type": "driver",
+      "parents": [],
+      "equation": "f(interest_bearing_debt_balance, interest_rate)",
+      "description": "Interest expense on debt. Current: 15-17% on BRL 93M = BRL 14-16M annually. Post-divestiture debt paydown: declines to BRL 0 (assume full elimination of interest-bearing debt with proceeds). Interest rate risk mitigated by debt reduction strategy."
+    },
+    "Debt_Service_Principal": {
+      "type": "driver",
+      "parents": [],
+      "equation": "f(amortization_schedule, earnout_installments)",
+      "description": "Principal amortization and acquisition earnout payments. Current: BRL 100M+ annually (disclosed 'BRL 114.8M outlay next 12 months' for debt + earnouts). Post-divestiture: declines to BRL 20-25M (residual earnout installments only after 75% debt paydown). Timing risk: Dec 2026 maturity creates execution deadline."
+    },
+    "Debt_Service": {
+      "type": "derived",
+      "parents": ["Debt_Service_Interest", "Debt_Service_Principal"],
+      "equation": "Debt_Service_Interest + Debt_Service_Principal",
+      "description": "Total required cash outflow for debt obligations. Current: BRL 115M annually. Post-divestiture: declines to BRL 20-25M (earnout installments only). Reduction of BRL 90M annually improves FCF available for growth investment."
+    },
+    "Net_Debt": {
+      "type": "derived",
+      "parents": ["Debt_Service", "Free_Cash_Flow"],
+      "equation": "Net_Debt(t) = Net_Debt(t-1) + Debt_Service - FCF_to_Debt",
+      "description": "Net debt trajectory. Current: BRL 60M (debt BRL 93M - cash BRL 33M). Target: Reduce to BRL 0-50M post-CPaaS divestiture (75% of proceeds to debt paydown). Key metric for credit risk and equity valuation (EV - Net Debt = Equity Value)."
+    },
+    "Equity_Value": {
+      "type": "valuation",
+      "parents": ["Free_Cash_Flow", "Net_Debt"],
+      "equation": "PV(FCF, discount_rate) - Net_Debt",
+      "description": "Intrinsic equity value per DCF. Current market cap: BRL 370M ($67M). Valuation hinges on: (1) probability of CPaaS divestiture success, (2) SaaS scaling trajectory, (3) margin expansion realization, (4) discount rate compression as risk declines."
+    }
+  },
+  "coverage_manifest": {
+    "description": "Verification that all critical financial components are represented in the DAG and linked to valuation. REFINE has expanded decomposition to 29 nodes (15 exogenous) from T1's 22 nodes (8 exogenous).",
+    "revenue_components": {
+      "covered": ["Revenue_CPaaS", "Revenue_SaaS", "Revenue_Total"],
+      "rationale": "Revenue decomposed by business segment (CPaaS vs SaaS) to model mix shift from divestiture. Total revenue is derived sum. No further product-level split (Customer Cloud vs Legacy SaaS) due to insufficient Y0 calibration data."
+    },
+    "margin_components": {
+      "covered": ["Gross_Margin_CPaaS", "Gross_Margin_SaaS", "Gross_Profit"],
+      "rationale": "Margins modeled separately by segment due to vastly different economics (CPaaS 12% vs SaaS 60%+). Critical for projecting consolidated GP post-mix shift."
+    },
+    "operating_expense_components": {
+      "covered": ["OpEx_G&A_Fixed", "OpEx_G&A_Variable", "OpEx_G&A", "OpEx_R&D", "S&M_Direct_Sales", "S&M_Franchise", "OpEx_Sales_Marketing"],
+      "rationale": "REFINE expanded OpEx to capture: (1) G&A fixed floor vs variable scaling, (2) S&M channel economics (direct vs franchise). R&D remains single node with floor constraint. Covers >95% of OpEx with improved granularity for operating leverage modeling."
+    },
+    "profitability_components": {
+      "covered": ["EBITDA", "D&A", "NOPAT"],
+      "rationale": "Standard profitability cascade. EBITDA = GP - OpEx. NOPAT = (EBITDA - D&A) × (1 - Tax). Used for ROIC and FCF calculations."
+    },
+    "capital_components": {
+      "covered": ["WC_Receivables", "WC_Payables", "WC_Prepayments", "Working_Capital", "CapEx", "Invested_Capital", "ROIC"],
+      "rationale": "REFINE expanded WC to three components (receivables, payables, prepayments) to model CPaaS divestiture balance sheet restructuring. CapEx remains single node (revenue-mix-weighted). IC and ROIC unchanged. Critical for transformation thesis capital efficiency."
+    },
+    "cash_flow_components": {
+      "covered": ["Free_Cash_Flow", "Debt_Service_Interest", "Debt_Service_Principal", "Debt_Service", "Net_Debt"],
+      "rationale": "REFINE expanded Debt_Service to separate interest vs principal/earnouts to model divestiture proceeds allocation. FCF = NOPAT + D&A - ΔWC - CapEx (unlevered). Net_Debt dynamics model financing side. FCF after debt service determines equity cash generation."
+    },
+    "valuation_linkage": {
+      "covered": ["Equity_Value"],
+      "rationale": "Terminal node. Equity_Value = f(FCF projections, discount rate, Net Debt). All upstream drivers feed into this valuation output."
+    },
+    "strategic_discontinuities_covered": {
+      "cpaas_divestiture": "Modeled as step-function reduction in Revenue_CPaaS (to zero in Year 2) with offsetting cash inflow (divestiture proceeds) and debt reduction.",
+      "saas_scaling": "Modeled as elevated Revenue_SaaS growth (25% → 12% CAGR fade) with margin expansion (GM: 57% → 65%) and operating leverage (EBITDA margin: 9% → 28% capped by Economic Governor).",
+      "debt_deleveraging": "Modeled via Debt_Service_Interest and Debt_Service_Principal dynamics. Divestiture proceeds reduce both components, lowering future total debt service from BRL 115M to BRL 20-25M and improving FCF.",
+      "franchise_channel_scaling": "Modeled via S&M_Franchise node capturing lower CAC economics (2-3% vs 12-15% for direct). As franchise channel grows from 15% to 50% of new bookings, consolidated S&M ratio declines from 9.3% to 7.0%.",
+      "working_capital_restructuring": "Modeled via WC_Receivables/Payables/Prepayments to capture CPaaS divestiture impact: (1) DSO improves 65→55 days, (2) DPO declines 73→45 days (removes carrier payables), (3) SaaS prepayments increase. Net WC shifts from -20% to +2% of revenue."
+    },
+    "missing_components_and_justification": {
+      "interest_expense": "Not explicitly modeled as separate node; embedded in Debt_Service_Interest. Interest expense becomes immaterial post-deleveraging (BRL 0M after debt paydown vs current BRL 14-16M).",
+      "tax_loss_carryforwards": "Not explicitly modeled. DTA of BRL 85M exists but realization timing uncertain. Conservative approach: assume cash taxes = (EBIT × 25%) once profitable. NOL shield modeled in GIM Tax_Rate driver (0% Years 1-2, ramping to 25%).",
+      "acquisition_earnout_conversion": "Not explicitly modeled in DAG. Treated as financing event: if BRL 100M earnout converts to equity, reduces Debt_Service_Principal but dilutes FDSO. Modeled in equity bridge (A.2) and Debt_Service_Principal driver narrative.",
+      "fx_translation": "Not modeled. All projections in BRL (reporting currency). FX risk captured in discount rate (EM premium 2.5%). Avoids complexity of forecasting USD/BRL while preserving risk adjustment.",
+      "revenue_product_mix": "Revenue_SaaS not split into Customer Cloud vs Legacy due to insufficient Y0 product-level data. Product mix impact on gross margin modeled via Gross_Margin_SaaS driver evolution (57% → 65% as Customer Cloud becomes dominant). Adequate for base case; would require refinement for product-level scenario analysis."
+    }
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "metadata": {
+    "company_name": "Zenvia Inc.",
+    "ticker": "NASDAQ:ZENV",
+    "analysis_date": "2025-12-23",
+    "reporting_period": "Q2 2025 (Six months ended June 30, 2025)",
+    "fiscal_year_end": "December 31",
+    "atp_complexity_assessment": "MEDIUM-HIGH",
+    "atp_complexity_rationale": "Two-business model (CPaaS volume-based vs SaaS subscription) with active transformation (72% revenue divestiture planned), hyperinflation accounting for Argentina subsidiary, and BRL 271M in M&A liabilities with equity conversion options create moving baseline. Requires guided interpolation with explicit revenue mix modeling.",
+    "atp_mode": "GUIDED_INTERPOLATION"
+  },
+  "core_data": {
+    "Y0_data": {
+      "description": "Base year financial data (June 30, 2025 - H1 2025 annualized where appropriate)",
+      "Revenue_Total": 1163,
+      "Revenue_Total_unit": "BRL millions, annualized from H1 2025 actual BRL 581.6M",
+      "Revenue_CPaaS": 837,
+      "Revenue_CPaaS_unit": "BRL millions, 72% of total per Q2 2025 mix",
+      "Revenue_SaaS": 326,
+      "Revenue_SaaS_unit": "BRL millions, 28% of total per Q2 2025 mix",
+      "Gross_Profit": 236,
+      "Gross_Profit_unit": "BRL millions, annualized from H1 2025 actual BRL 118.0M",
+      "Gross_Margin": 0.203,
+      "Gross_Margin_unit": "20.3%, consolidated (CPaaS 11.8% × 72% + SaaS 55.4% × 28%)",
+      "EBITDA_Normalized": 100,
+      "EBITDA_Normalized_unit": "BRL millions, LTM June 2025 per management disclosure (excludes BRL 8M severance)",
+      "EBITDA_Margin": 0.086,
+      "EBITDA_Margin_unit": "8.6%, normalized basis",
+      "Operating_Income": -25,
+      "Operating_Income_unit": "BRL millions, annualized from H1 2025 actual (BRL -12.5M)",
+      "Net_Income": -77,
+      "Net_Income_unit": "BRL millions, annualized from H1 2025 actual (BRL -38.3M)",
+      "Total_Assets": 1672,
+      "Total_Assets_unit": "BRL millions, June 30, 2025",
+      "Total_Equity": 742,
+      "Total_Equity_unit": "BRL millions, June 30, 2025",
+      "Total_Debt": 93,
+      "Total_Debt_unit": "BRL millions, interest-bearing debt (current BRL 78M + non-current BRL 14.6M)",
+      "Acquisition_Liabilities": 271,
+      "Acquisition_Liabilities_unit": "BRL millions, earnouts primarily from Movidesk acquisition",
+      "Cash": 33,
+      "Cash_unit": "BRL millions, June 30, 2025 (down from BRL 117M at Dec 31, 2024)",
+      "Working_Capital": -239,
+      "Working_Capital_unit": "BRL millions, negative (current assets BRL 271M - operating liabilities BRL 498M, excluding debt)",
+      "Intangible_Assets": 1296,
+      "Intangible_Assets_unit": "BRL millions, goodwill and acquired intangibles",
+      "Property_Plant_Equipment": 13,
+      "Property_Plant_Equipment_unit": "BRL millions, primarily data processing equipment",
+      "Invested_Capital": 1056,
+      "Invested_Capital_unit": "BRL millions, calculated as Equity + Total Debt + Acquisition Liabilities - Excess Cash (none)",
+      "ROIC": 0.01,
+      "ROIC_unit": "1.0%, deeply sub-WACC (estimated NOPAT BRL 10M / IC BRL 1,056M)",
+      "Operating_Cash_Flow": -18,
+      "Operating_Cash_Flow_unit": "BRL millions, H1 2025 actual (burned cash)",
+      "CapEx": 18,
+      "CapEx_unit": "BRL millions, H1 2025 annualized (BRL 17.6M acquisition of intangibles + PPE)",
+      "Free_Cash_Flow": -36,
+      "Free_Cash_Flow_unit": "BRL millions, OCF - CapEx",
+      "Employees": 956,
+      "Employees_unit": "Count as of Dec 2024 (post 15% reduction in Q1 2025)",
+      "Customers": 10000,
+      "Customers_unit": "Approximate, 10,000+ disclosed"
+    },
+    "TSM_data": {
+      "description": "Time-Series Milestones: Key historical reference points for trend analysis",
+      "Revenue_H1_2024": 444,
+      "Revenue_H1_2024_unit": "BRL millions (vs H1 2025: BRL 581.6M, +31% YoY)",
+      "EBITDA_LTM_June_2024": 101,
+      "EBITDA_LTM_June_2024_unit": "BRL millions, normalized (vs LTM June 2025: BRL 100M, flat)",
+      "Cash_Dec_2024": 117,
+      "Cash_Dec_2024_unit": "BRL millions (vs June 2025: BRL 33M, burned BRL 84M in H1)",
+      "Equity_Dec_2024": 771,
+      "Equity_Dec_2024_unit": "BRL millions (vs June 2025: BRL 742M, eroded by losses)",
+      "SaaS_Revenue_Q2_2024": 81,
+      "SaaS_Revenue_Q2_2024_unit": "BRL millions (vs Q2 2025: BRL 78M, down in absolute terms but up 23% if normalized)",
+      "CPaaS_Gross_Margin_Q2_2024": 0.241,
+      "CPaaS_Gross_Margin_unit": "24.1% (vs Q2 2025: 11.8%, margin collapse)",
+      "G&A_H1_2024": 65,
+      "G&A_H1_2024_unit": "BRL millions (vs H1 2025: BRL 48M, -25% YoY cost reduction)",
+      "Debt_Maturity_Original": "2024-06",
+      "Debt_Maturity_Original_note": "Original 18-month maturities extended to Dec 2026 in Feb 2024 renegotiation",
+      "Equity_Injection_Feb_2024": 50,
+      "Equity_Injection_Feb_2024_unit": "BRL millions from controlling shareholder Oria Capital"
+    }
+  },
+  "accounting_translation_log": {
+    "revenue_recognition": {
+      "policy": "CPaaS: Revenue recognized upon message delivery (point-in-time). SaaS: Subscription revenue recognized ratably over contract term (over-time).",
+      "adjustment_required": false,
+      "notes": "Standard revenue recognition; no material deviations from economic reality."
+    },
+    "hyperinflation_accounting": {
+      "policy": "Argentina subsidiary subject to IAS 29 hyperinflationary accounting. Non-monetary assets/liabilities restated using general price index.",
+      "adjustment_required": false,
+      "notes": "Impact disclosed as BRL 1.5M in H1 2025 finance costs. Immaterial to consolidated results (<1% of revenue). No adjustment needed."
+    },
+    "intangible_amortization": {
+      "policy": "Goodwill not amortized (tested annually for impairment). Acquired intangibles (customer relationships, technology) amortized over 5-15 years.",
+      "adjustment_required": true,
+      "notes": "H1 2025 D&A of BRL 43M includes ~BRL 30-35M intangible amortization (est.). For economic analysis, treat as sunk cost from M&A. Relevant for NOPAT calculation but not future cash flow projection."
+    },
+    "stock_based_compensation": {
+      "policy": "Share-based compensation expensed per IFRS 2. H1 2025: BRL 5.9M included in OpEx.",
+      "adjustment_required": true,
+      "notes": "SBC is real economic cost (dilution) but non-cash. Include in EBITDA calculation but adjust for dilution in equity value calculation. Represents ~1% of revenue, relatively modest."
+    },
+    "earnout_liabilities": {
+      "policy": "Acquisition earnouts recorded at fair value, adjusted for time value and performance assumptions. Changes in FV flow through P&L.",
+      "adjustment_required": true,
+      "notes": "BRL 271M earnout liability (mostly Movidesk). Partial equity conversion option (BRL 100M convertible). Model as debt-like instrument with option value. If converted, reduces debt but dilutes equity. Critical for capital structure modeling."
+    },
+    "deferred_tax_assets": {
+      "policy": "DTA of BRL 85.6M recognized on tax loss carryforwards, subject to realizability assessment.",
+      "adjustment_required": true,
+      "notes": "DTA represents 50% of book equity. Realizability depends on future profitability. For conservative IC calculation, exclude from operating assets. Will reduce cash taxes when profitable, but uncertain timing."
+    },
+    "working_capital_seasonality": {
+      "policy": "Receivables: 65-day DSO. Payables: 73-day DPO (includes carrier payables).",
+      "adjustment_required": true,
+      "notes": "Negative CCC misleading due to high acquisition earnout installments and debt service in H1 2025. Adjust for: (1) timing of earnout payments, (2) post-divestiture reduction in carrier payables, (3) SaaS prepayments (positive WC). Model WC as % of revenue with mix shift adjustment."
+    }
+  },
+  "market_context": {
+    "Current_Stock_Price": 1.27,
+    "Current_Stock_Price_unit": "USD per share as of 2025-12-23 (web search)",
+    "Price_Currency": "USD",
+    "Reporting_Currency": "BRL",
+    "FX_Rate": 5.5,
+    "FX_Rate_note": "Approximate USD/BRL as of Dec 2025 (used for conversions)",
+    "Market_Cap": 67,
+    "Market_Cap_unit": "USD millions (52.6M shares × $1.27)",
+    "Enterprise_Value": 117,
+    "Enterprise_Value_unit": "USD millions (Market Cap $67M + Net Debt $50M equiv in USD)",
+    "52_Week_Range": "1.02 - 3.03 USD",
+    "All_Time_High": 20.02,
+    "All_Time_High_Date": "2021-08-31",
+    "All_Time_High_note": "Post-IPO peak, down 94% from ATH",
+    "RFR": 0.045,
+    "RFR_note": "US 10-Year Treasury yield ~4.5% as of Dec 2025",
+    "ERP": 0.05,
+    "ERP_note": "Base equity risk premium 5.0% per CVR protocol",
+    "Sector": "SaaS / Cloud Software / CX Platforms",
+    "Geography": "Latin America (90%+ revenue from Brazil)",
+    "Competitive_Position": "Leading LATAM CX platform; competing with global SaaS giants (Salesforce, Zendesk) and LATAM specialists (RD Station)",
+    "Market_Sentiment": "Distressed; going concern warnings, liquidity constraints, execution risk heavily discounted in valuation"
+  },
+  "share_data": {
+    "FDSO": 52567288,
+    "FDSO_note": "Fully diluted shares outstanding as of Dec 1, 2025 (28.9M Class A + 23.7M Class B per proxy filing)",
+    "Share_Class_Structure": "Class A (1 vote/share) and Class B (10 votes/share)",
+    "Class_A_Shares": 28902363,
+    "Class_B_Shares": 23664925,
+    "Controlling_Shareholder": "Oria Capital (PE firm via Class B shares)",
+    "Float": "Low; institutional ownership <20%, limited liquidity",
+    "Stock_Based_Compensation_Dilution": "Modest ~1-2% annual dilution from equity comp",
+    "Earnout_Conversion_Dilution_Risk": "BRL 100M of earnouts convertible to equity; could add 10-20% dilution if converted at current depressed share price",
+    "ATM_Program": "Active; raised BRL 7.9M in H1 2025 via at-the-market equity offering"
+  },
+  "strategic_context": {
+    "Current_Strategic_Cycle": "Announced January 2025: Focus on scaling Zenvia Customer Cloud (SaaS), divest non-core assets (CPaaS)",
+    "Zenvia_Customer_Cloud_Launch": "October 2024; unified AI-powered CX platform integrating marketing, sales, customer service",
+    "CPaaS_Divestiture_Status": "Under evaluation; no transaction announced as of Dec 2025. Critical for liquidity and transformation thesis.",
+    "Franchise_Model": "Launched Q1 2025 for SaaS distribution; 30+ franchisees in Brazil, 15% of new MRR",
+    "Workforce_Reduction": "15% headcount cut in Q1 2025; BRL 30-35M annual savings (net of BRL 8M severance)",
+    "Debt_Renegotiation_History": "February 2024: Extended bank debt to Dec 2026, earnouts to Dec 2028, obtained BRL 100M equity conversion option, BRL 50M equity injection from Oria",
+    "Going_Concern_Assessment": "Auditors flagged negative working capital (BRL -444M) and liquidity risk in Q2 2025 6-K filing",
+    "Management_Guidance_FY2025": {
+      "SaaS_Revenue": "~BRL 200M with 25-30% growth",
+      "SaaS_Gross_Margin": "65-70% target for Zenvia Customer Cloud",
+      "G&A_to_Revenue": "7% (ex-severance) from 8.3% current",
+      "CPaaS_GM_Recovery": "20% by Q4 2025 (from 11.8% in Q2)"
+    }
+  }
+}

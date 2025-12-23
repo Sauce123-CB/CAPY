@@ -1,0 +1,98 @@
+{
+  "near_term_anchors": {
+    "description": "Probabilistic distributions for key operational metrics over the next 2-3 years, anchored in recent performance and management guidance",
+    "revenue_growth_saas": {
+      "metric": "SaaS Revenue CAGR (FY2025-2027)",
+      "p10": 0.15,
+      "p50": 0.22,
+      "p90": 0.30,
+      "unit": "annual growth rate",
+      "rationale": "Management guided 25-30% growth for Zenvia Customer Cloud. Q2 2025 showed 23% YoY growth. P50 of 22% reflects execution risk and competitive pressure. P90 assumes successful franchise scaling and enterprise adoption. P10 reflects market saturation or product-market fit challenges."
+    },
+    "revenue_growth_cpaas": {
+      "metric": "CPaaS Revenue CAGR (FY2025-2026, pre-divestiture)",
+      "p10": -0.10,
+      "p50": 0.03,
+      "p90": 0.08,
+      "unit": "annual growth rate",
+      "rationale": "CPaaS is commoditized and management is de-emphasizing. Grew in Q2 2025 due to volume but margins collapsed. P50 assumes low single-digit growth. P10 reflects customer churn due to strategic neglect. Becomes moot post-divestiture."
+    },
+    "gross_margin_saas": {
+      "metric": "SaaS Gross Margin (FY2026-2027)",
+      "p10": 0.58,
+      "p50": 0.63,
+      "p90": 0.68,
+      "unit": "percentage",
+      "rationale": "Current consolidated SaaS GM is 55%. Management targets 65-70% for Zenvia Customer Cloud. P50 of 63% assumes progress toward target but also reflects legacy SaaS drag. P90 assumes Customer Cloud becomes 80%+ of SaaS mix. P10 assumes cloud infrastructure costs and competitive pricing pressure."
+    },
+    "gross_margin_cpaas": {
+      "metric": "CPaaS Gross Margin (FY2025-2026, pre-divestiture)",
+      "p10": 0.11,
+      "p50": 0.16,
+      "p90": 0.20,
+      "unit": "percentage",
+      "rationale": "Q2 2025 CPaaS GM collapsed to 11.8% from 24.1% in Q2 2024 due to carrier cost inflation and competitive pricing. Management expects recovery to 20% by Q4 2025. P50 of 16% reflects partial recovery. P90 assumes full recovery. P10 assumes sustained margin pressure."
+    },
+    "ebitda_margin_consolidated": {
+      "metric": "Consolidated EBITDA Margin (FY2026, post-divestiture)",
+      "p10": 0.15,
+      "p50": 0.20,
+      "p90": 0.28,
+      "unit": "percentage",
+      "rationale": "Post-divestiture, revenue mix shifts to 100% SaaS. With 63% GM and OpEx of ~BRL 200M on BRL 420M revenue (48%), EBITDA margin of 15%. P50 assumes OpEx leverage improves (OpEx ratio drops to 43%). P90 assumes aggressive cost control (OpEx ratio 35%). Current LTM EBITDA margin is ~9% on consolidated basis."
+    },
+    "cpaas_divestiture_proceeds": {
+      "metric": "CPaaS Sale Proceeds (BRL millions)",
+      "p10": 210,
+      "p50": 340,
+      "p90": 420,
+      "unit": "BRL millions",
+      "rationale": "CPaaS generates ~BRL 420M annualized revenue (72% of FY2025 est. BRL 580M). Historical CPaaS transactions at 0.5-1.0x revenue. P50 assumes 0.8x (discounted due to margin pressure and urgency). P90 assumes 1.0x (full value). P10 assumes distressed sale at 0.5x."
+    },
+    "debt_paydown_pct": {
+      "metric": "% of Divestiture Proceeds to Debt Paydown",
+      "p10": 0.60,
+      "p50": 0.75,
+      "p90": 0.85,
+      "unit": "percentage",
+      "rationale": "Management stated focus on deleveraging. Current debt + earnouts BRL 364M. P50 assumes 75% to debt (rest to working capital). P90 assumes aggressive paydown. P10 assumes working capital needs limit paydown."
+    }
+  },
+  "long_term_anchors": {
+    "description": "Terminal period assumptions reflecting steady-state economics of the business post-transformation",
+    "terminal_revenue_growth": {
+      "metric": "Perpetual Revenue Growth Rate",
+      "p10": 0.03,
+      "p50": 0.05,
+      "p90": 0.08,
+      "unit": "annual growth rate",
+      "rationale": "Terminal growth should not exceed LATAM GDP growth + inflation. Brazil long-term nominal GDP growth ~5-6%. P50 assumes in-line with GDP. P90 assumes market share gains. P10 assumes mature market saturation."
+    },
+    "terminal_ebitda_margin": {
+      "metric": "Steady-State EBITDA Margin",
+      "p10": 0.22,
+      "p50": 0.28,
+      "p90": 0.35,
+      "unit": "percentage",
+      "rationale": "Pure-play SaaS companies at scale achieve 25-35% EBITDA margins. Zendesk ~25%, Salesforce ~30%, best-in-class 35%+. P50 assumes Zenvia reaches mid-tier performance. P10 assumes subscale challenges persist. P90 assumes category leadership."
+    },
+    "terminal_reinvestment_rate": {
+      "metric": "Steady-State Reinvestment / Revenue",
+      "p10": 0.08,
+      "p50": 0.12,
+      "p90": 0.18,
+      "unit": "percentage of revenue",
+      "rationale": "SaaS companies require ongoing R&D (product development) and infrastructure CapEx. Typical range 10-15% of revenue. P50 assumes mid-range. P90 assumes heavy product investment for competitive differentiation. P10 assumes maintenance mode."
+    },
+    "terminal_tax_rate": {
+      "metric": "Effective Tax Rate (Long-Term)",
+      "p10": 0.15,
+      "p50": 0.25,
+      "p90": 0.34,
+      "unit": "percentage",
+      "rationale": "Brazilian corporate tax rate (IRPJ + CSLL) is 34% statutory. P50 assumes moderate tax planning and NOL utilization reduces effective rate to 25%. P90 assumes full statutory rate. P10 assumes aggressive planning and NOL carryforwards."
+    }
+  },
+  "ROIC_anchor": 0.09,
+  "ROIC_anchor_rationale": "Industry median ROIC for SaaS companies with $200-500M revenue and 20-30% EBITDA margins. Used for terminal reinvestment assumption: reinvestment_rate = growth_rate / ROIC. Current Zenvia ROIC is ~1% (unsustainable); terminal ROIC of 9% assumes successful transformation to steady-state efficiency. Calculation: Terminal NOPAT margin ~18% (28% EBITDA - 10% D&A/taxes) / IC turnover of 2.0 = 9% ROIC."
+}

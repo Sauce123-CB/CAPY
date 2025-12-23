@@ -1,0 +1,158 @@
+{
+  "A.9_RESEARCH_RESULTS": {
+    "schema_version": "G3_2.2.3",
+    "generation_timestamp": "2025-12-23T11:35:00Z",
+    "ticker": "ZENV",
+    "company_name": "Zenvia Inc.",
+
+    "execution_summary": {
+      "total_rqs": 7,
+      "successful": 7,
+      "failed": 0,
+      "success_rate": 1.0,
+      "total_output_bytes": 387587,
+      "execution_time_seconds": 420
+    },
+
+    "rq_outputs": [
+      {
+        "rq_id": "RQ1",
+        "allocation_type": "MANDATORY",
+        "coverage_objective": "M-1 Integrity Check",
+        "output_file": "ZENV_RQ1_INTEGRITY_RQ.md",
+        "output_bytes": 39691,
+        "status": "SUCCESS",
+        "key_findings": [
+          "HIGH RISK: Going concern auditor warning with substantial doubt",
+          "HIGH RISK: Current ratio 0.38, cash down BRL 117M to 33M in 6 months",
+          "HIGH RISK: Intangible impairment risk (market cap $120M vs book ~$287M)",
+          "MEDIUM RISK: CFO transition to Oria Capital partner (controlling shareholder)",
+          "MEDIUM RISK: BRL 444M earnouts renegotiated down to BRL 81M"
+        ]
+      },
+      {
+        "rq_id": "RQ2",
+        "allocation_type": "MANDATORY",
+        "coverage_objective": "M-2 Adversarial Synthesis",
+        "output_file": "ZENV_RQ2_ADVERSARIAL_RQ.md",
+        "output_bytes": 60550,
+        "status": "SUCCESS",
+        "key_findings": [
+          "BULL: 23% YoY SaaS growth, 80% Q1→Q2 Customer Cloud usage increase",
+          "BULL: 30+ franchisees at 15% of new MRR after 1 quarter",
+          "BEAR: Stock down 94% from $20.02 peak to $1.27",
+          "BEAR: Going concern warning, 0.38 current ratio, negative cash flow",
+          "LITIGATION: No specific LGPD enforcement; labor risk from 15% reduction"
+        ]
+      },
+      {
+        "rq_id": "RQ3",
+        "allocation_type": "MANDATORY",
+        "coverage_objective": "M-3a Mainline Scenario H.A.D.",
+        "output_file": "ZENV_RQ3_MAINLINE_SCENARIOS_RQ.md",
+        "output_bytes": 59664,
+        "status": "SUCCESS",
+        "key_findings": [
+          "M1 Franchise: 50-53% SaaS companies implement channel programs; HubSpot 45% partner revenue",
+          "M2 CPaaS Margin: 50% divestiture failure rate; Twilio GM range 47-51%",
+          "M3 Data Localization: 10-20% probability for Brazil mandate in 5 years",
+          "M4 Customer Concentration: 20-50% probability of 15-25% revenue shock if top 5 >30%"
+        ]
+      },
+      {
+        "rq_id": "RQ4",
+        "allocation_type": "MANDATORY",
+        "coverage_objective": "M-3b Tail Scenario H.A.D.",
+        "output_file": "ZENV_RQ4_TAIL_SCENARIOS_RQ.md",
+        "output_bytes": 49420,
+        "status": "SUCCESS",
+        "key_findings": [
+          "BS1 Acquisition: Emerging market SaaS multiples 4-8x ARR; Zendesk PE buyout ~6x",
+          "BS2 AI Breakthrough: <10% base rate for 50%+ CAGR; <5% for 40%+ EBITDA margins",
+          "BK1 Liquidity Crisis: 104 PE/VC bankruptcies in 2023 (+174%); common equity recovery 0-10%",
+          "BK2 AI Displacement: 15-25% base rate for 30-40% customer loss in 3 years"
+        ]
+      },
+      {
+        "rq_id": "RQ5",
+        "allocation_type": "DYNAMIC",
+        "coverage_objective": "D-1 CPaaS Divestiture Valuation Multiple",
+        "output_file": "ZENV_RQ5_DYNAMIC1_RQ.md",
+        "output_bytes": 65283,
+        "status": "SUCCESS",
+        "key_findings": [
+          "Transaction comps: Ericsson-Vonage 5.0x (66% impairment); Sinch deals 2.1-3.0x",
+          "Distressed discount: 15-30% for private; 50-70% cumulative for distressed forced sales",
+          "Zenvia asset quality: 37% top 10 concentration; NRE declined 120%→102%",
+          "Expected value: 0.65x revenue (BRL 540M), 19% below 0.8x base case",
+          "Divestiture failure probability: 15-25%"
+        ]
+      },
+      {
+        "rq_id": "RQ6",
+        "allocation_type": "DYNAMIC",
+        "coverage_objective": "D-2 SaaS Revenue Growth Trajectory",
+        "output_file": "ZENV_RQ6_DYNAMIC2_RQ.md",
+        "output_bytes": 63639,
+        "status": "SUCCESS",
+        "key_findings": [
+          "Product-market fit: WEAK-to-MEDIUM score based on competitive positioning",
+          "Franchise scaling: 15-25% probability of 100+ franchisees by Year 3",
+          "Enterprise penetration: 10-20% of SaaS revenue most likely scenario",
+          "Combined CAGR distribution: P15=18%, P50=24%, P85=31%"
+        ]
+      },
+      {
+        "rq_id": "RQ7",
+        "allocation_type": "DYNAMIC",
+        "coverage_objective": "D-3 Debt Covenant Compliance",
+        "output_file": "ZENV_RQ7_DYNAMIC3_RQ.md",
+        "output_bytes": 49340,
+        "status": "SUCCESS",
+        "key_findings": [
+          "CRITICAL: Dec 2025 CPaaS 'divestiture' is internal spin-off, NOT external sale",
+          "Covenant breach probability: 60-70% by Q2 2026, 95%+ by Dec 2026",
+          "Cash runway: 3.9-10.9 months depending on burn rate",
+          "External divestiture close probability: 2-5% by Q2 2026",
+          "Expected equity dilution in distressed scenario: 35-40%"
+        ]
+      }
+    ],
+
+    "cross_rq_synthesis": {
+      "thesis_validation": "WEAKENED - RQ7 reveals CPaaS 'divestiture' is internal reorganization, not external sale. This fundamentally undermines the deleveraging thesis.",
+      "key_uncertainties_resolved": [
+        "CPaaS sale not actually in progress - internal spin-off only",
+        "Divestiture multiple research suggests 0.65x vs. 0.8x base case",
+        "SaaS growth P50 = 24% CAGR, supporting base case 25% assumption"
+      ],
+      "key_uncertainties_remaining": [
+        "Timing and structure of actual external CPaaS divestiture (if any)",
+        "Oria Capital willingness for second rescue financing",
+        "Franchise model economics (no disclosure found)"
+      ],
+      "scenario_implications": {
+        "mainline_adjustments": "M2 (CPaaS Margin Stabilization Without Divestiture) now MORE likely given no external sale in progress",
+        "tail_scenario_probability_shifts": "BK1 (Liquidity Crisis) probability INCREASED from 15-20% to 30-40% given covenant breach trajectory"
+      }
+    },
+
+    "enrich_handoff": {
+      "lynchpin_refinements": {
+        "CPaaS_Divestiture_Multiple": "Research suggests 0.65x expected value; widen uncertainty range to 0.4x-1.0x given internal spin-off confusion",
+        "SaaS_Growth_CAGR": "Research supports 24% P50 CAGR; maintain 25% base case",
+        "EBITDA_Margin": "No direct research; maintain 28% Y5 target but note subscale risk"
+      },
+      "scenario_candidates_validated": [
+        "M1 - Franchise Acceleration: VALIDATED (HubSpot/Salesforce precedents)",
+        "M2 - CPaaS Retained: NOW MORE LIKELY (no external sale in progress)",
+        "M3 - Data Localization: VALIDATED but low probability (10-20%)",
+        "M4 - Customer Concentration: VALIDATED (37% top 10 already material)",
+        "BS1 - Strategic Acquisition: VALIDATED (4-8x ARR multiples)",
+        "BS2 - AI Breakthrough: LOW PROBABILITY (<10% for 50%+ CAGR)",
+        "BK1 - Liquidity Crisis: PROBABILITY INCREASED (covenant breach 60-70%)",
+        "BK2 - AI Displacement: VALIDATED (15-25% 3-year disruption risk)"
+      ]
+    }
+  }
+}

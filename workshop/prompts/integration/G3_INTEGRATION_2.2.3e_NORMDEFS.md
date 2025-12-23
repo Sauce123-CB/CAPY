@@ -6,6 +6,11 @@ B.1. Financial Definitions and Formulas (Simplified APV)
 
 Inherited from G3 BASE/ENRICHMENT 2.2.
 
+**DR Methodology:** See G3BASE_2.2.3e_NORMDEFS.md Section B.3 for complete DR specification, including:
+- Discount Rate Philosophy (practitioner utility function, NOT WACC)
+- Currency-Matched RFR requirement (MANDATORY)
+- Global Universe X calibration [0.5, 2.0]
+
 \#
 
 Term

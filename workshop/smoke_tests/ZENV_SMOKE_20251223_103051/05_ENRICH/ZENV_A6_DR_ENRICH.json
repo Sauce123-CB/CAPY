@@ -1,0 +1,281 @@
+{
+  "discount_rate_derivation": {
+    "final_dr": 0.22,
+    "components": {
+      "rfr": {
+        "value": 0.045,
+        "source": "US 10-year Treasury yield (Dec 2025 estimate)",
+        "rationale": "Zenvia trades on NASDAQ in USD; use USD risk-free rate despite Brazilian operations. Current 10-year UST ~4.5%. Higher than historical 2-3% but reflects post-2022 rate regime. Appropriate tenor (10-year) matches CVR projection horizon."
+      },
+      "erp_base": {
+        "value": 0.05,
+        "source": "CVR protocol: Global equity risk premium",
+        "rationale": "Standard assumption for long-term equity premium over risk-free rate. Represents compensation for systematic (non-diversifiable) equity risk. Damodaran Jan 2025 estimate ~5.0%. This is the base ERP before company-specific multiplier."
+      },
+      "x_multiplier": {
+        "value": 2.0,
+        "range": [0.5, 2.0],
+        "category": "Very High Risk (Speculative)",
+        "rationale": "REVISED from 1.8 (BASE) to 2.0 (ENRICH) per RQ1 and RQ7 evidence. Zenvia sits at MAXIMUM of CVR protocol range (2.0) due to: (1) Going concern risk (auditor warning, current ratio 0.38, cash BRL 117M→33M per RQ1), (2) Severe liquidity crisis (covenant breach probability 60-70% by Q2 2026, cash runway 3.9-10.9 months per RQ7), (3) Business model transformation risk (CPaaS divestiture uncertain, SaaS product <1 year old), (4) Execution complexity (simultaneous divestiture, SaaS scaling, debt restructuring). X=2.0 is appropriate for speculative turnaround situations with binary outcomes (transformation succeeds vs. equity impairment).",
+        "risk_decomposition": {
+          "business_model_transformation": {
+            "contribution": 0.40,
+            "weight": "High",
+            "description": "Simultaneous CPaaS divestiture (72% of revenue), SaaS scaling (Zenvia Customer Cloud <1 year old), operational restructuring (15% workforce reduction). Probability of failure 40-50% based on: (1) Historical M&A track record mixed (7+ acquisitions, uneven results), (2) Product risk (Customer Cloud launched Oct 2024), (3) Execution complexity (multiple moving parts, tight timeline). RQ6 product-market fit scored WEAK-to-MEDIUM (analyst absence, negative G2 reviews, competitive gaps)."
+          },
+          "liquidity_going_concern": {
+            "contribution": 0.40,
+            "weight": "Very High",
+            "description": "INCREASED from 0.30 (BASE) to 0.40 (ENRICH) per RQ1/RQ7 evidence. RQ1: Going concern auditor warning, negative working capital BRL 444M (corrected to BRL 355.7M), cash declined BRL 117M→33M (FY2024→Q2 2025), intangible impairment risk (market cap $120M vs. book ~$287M). RQ7: December 2025 CPaaS 'spin-off' is INTERNAL REORGANIZATION not external sale (no LOI, no buyer discussions), covenant breach probability 60-70% by Q2 2026 rising to 95%+ by Dec 2026 (debt maturity), cash runway 3.9-10.9 months (bear vs. base case), divestiture close probability Q2 2026 only 2-5%. Catastrophic impact if liquidity crisis occurs: forced asset sale at fire-sale prices (30-50% discount), equity dilution 35-40% per RQ7, or bankruptcy."
+          },
+          "competitive_market": {
+            "contribution": 0.25,
+            "weight": "Medium-High",
+            "description": "CPaaS: Commoditized market with intense pricing pressure (GM collapsed 24%→12% in 1 year). SaaS: Competing against well-funded global players (Salesforce, Zendesk) and emerging AI-native startups. RQ6 competitive analysis: Zenvia WEAK on feature completeness, negative G2 reviews, lacks analyst coverage. Probability of market share loss 25-35%. Impact: Revenue growth below 15% CAGR (vs. 25% target), margin compression (SaaS GM stays 55-60% vs. 70% target), valuation multiple compression."
+          },
+          "regulatory_latam_political": {
+            "contribution": 0.15,
+            "weight": "Medium",
+            "description": "Brazil: Political instability, potential tax/regulatory changes. Argentina: Hyperinflation (cumulative inflation >100% in 3 years; disclosed IAS 29 treatment). FX volatility: BRL/USD fluctuates ±10-15% annually. Probability of adverse event 20-30%: FX shock (BRL depreciation >20% in single year), tax law change (Brazil frequently adjusts corporate tax), data privacy regulation (LGPD enforcement, potential GDPR-like fines). Impact: Earnings volatility (FX translation losses), compliance costs increase, market access restrictions."
+          },
+          "key_person_governance": {
+            "contribution": 0.10,
+            "weight": "Medium",
+            "description": "Founder-led (Cassio Bobsin as CEO since inception). Recent CFO transition (Shay Chor departed Sep 2025, replaced by Piero Rosatelli from Oria affiliate). Limited public company governance history (IPO'd 2021). Probability of key person departure 10-15% (CEO/founder departure would be catastrophic; CFO transition already occurred creating continuity risk). Impact: Strategic direction uncertainty, execution capability degradation, market confidence loss."
+          },
+          "subtotal_additive": {
+            "value": 1.30,
+            "description": "Sum of risk factor contributions before adjustments. INCREASED from 1.20 (BASE) to 1.30 (ENRICH) due to liquidity/going concern +0.10 uplift per RQ1/RQ7."
+          },
+          "calibration_adjustment": {
+            "value": 0.70,
+            "description": "Upward adjustment from subtotal 1.30 to final X=2.0 to account for: (1) Correlation between risks (liquidity crisis TRIGGERS transformation failure AND competitive weakness), (2) Extreme tail risk (covenant breach →distressed restructuring →equity wipeout), (3) CVR protocol calibration (2.0 = very high risk/speculative, appropriate for unprofitable growth companies with binary transformation theses). Adjustment is LARGER than BASE (0.60) due to heightened near-term distress probability."
+          }
+        },
+        "enrich_revision_rationale": "X multiplier increased from 1.8 (BASE, 'high risk') to 2.0 (ENRICH, 'very high risk/speculative') based on: (1) RQ1 integrity RED FLAGS (going concern warning, liquidity crisis, intangibles at risk), (2) RQ7 CRITICAL FINDING that CPaaS divestiture is internal reorganization NOT external sale (eliminates near-term liquidity solution), (3) RQ7 covenant breach probability 60-70% by Q2 2026 (within 6 months of ENRICH date), (4) RQ7 cash runway 3.9-10.9 months insufficient to reach Year 4 divestiture timing. Combined evidence elevates risk to MAXIMUM of CVR protocol range. X=2.0 implies investors require 2× normal equity risk premium to hold ZENV equity, reflecting binary outcome (transformation succeeds vs. equity severely impaired)."
+      },
+      "size_premium": {
+        "value": 0.04,
+        "source": "Micro-cap illiquidity premium (Ibbotson, Duff & Phelps)",
+        "rationale": "Zenvia's $67M market cap (Nov 2025, per RQ7) places it in micro-cap category (<$300M). Historical data shows small-cap stocks require 3-5% additional return premium. Zenvia-specific factors: Average daily volume ~200K shares (~$250K daily liquidity), bid-ask spread 3-5% (illiquid), institutional ownership low (<20%), analyst coverage minimal (1-2 analysts). 4.0% is mid-range for micro-cap illiquidity. No change vs. BASE (size premium persists through ENRICH)."
+      },
+      "em_premium": {
+        "value": 0.025,
+        "source": "LATAM emerging market risk premium (Damodaran)",
+        "rationale": "~90% of revenue from Brazil/LATAM. Emerging market equity risk premiums: Brazil country risk premium 3-4% over US (per Damodaran), LATAM aggregate 3.5-4.5%. Offsetting factors: Listed on NASDAQ (USD-denominated shares reduce some FX risk for US investors), diversified customer base (not concentrated in single industry or geography within LATAM). Net EM premium 2.5% (adjusted for partial NASDAQ listing benefit). No change vs. BASE."
+      }
+    },
+    "calculation": {
+      "formula": "DR = RFR + (ERP_base × X) + Size_Premium + EM_Premium",
+      "step_by_step": {
+        "step_1": "RFR = 4.5%",
+        "step_2": "ERP_base × X = 5.0% × 2.0 = 10.0% (REVISED from 9.0% in BASE due to X increase 1.8→2.0)",
+        "step_3": "Size_Premium = 4.0%",
+        "step_4": "EM_Premium = 2.5%",
+        "step_5": "DR = 4.5% + 10.0% + 4.0% + 2.5% = 22.0% (REVISED from 20.0% in BASE)"
+      },
+      "alternative_check": {
+        "description": "Cross-check DR against comparable companies and distressed situations",
+        "benchmarks": {
+          "sp500_avg_wacc": "8-10% (diversified, low-risk, profitable)",
+          "high_growth_saas_profitable": "10-12% (profitable, $1B+ revenue)",
+          "small_cap_saas_unprofitable": "15-18% (<$500M revenue)",
+          "distressed_turnaround": "18-25% (going concern, liquidity crisis)",
+          "zenvia_at_22pct": "Sits at HIGH END of distressed/turnaround range, appropriate given: (1) Small-cap status (+3%), (2) Unprofitability and transformation risk (+4-5%), (3) LATAM emerging market exposure (+2.5%), (4) Liquidity/going concern risk (+3-4% vs. 2-3% BASE). REVISED 20%→22% reflects RQ1/RQ7 evidence of SEVERE near-term distress."
+        }
+      }
+    },
+    "sensitivity_analysis": {
+      "bull_case": {
+        "x_multiplier": 1.2,
+        "dr": 0.15,
+        "justification": "Successful transformation: CPaaS divested at 1× revenue (Year 4 per RQ7 timeline), SaaS scales to BRL 500M+ with 25%+ EBITDA margin, debt eliminated. Risk factors that decline: Liquidity (solved by divestiture proceeds), transformation (SaaS product-market fit proven), execution (track record of delivery). Residual risks: Small-cap status (3%), LATAM EM exposure (2.5%), SaaS sector competitive risk (5%). DR = 4.5% + (5% × 1.2) + 2% (size premium moderates) + 2% (EM moderates) = 14.5%, rounded to 15%."
+      },
+      "base_case": {
+        "x_multiplier": 2.0,
+        "dr": 0.22,
+        "justification": "Current state: Heightened uncertainty, severe liquidity crisis, transformation execution in progress. As calculated above. Appropriate for ENRICH baseline (Years 1-3)."
+      },
+      "bear_case": {
+        "x_multiplier": 2.5,
+        "dr": 0.29,
+        "justification": "Distressed outcome: CPaaS divestiture fails or achieves only 0.5× revenue, covenant breach Q2 2026 forces distressed equity raise (35-40% dilution per RQ7), SaaS growth decelerates to 18% CAGR (RQ6 15th percentile), liquidity crisis impairs equity. X=2.5 EXCEEDS CVR protocol max of 2.0, but appropriate for pre-bankruptcy situations. DR = 4.5% + (5% × 2.5) + 5% (size premium increases as market cap shrinks) + 3% (EM premium increases in distress) = 29%. Note: In true bankruptcy, equity valuation approaches recovery value (not DCF), so DR less relevant."
+      },
+      "scenario_probabilities": {
+        "bull": 0.20,
+        "base": 0.50,
+        "bear": 0.30,
+        "expected_dr": "0.20 × 15% + 0.50 × 22% + 0.30 × 29% = 3.0% + 11.0% + 8.7% = 22.7% weighted average (rounds to 22% base case)"
+      }
+    },
+    "dynamic_dr_trajectory": {
+      "description": "Discount rate is NOT static; it should decline over time as company de-risks (or increase if risks materialize). Modeled via Discount_Rate_Fade in GIM.",
+      "year_1_to_3": {
+        "dr": 0.22,
+        "x_multiplier": 2.0,
+        "rationale": "Transformation execution risk at peak. Liquidity crisis risk high (covenant breach probability 60-70% by Q2 2026 per RQ7). CPaaS divestiture not yet closed (Year 4 expected per RQ7 timeline). SaaS product unproven at scale. Maintain ENRICH baseline DR."
+      },
+      "year_4": {
+        "dr": 0.19,
+        "x_multiplier": 1.6,
+        "rationale": "IF CPaaS divestiture closes in Year 4 (base case assumption): Liquidity risk eliminated (debt paid down, cash positive), transformation risk moderating (SaaS revenue ~BRL 500M, proven at scale). Residual risks: Competitive intensity, LATAM macro, execution on margin targets. DR declines -3% (22%→19%)."
+      },
+      "year_5_plus": {
+        "dr": 0.15,
+        "x_multiplier": 1.2,
+        "rationale": "Transformation complete: Pure-play SaaS, profitable (EBITDA margin 20%+), low leverage, track record of execution. Risks converge to: Small-cap (2-3%), LATAM EM (2%), SaaS competitive (5%). DR declines to bull case level (15%). This assumes successful transformation; if execution falters, DR remains at 22% or increases to 25%+."
+      },
+      "terminal_period_year_10_plus": {
+        "dr": 0.15,
+        "x_multiplier": 1.2,
+        "rationale": "Steady-state: If company reaches Year 10, it has by definition survived transformation risks. DR reflects long-term SaaS business risk in LATAM. No further decline from Year 5+ level (15%). If using perpetuity growth model for terminal value, 15% is appropriate discount rate (vs. 12-14% for large-cap SaaS due to size/EM factors)."
+      }
+    },
+    "risk_mitigation_factors": {
+      "description": "While Zenvia carries significant risks (X=2.0), several factors prevent DR from going ABOVE 25% (which would imply near-certain equity impairment)",
+      "controlling_shareholder_support": {
+        "description": "Oria Capital (PE firm) is 43% controlling shareholder, injected BRL 50M in Feb 2024. RQ7 analysis: Oria has capacity for BRL 50-100M second rescue (Oria Tech III fund raised BRL 500M in 2021, typical VC reserves 30-50% for follow-ons). Demonstrated commitment to avoiding bankruptcy. Risk mitigation: Reduces probability of near-term distressed scenario by 15-20%. However, RQ7 notes willingness uncertain (good money after bad; fiduciary duty to LPs; going concern warnings create negative evidence)."
+      },
+      "asset_backing": {
+        "description": "CPaaS business has tangible value (BRL 210-540M range per RQ5 expected value, even in stressed scenario). Customer base of 10,000+ provides floor valuation. Liquidation value analysis (from N4 Risk): Recovery value BRL 255M / 52.6M shares = BRL 4.85/share (~$0.88 at 5.5 FX) vs. current price $1.27. Downside from current ~30%, not 60-80%. Risk mitigation: Provides downside protection; equity unlikely to go to zero even in bear case."
+      },
+      "strategic_optionality": {
+        "description": "Multiple paths to value: Divest CPaaS, scale SaaS organically, or sell entire company. Management has shown willingness to pivot (evidenced by 2025 strategic cycle announcement, December 2025 CPaaS reorganization). Risk mitigation: Increases probability of SOME positive outcome (even if not bull case). RQ7 note: Strategic optionality diminished by liquidity constraints (fire-sale risk if forced to transact under distress)."
+      },
+      "latam_market_position": {
+        "description": "20-year operating history, dominant player in Brazil. Localization advantage vs. global competitors (language, payment systems, regulatory knowledge). RQ6 competitive analysis: Zenvia WEAK on feature completeness but has BRAZIL SMB advantage (G2 reviews, product localization). Risk mitigation: Reduces competitive risk in core market, though not sufficient to offset global SaaS platform disadvantages."
+      },
+      "saas_product_traction": {
+        "description": "Zenvia Customer Cloud showing strong usage growth (80% Q1→Q2). Franchise model early but promising (15% of new MRR already, per BASE N1). RQ6 tempers optimism: Product-market fit scored WEAK-to-MEDIUM overall, franchise productivity weak (0.5% MRR per franchisee). Risk mitigation: Evidence that product-market fit exists for Brazil SMB segment, reduces probability of total product failure. However, RQ6 evidence suggests upside limited vs. BASE assumptions."
+      },
+      "net_effect": "These mitigants justify DR of 22% (not 25-30% which would be appropriate for pure speculative venture with no downside protection or pre-bankruptcy situations). The 22% DR reflects very high risk but acknowledges company is not 'zero or hero' lottery ticket. Asset backing and potential shareholder support provide 30-40% downside protection (vs. 70-80% impairment in true distress)."
+    },
+    "monitoring_triggers": {
+      "description": "To dynamically adjust DR, monitor these quarterly triggers for de-risking or re-risking events",
+      "de_risking_events": {
+        "cpaas_divestiture_announced": {
+          "event": "CPaaS divestiture announced at ≥0.8× revenue (LOI signed with credible buyer)",
+          "dr_impact": "Reduce DR by 3-4% (22%→18-19%)",
+          "rationale": "Eliminates divestiture execution risk and provides liquidity visibility. RQ7 note: Announcement alone insufficient; requires LOI with committed financing and regulatory path. Timeline: Earliest Q2 2026 (2-5% probability per RQ7), realistic Q4 2026-Q1 2027."
+        },
+        "saas_revenue_growth_sustained": {
+          "event": "SaaS revenue growth sustains ≥20% YoY for 3 consecutive quarters",
+          "dr_impact": "Reduce DR by 1-2% (22%→20-21%)",
+          "rationale": "Validates product-market fit and reduces transformation risk. RQ6 note: Q2 2025 showed 23% growth (on track), but product-market fit WEAK overall; requires sustained execution."
+        },
+        "positive_operating_cash_flow": {
+          "event": "Positive operating cash flow for 2 consecutive quarters",
+          "dr_impact": "Reduce DR by 1-2% (22%→20-21%)",
+          "rationale": "Reduces liquidity risk and demonstrates path to self-funding. H1 2025 actual was -BRL 18M OCF; turnaround would be significant signal."
+        },
+        "debt_reduction_50pct": {
+          "event": "Debt reduced by ≥50% (BRL 93M→<BRL 46M interest-bearing debt)",
+          "dr_impact": "Reduce DR by 2-3% (22%→19-20%)",
+          "rationale": "Eliminates going concern risk and reduces financial leverage. Most likely to occur via divestiture proceeds (Year 4 expected per RQ7 timeline)."
+        },
+        "ebitda_margin_expansion_20pct": {
+          "event": "EBITDA margin expands to 20%+ (from 9% FY2025 LTM)",
+          "dr_impact": "Reduce DR by 1-2% (22%→20-21%)",
+          "rationale": "Demonstrates operational leverage and path to sustainable profitability. Likely requires CPaaS divestiture (eliminates low-margin revenue) AND SaaS margin improvement."
+        }
+      },
+      "re_risking_events": {
+        "cpaas_divestiture_fails": {
+          "event": "CPaaS divestiture fails to materialize by Q2 2026 (no LOI announced)",
+          "dr_impact": "Increase DR by 3-5% (22%→25-27%)",
+          "rationale": "Eliminates primary liquidity solution, increases covenant breach probability (60-70% by Q2 2026 per RQ7). RQ7 note: High probability event (95-98% per Q2 2026 close probability 2-5%)."
+        },
+        "saas_revenue_growth_decelerates": {
+          "event": "SaaS revenue growth decelerates below 15% YoY CAGR (RQ6 15th percentile)",
+          "dr_impact": "Increase DR by 2-3% (22%→24-25%)",
+          "rationale": "Signals product-market fit failure, undermines transformation thesis. RQ6 note: 15-25% probability based on WEAK product-market fit scoring and competitive disadvantages."
+        },
+        "debt_covenant_breach": {
+          "event": "Debt covenant breach or renegotiation required (current ratio, leverage, or liquidity covenants)",
+          "dr_impact": "Increase DR by 4-5% (22%→26-27%)",
+          "rationale": "Triggers distressed restructuring, potential equity dilution 35-40% per RQ7. RQ7 note: 60-70% probability by Q2 2026, 95%+ by Dec 2026. HIGH PROBABILITY NEAR-TERM EVENT."
+        },
+        "intangible_impairment_announced": {
+          "event": "Intangible impairment (goodwill, customer relationships, technology write-down)",
+          "dr_impact": "Increase DR by 3-4% (22%→25-26%)",
+          "rationale": "Signals asset overvaluation, potential distress. RQ1 note: Market cap $120M vs. book ~$287M creates impairment risk; intangibles BRL 1.1B+ on balance sheet at risk."
+        },
+        "key_executive_departure": {
+          "event": "CEO or CFO departure (Cassio Bobsin or Piero Rosatelli)",
+          "dr_impact": "Increase DR by 2-3% (22%→24-25%)",
+          "rationale": "Creates execution uncertainty, potential strategic direction change. CFO already transitioned (Sep 2025); CEO departure would be catastrophic."
+        }
+      }
+    },
+    "enrich_state_transition": {
+      "state_1_baseline": {
+        "dr": 0.20,
+        "x_multiplier": 1.8,
+        "source": "BASE Turn 2 / REFINE calculation"
+      },
+      "state_2_enriched": {
+        "dr": 0.22,
+        "x_multiplier": 2.0,
+        "source": "ENRICH Turn 1 revision per RQ1/RQ7"
+      },
+      "delta": {
+        "dr_change": "+2.0% (20%→22%)",
+        "x_multiplier_change": "+0.2 (1.8→2.0)",
+        "pv_impact": "Near-term cash flows (Years 1-5) discounted at 22% vs. 20% → reduces PV by approximately 8-10%. Terminal value less affected (discounted at 15% in both states, per dynamic DR trajectory). Overall IVPS expected to decline due to higher near-term discount rate.",
+        "rationale_summary": "RQ1 integrity RED FLAGS (going concern, liquidity crisis, intangibles at risk) + RQ7 CRITICAL FINDING (CPaaS divestiture is internal spin-off NOT external sale, covenant breach probability 60-70% Q2 2026, cash runway 3.9-10.9 months) elevate near-term risk to MAXIMUM of CVR protocol range (X=2.0). This is NOT a permanent change; DR expected to decline to 15% by Year 5+ IF transformation succeeds (per dynamic trajectory). If transformation fails or liquidity crisis occurs, DR would increase further to 25-30% (bear case)."
+      }
+    }
+  },
+  "dr_metadata": {
+    "calculation_date": "2025-12-23",
+    "source_stage": "ENRICH Turn 1",
+    "previous_dr": 0.20,
+    "current_dr": 0.22,
+    "dr_range": [0.15, 0.29],
+    "confidence": "Moderate-High (70%)",
+    "key_assumptions": [
+      "X multiplier 2.0 (very high risk/speculative) appropriate for Years 1-3 given RQ1/RQ7 liquidity crisis evidence",
+      "DR declines to 1.6 multiplier (19% DR) in Year 4 IF divestiture closes successfully",
+      "DR declines to 1.2 multiplier (15% DR) in Year 5+ IF transformation succeeds",
+      "Size premium (4%) and EM premium (2.5%) persist through projection period",
+      "RFR (4.5%) held constant (no assumption of Fed rate changes built into base case)"
+    ],
+    "sensitivity_to_rq_findings": {
+      "rq1_integrity_impact": "HIGH RISK flags (going concern, liquidity, intangibles) contributed +0.1 to X multiplier (1.8→1.9 directionally)",
+      "rq7_debt_covenants_impact": "SEVERE liquidity crisis (covenant breach 60-70% Q2 2026, CPaaS divestiture NOT in progress) contributed +0.1 to X multiplier (1.9→2.0 directionally)",
+      "combined_rq1_rq7_impact": "+0.2 X multiplier increase (1.8→2.0), translating to +2.0% DR increase (20%→22%). This is the PRIMARY driver of State 1→State 2 transition.",
+      "other_rqs": "RQ2 (Adversarial), RQ3 (Mainline), RQ4 (Tail), RQ5 (CPaaS Divestiture), RQ6 (SaaS Growth) provided important context but did NOT directly impact DR calculation. RQ5/RQ6 affect GIM (cash flow projections) not DR (discount rate). RQ3/RQ4 inform scenario probabilities but base case DR already conservative."
+    },
+    "forward_looking_dr_path": [
+      {"year": 0, "dr": 0.22, "x_multiplier": 2.0, "stage": "Y0-3 ENRICH baseline"},
+      {"year": 1, "dr": 0.22, "x_multiplier": 2.0, "stage": "Y0-3 ENRICH baseline"},
+      {"year": 2, "dr": 0.22, "x_multiplier": 2.0, "stage": "Y0-3 ENRICH baseline"},
+      {"year": 3, "dr": 0.22, "x_multiplier": 2.0, "stage": "Y0-3 ENRICH baseline"},
+      {"year": 4, "dr": 0.19, "x_multiplier": 1.6, "stage": "Y4 divestiture year (if successful)"},
+      {"year": 5, "dr": 0.15, "x_multiplier": 1.2, "stage": "Y5+ de-risked SaaS"},
+      {"year": 6, "dr": 0.15, "x_multiplier": 1.2, "stage": "Y5+ de-risked SaaS"},
+      {"year": 7, "dr": 0.15, "x_multiplier": 1.2, "stage": "Y5+ de-risked SaaS"},
+      {"year": 8, "dr": 0.15, "x_multiplier": 1.2, "stage": "Y5+ de-risked SaaS"},
+      {"year": 9, "dr": 0.15, "x_multiplier": 1.2, "stage": "Y5+ de-risked SaaS"},
+      {"year": 10, "dr": 0.15, "x_multiplier": 1.2, "stage": "Terminal period"},
+      {"year": "terminal", "dr": 0.15, "x_multiplier": 1.2, "stage": "Perpetuity (if using Gordon Growth)"}
+    ],
+    "enrich_log": {
+      "changes_from_base": [
+        "DR increased from 20% to 22% (Years 1-3) per RQ1/RQ7 liquidity crisis evidence",
+        "X multiplier increased from 1.8 to 2.0 (maximum of CVR protocol range)",
+        "Added dynamic DR trajectory with explicit year-by-year path (22%→19%→15% over 5 years)",
+        "Added monitoring triggers for de-risking and re-risking events (quarterly updates)",
+        "Added RQ-specific sensitivity analysis showing RQ1/RQ7 contributed +2% DR increase"
+      ],
+      "unchanged_from_base": [
+        "RFR 4.5% (US 10-year Treasury)",
+        "ERP base 5.0% (global equity risk premium)",
+        "Size premium 4.0% (micro-cap illiquidity)",
+        "EM premium 2.5% (LATAM emerging market exposure)",
+        "Terminal DR 15% (Year 5+ de-risked SaaS)"
+      ],
+      "rationale": "ENRICH Turn 1 integrates RQ research findings via Bayesian update: Prior (BASE DR 20%) + Evidence (RQ1/RQ7 liquidity crisis) → Posterior (ENRICH DR 22%). This is NOT a wholesale replacement but a marginal update (+2%) reflecting new information. The 22% DR represents updated probability distribution over outcomes: 20% bull (15% DR), 50% base (22% DR), 30% bear (29% DR), weighted average 22.7%. Near-term risk elevated but not catastrophic (22% not 30%+), reflecting both severe distress AND asset backing/shareholder support mitigants."
+    }
+  }
+}

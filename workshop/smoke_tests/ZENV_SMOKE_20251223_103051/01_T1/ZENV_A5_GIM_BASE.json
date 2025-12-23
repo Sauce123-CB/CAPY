@@ -1,0 +1,209 @@
+{
+  "GIM": {
+    "Revenue_SaaS_Growth": {
+      "mode": "CAGR_INTERP",
+      "params": {
+        "Y0_value": 326,
+        "start_cagr": 0.25,
+        "end_cagr": 0.12,
+        "fade_years": 7
+      },
+      "qualitative_thesis": "SaaS revenue (Zenvia Customer Cloud + legacy products) grows from BRL 326M (FY2025, post-CPaaS divestiture base) at 25% CAGR initially (Years 1-3), decelerating to 12% CAGR by Year 7-10 as company reaches scale and faces law of large numbers. Drivers: (1) Franchise scaling (30+ franchisees → 100+ by Year 3), (2) Zenvia Customer Cloud adoption (80% usage growth Q1→Q2 sustains), (3) Enterprise migration (longer sales cycles but larger ACVs), (4) LATAM geographic expansion (Brazil → Mexico, Colombia, Argentina). Deceleration reflects market maturation, competitive intensity, and TAM constraints (LATAM CX market ~BRL 6-8B). End-state 12% CAGR aligns with Brazil nominal GDP growth + modest share gains.",
+      "epistemic_justification": "Start CAGR of 25% anchored in: (1) Management guidance (25-30% for FY2025), (2) Q2 2025 actual 23% YoY growth, (3) Small base effect (BRL 326M → BRL 800M over 7 years = 14% CAGR, so 25% → 12% fade is conservative). End CAGR of 12% assumes steady-state market growth without heroic share gain assumptions. P50 assumption from epistemic anchors."
+    },
+    "Revenue_CPaaS_Divestiture": {
+      "mode": "EXPLICIT_SCHEDULE",
+      "params": {
+        "schedule": {
+          "Y0": 837,
+          "Y1": 837,
+          "Y2": 0,
+          "Y3": 0,
+          "Y4": 0,
+          "Y5": 0,
+          "Y6": 0,
+          "Y7": 0,
+          "Y8": 0,
+          "Y9": 0,
+          "Y10": 0
+        }
+      },
+      "qualitative_thesis": "CPaaS business (BRL 837M FY2025 revenue, 72% of total) divested in Year 2 (2026). Year 1 (2025-2026): Business continues to operate under Zenvia ownership generating full BRL 837M revenue. Year 2 onward: Revenue drops to zero (divested). Timing assumption: Transaction closes mid-2026 (18 months from analysis date). Rationale: (1) Management stated intent to divest announced Jan 2025, (2) Due diligence + buyer sourcing typically 12-18 months, (3) Liquidity urgency (debt matures Dec 2026) creates hard deadline. Binary outcome: Either divests (base case) or forced to retain (downside scenario, not modeled here).",
+      "epistemic_justification": "Explicit schedule used (not CAGR) because divestiture is discontinuous event, not organic growth. Year 2 timing is P50 assumption from epistemic anchors (divestiture occurs within 18 months). Proceeds modeled separately in GIM driver (see Divestiture_Proceeds). If divestiture delayed or fails, this driver would need fundamental revision (bear case)."
+    },
+    "Gross_Margin_SaaS": {
+      "mode": "LINEAR_FADE",
+      "params": {
+        "start_value": 0.57,
+        "end_value": 0.65,
+        "fade_years": 5
+      },
+      "qualitative_thesis": "SaaS gross margin improves from 57% (FY2025, current consolidated SaaS including legacy products) to 65% (Year 5 target, Customer Cloud-dominated mix) via: (1) Revenue mix shift toward Zenvia Customer Cloud (70% GM target) from legacy SaaS (~50% GM), (2) Cloud infrastructure cost optimization (AWS/GCP ~15% of revenue → 12% via reserved instances and multi-tenancy), (3) Customer success automation (AI-driven support reduces human costs from 12% → 8% of revenue). Ceiling of 65% (not 70%) reflects conservative assumption that legacy products persist at 20-30% of SaaS revenue. 5-year fade reflects gradual product transition, not instant cutover.",
+      "epistemic_justification": "Start value 57% is blend of Q2 2025 SaaS GM (55%) + modest improvement from Q2→Q4 2025 management initiatives. End value 65% is P50 from epistemic anchors (vs management 65-70% target). Linear fade over 5 years assumes smooth product transition; reality likely lumpier but averages out."
+    },
+    "Gross_Margin_CPaaS": {
+      "mode": "LINEAR_FADE",
+      "params": {
+        "start_value": 0.12,
+        "end_value": 0.18,
+        "fade_years": 1
+      },
+      "qualitative_thesis": "CPaaS gross margin recovers from 12% (Q2 2025 trough) to 18% (Year 1 end) via: (1) Passing through H1 2025 carrier cost increases to customers (6-9 month lag typical), (2) Selective customer pruning (exit unprofitable high-volume/low-margin deals), (3) Renegotiating carrier contracts (bulk discounts). Ceiling of 18% (not 20% management target) reflects structural competitive pressure in commoditized SMS/Voice market. Only relevant for Year 1 as CPaaS divested in Year 2. Post-divestiture, this driver becomes moot.",
+      "epistemic_justification": "Start 12% is Q2 2025 actual. End 18% is P50 from epistemic anchors (16% midpoint), rounded up slightly for Year 1 recovery assumption. Management guided 20% by Q4 2025, but that's optimistic; 18% is conservative. Fade over 1 year (2 quarters) reflects typical carrier cost pass-through lag."
+    },
+    "OpEx_G&A_Ratio": {
+      "mode": "LINEAR_FADE",
+      "params": {
+        "start_value": 0.083,
+        "end_value": 0.058,
+        "fade_years": 4
+      },
+      "qualitative_thesis": "G&A as % of revenue declines from 8.3% (H1 2025) to 5.8% (Year 4 steady-state) via: (1) Operating leverage (fixed G&A ~BRL 35M spread over growing revenue base: BRL 420M → BRL 600M), (2) Post-divestiture headcount optimization (eliminate CPaaS-related finance, legal, compliance roles: ~10-15 FTEs), (3) Public company cost efficiencies (streamlined reporting, audit scope reduction). Floor of 5.8% (~BRL 35M on BRL 600M revenue) reflects absolute minimum for public company + LATAM operations (corporate overhead, IR, audit, regional finance teams). Cannot go below ~5% without delisting or major organizational change.",
+      "epistemic_justification": "Start 8.3% is H1 2025 actual (post-15% workforce reduction). End 5.8% assumes BRL 35M G&A floor (from Economic Governor analysis) on BRL 600M revenue (Year 4 projection). Linear fade over 4 years reflects gradual scale-up, not instant leverage. Conservative vs aggressive 5% target (would require BRL 30M floor or higher revenue)."
+    },
+    "OpEx_RD_Ratio": {
+      "mode": "STATIC",
+      "params": {
+        "value": 0.045
+      },
+      "qualitative_thesis": "R&D as % of revenue holds steady at 4.5% across projection period. Rationale: (1) SaaS-centric business model requires sustained product development investment (AI/ML features, platform enhancements, integrations), (2) Current 3.5% (H1 2025) is CPaaS-blended; pure SaaS typically 5-8% of revenue, (3) 4.5% is conservative for growth-stage SaaS (below industry median of 5-6%), (4) Absolute R&D spend grows with revenue (BRL 20M → BRL 50M over 10 years) but as % remains flat due to operating leverage. No fade assumed because competitive dynamics require continuous innovation (AI arms race in CX space).",
+      "epistemic_justification": "4.5% is midpoint between current 3.5% (too low for SaaS) and typical 5-6% (higher growth companies). Static mode reflects assumption that R&D scales proportionally with revenue; no structural efficiency gains expected. Zendesk R&D ~20%, Salesforce ~15%, but those are larger-scale; 4.5% appropriate for sub-scale SaaS."
+    },
+    "OpEx_SalesMarketing_Ratio": {
+      "mode": "LINEAR_FADE",
+      "params": {
+        "start_value": 0.093,
+        "end_value": 0.070,
+        "fade_years": 3
+      },
+      "qualitative_thesis": "Sales & marketing as % of revenue declines from 9.3% (H1 2025) to 7.0% (Year 3) via: (1) Franchise model scaling (franchisees bear local CAC, Zenvia only pays franchise royalty ~20-30% of revenue vs 100% internal CAC), (2) Customer success-led growth (expansion revenue from existing base requires lower S&M than new customer acquisition), (3) Brand maturity (20-year presence reduces need for heavy brand spend). End-state 7.0% reflects: 50% revenue from franchise channel (low S&M) + 50% direct sales (12-15% S&M) = blended 7-8%. Conservative vs best-in-class SaaS (5-6% S&M at scale).",
+      "epistemic_justification": "Start 9.3% is H1 2025 actual. End 7.0% assumes franchise channel reaches 50% of new bookings by Year 3 (currently 15% in Q2 2025, growing fast). Linear fade over 3 years reflects franchise ramp (30 → 100 franchisees). More aggressive fade (to 5-6%) possible if franchise model proves highly efficient, but 7% is conservative P50."
+    },
+    "CapEx_Ratio": {
+      "mode": "STATIC",
+      "params": {
+        "value": 0.045
+      },
+      "qualitative_thesis": "CapEx as % of revenue holds at 4.5% (steady-state SaaS reinvestment rate). Composition: (1) Product development capitalization (40-50% of CapEx): Software engineering, platform enhancements, (2) Cloud infrastructure (30-40%): AWS/GCP servers, databases, security, (3) Corporate IT (10-20%): Laptops, office equipment, internal tools. Current 3% (H1 2025 annualized BRL 18M / BRL 582M) is CPaaS-blended; pure SaaS typically 4-6%. 4.5% is mid-range, consistent with growth-stage SaaS. No fade because capital intensity remains constant as % of revenue (infrastructure costs scale linearly with users/transactions).",
+      "epistemic_justification": "4.5% aligns with SaaS industry benchmarks. Zendesk ~4%, Salesforce ~3% (but at massive scale with economies), smaller SaaS 5-7%. Static mode reflects proportional scaling assumption. Alternative: Could fade from 5% → 4% if infrastructure efficiencies emerge, but 4.5% static is conservative/realistic."
+    },
+    "Working_Capital_Ratio": {
+      "mode": "LINEAR_FADE",
+      "params": {
+        "start_value": -0.20,
+        "end_value": 0.02,
+        "fade_years": 2
+      },
+      "qualitative_thesis": "Working capital as % of revenue shifts from -20% (FY2025, negative due to high carrier payables) to +2% (Year 2, post-CPaaS divestiture). Mechanics: (1) CPaaS divestiture eliminates carrier payables (BRL -300M benefit disappears), (2) SaaS model has faster receivables collection (DSO 55 days vs 65 days) and prepaid subscriptions (negative DIO), (3) Net effect: Slight positive WC requirement (~2% of revenue = BRL 8M on BRL 400M). Transition happens in Year 2 (divestiture year) as balance sheet restructures. Post-transition, WC requirement scales with revenue at 2% (minimal capital requirement).",
+      "epistemic_justification": "Start -20% reflects current negative WC structure (BRL -239M WC / BRL 1,163M revenue). End +2% assumes SaaS WC profile (receivables 55 DSO × BRL 400M / 365 = BRL 60M, less prepaid subscriptions BRL -52M = net BRL 8M, ~2%). Linear fade over 2 years reflects divestiture timing (Year 2 close). Conservative; some SaaS have near-zero or negative WC at scale."
+    },
+    "Tax_Rate": {
+      "mode": "LINEAR_FADE",
+      "params": {
+        "start_value": 0.00,
+        "end_value": 0.25,
+        "fade_years": 3
+      },
+      "qualitative_thesis": "Effective tax rate increases from 0% (Years 1-2, NOL utilization) to 25% (Year 3+, steady-state). Mechanics: (1) Company has BRL 85M deferred tax assets from historical losses, (2) NOLs shield first BRL 250-300M of cumulative taxable income, (3) By Year 3, NOLs exhausted and company pays cash taxes, (4) Effective rate 25% vs 34% statutory (Brazil IRPJ + CSLL) due to: tax planning, R&D incentives, and operating in lower-tax jurisdictions (subsidiaries). Conservative assumption: No aggressive tax planning; 25% effective rate is mid-range for Brazilian tech companies.",
+      "epistemic_justification": "Start 0% reflects DTA utilization. End 25% is P50 from epistemic anchors (range 15-34%). Fade over 3 years assumes NOLs consumed gradually as profitability ramps (EBIT turns positive Year 2, cumulative taxable income exhausts NOLs by Year 3). More aggressive: Could model 20% effective rate via IP migration or transfer pricing, but 25% is conservative."
+    },
+    "Divestiture_Proceeds": {
+      "mode": "EXPLICIT_SCHEDULE",
+      "params": {
+        "schedule": {
+          "Y0": 0,
+          "Y1": 0,
+          "Y2": 340,
+          "Y3": 0,
+          "Y4": 0,
+          "Y5": 0,
+          "Y6": 0,
+          "Y7": 0,
+          "Y8": 0,
+          "Y9": 0,
+          "Y10": 0
+        }
+      },
+      "qualitative_thesis": "CPaaS divestiture generates BRL 340M cash proceeds in Year 2 (2026). Valuation: BRL 837M FY2025 CPaaS revenue × 0.8× revenue multiple = BRL 670M enterprise value, less transaction costs (~10%) and buyer discount for margin challenges = BRL 340M net proceeds. Multiple rationale: Historical CPaaS transactions (Bandwidth, Vonage, Twilio) at 0.5-1.0× revenue depending on margins and growth. Zenvia CPaaS at 12% GM (distressed) and flat growth warrants lower-end multiple. Conservative vs P50 anchor (BRL 340M vs BRL 340M, aligned). Proceeds used: 75% to debt paydown (BRL 255M), 25% to working capital (BRL 85M). Modeled as one-time cash inflow in Year 2.",
+      "epistemic_justification": "BRL 340M is P50 from epistemic anchors (range BRL 210M-420M). 0.8× revenue multiple reflects balance of (1) urgency (liquidity deadline), (2) distressed margins (12%), (3) tangible cash flow generation (BRL 100M+ EBITDA contribution), (4) strategic value to acquirer (scale + customer base). Explicit schedule because divestiture is discrete event, not recurring. Year 2 timing reflects 18-month transaction process (announced early 2025, closes mid-2026)."
+    },
+    "Debt_Paydown": {
+      "mode": "EXPLICIT_SCHEDULE",
+      "params": {
+        "schedule": {
+          "Y0": 0,
+          "Y1": 0,
+          "Y2": -255,
+          "Y3": 0,
+          "Y4": 0,
+          "Y5": 0,
+          "Y6": 0,
+          "Y7": 0,
+          "Y8": 0,
+          "Y9": 0,
+          "Y10": 0
+        }
+      },
+      "qualitative_thesis": "75% of divestiture proceeds (BRL 340M × 0.75 = BRL 255M) used to pay down debt and acquisition liabilities in Year 2. Allocation: (1) Interest-bearing debt (BRL 93M) fully eliminated, (2) Acquisition liabilities (BRL 271M) reduced by BRL 162M (to BRL 109M residual), (3) Remaining BRL 85M to working capital. Post-paydown capital structure: Equity BRL 742M, Net Debt BRL 109M (earnouts only, zero interest-bearing debt). Impact: (1) Interest expense reduced from BRL 14M to BRL 0, (2) Annual debt service reduced from BRL 115M to BRL 25M (earnout installments only), (3) FCF improves by BRL 90M annually. One-time event in Year 2.",
+      "epistemic_justification": "BRL 255M paydown is 75% of proceeds (P50 assumption from epistemic anchors: 75% debt paydown pct). Explicit schedule because debt paydown is discrete event (occurs at transaction close, Year 2). Allocation prioritizes interest-bearing debt (highest cost) then earnouts. Residual earnout (BRL 109M) has equity conversion option; could model as dilutive event but treating as debt for conservatism."
+    },
+    "Discount_Rate_Fade": {
+      "mode": "LINEAR_FADE",
+      "params": {
+        "start_value": 0.20,
+        "end_value": 0.15,
+        "fade_years": 5
+      },
+      "qualitative_thesis": "Discount rate declines from 20% (Years 1-2, high transformation/liquidity risk) to 15% (Year 5+, de-risked SaaS business) as company executes strategic plan. Risk factors that fade: (1) Liquidity risk (eliminated by divestiture proceeds + debt paydown), (2) Transformation risk (reduced as SaaS scales and proves product-market fit), (3) Execution risk (track record of delivery reduces uncertainty). Residual 15% DR reflects: (1) Small-cap status (3-4%), (2) LATAM emerging market exposure (2-3%), (3) SaaS sector risk (8-9% vs RFR 4.5%). 15% terminal DR is appropriate for sub-scale, profitable, low-leverage SaaS in Brazil. Fade over 5 years reflects gradual de-risking, not instant step-down.",
+      "epistemic_justification": "Start 20% is calculated DR from N4 (RFR 4.5% + ERP×X 9.0% + size premium 4.0% + EM premium 2.5%). End 15% assumes X multiplier drops from 1.8 to 1.2 (successful transformation) and size premium moderates (2% vs 4% as market cap grows). Linear fade over 5 years reflects probability-weighted convergence to bull case. If transformation fails, DR stays at 20% or rises (not modeled here; would be bear scenario)."
+    }
+  },
+  "GIM_metadata": {
+    "total_drivers": 13,
+    "driver_modes": {
+      "STATIC": 3,
+      "LINEAR_FADE": 7,
+      "CAGR_INTERP": 1,
+      "EXPLICIT_SCHEDULE": 2
+    },
+    "projection_period": 10,
+    "projection_unit": "years",
+    "currency": "BRL millions",
+    "base_year": "FY2025 (Y0)",
+    "strategic_discontinuities_modeled": [
+      "CPaaS divestiture (Year 2): Revenue drops from BRL 837M to BRL 0, proceeds BRL 340M",
+      "Debt deleveraging (Year 2): Net debt reduces from BRL 60M to -BRL 85M (net cash)",
+      "Revenue mix shift: 72% CPaaS / 28% SaaS (Y0) → 100% SaaS (Y2+)",
+      "Margin expansion: Consolidated GM 20% (Y0) → 65% (Y5) due to mix shift + operational improvement",
+      "Operating leverage: EBITDA margin 9% (Y0) → 25% (Y5) via scale and efficiency"
+    ],
+    "key_assumptions_summary": {
+      "revenue_growth": "SaaS 25% → 12% CAGR over 7 years; CPaaS divested Year 2",
+      "gross_margin": "SaaS 57% → 65% over 5 years; CPaaS 12% → 18% in Year 1 (then divested)",
+      "opex_leverage": "G&A 8.3% → 5.8%, S&M 9.3% → 7.0%, R&D flat 4.5%",
+      "capex": "4.5% of revenue (steady-state SaaS reinvestment)",
+      "working_capital": "-20% → +2% due to CPaaS divestiture balance sheet restructuring",
+      "taxes": "0% (NOL shield Years 1-2) → 25% (steady-state Year 3+)",
+      "divestiture": "BRL 340M proceeds Year 2 at 0.8× CPaaS revenue",
+      "debt_paydown": "75% of proceeds (BRL 255M) eliminates interest-bearing debt",
+      "discount_rate": "20% → 15% over 5 years as risk declines"
+    },
+    "scenario_framing": {
+      "modeled_scenario": "Base Case: Successful transformation",
+      "probability": 0.50,
+      "description": "CPaaS divested at 0.8× revenue in Year 2, SaaS scales at 20% CAGR (lower than management 25-30% guidance), margins improve to 65% GM / 25% EBITDA (below management 70% GM target), debt eliminated. Conservative execution assumptions throughout.",
+      "alternative_scenarios_not_modeled": [
+        {
+          "scenario": "Bull Case",
+          "probability": 0.30,
+          "description": "CPaaS divested at 1.0× revenue (BRL 420M), SaaS scales at 25-30% CAGR, margins reach 70% GM / 30% EBITDA, DR declines faster (18% → 12%). Would increase equity value by 50-100%."
+        },
+        {
+          "scenario": "Bear Case",
+          "probability": 0.20,
+          "description": "CPaaS divestiture fails or achieves only 0.5× revenue (BRL 210M), SaaS growth decelerates to 10-15% CAGR, margins stall at 55% GM / 15% EBITDA, liquidity crisis forces distressed capital raise. Would impair equity value by 50-70%."
+        }
+      ]
+    }
+  }
+}

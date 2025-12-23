@@ -1,0 +1,281 @@
+{
+  "schema_version": "G3_2.2.3e_FULL_FIXED",
+  "fix_note": "Full ZENV DAG with all 29 nodes converted to kernel-compatible format. Driver nodes have empty equations. Derived nodes use GET()/PREV() syntax.",
+  "DAG": {
+    "Revenue_CPaaS": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "CPaaS revenue - divesting in Year 2"
+    },
+    "Revenue_SaaS_Growth": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "SaaS revenue growth rate"
+    },
+    "Revenue_SaaS": {
+      "type": "Endogenous_Driver",
+      "parents": ["Revenue_SaaS_Growth"],
+      "equation": "PREV('Revenue_SaaS') * (1 + GET('Revenue_SaaS_Growth'))",
+      "description": "SaaS revenue grows by growth rate"
+    },
+    "Revenue_Total": {
+      "type": "Financial_Line_Item",
+      "parents": ["Revenue_CPaaS", "Revenue_SaaS"],
+      "equation": "GET('Revenue_CPaaS') + GET('Revenue_SaaS')",
+      "description": "Total consolidated revenue"
+    },
+    "Gross_Margin_CPaaS": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "CPaaS gross margin percentage"
+    },
+    "Gross_Margin_SaaS": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "SaaS gross margin percentage"
+    },
+    "Gross_Profit": {
+      "type": "Financial_Line_Item",
+      "parents": ["Revenue_CPaaS", "Gross_Margin_CPaaS", "Revenue_SaaS", "Gross_Margin_SaaS"],
+      "equation": "(GET('Revenue_CPaaS') * GET('Gross_Margin_CPaaS')) + (GET('Revenue_SaaS') * GET('Gross_Margin_SaaS'))",
+      "description": "Segment-weighted gross profit"
+    },
+    "OpEx_G_A_Fixed": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "Fixed G&A floor (BRL millions)"
+    },
+    "OpEx_G_A_Variable_Pct": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "Variable G&A as % of revenue"
+    },
+    "OpEx_G_A": {
+      "type": "Financial_Line_Item",
+      "parents": ["OpEx_G_A_Fixed", "OpEx_G_A_Variable_Pct", "Revenue_Total"],
+      "equation": "GET('OpEx_G_A_Fixed') + (GET('Revenue_Total') * GET('OpEx_G_A_Variable_Pct'))",
+      "description": "Total G&A = fixed floor + variable"
+    },
+    "OpEx_R_D_Pct": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "R&D as % of revenue"
+    },
+    "OpEx_R_D": {
+      "type": "Financial_Line_Item",
+      "parents": ["Revenue_Total", "OpEx_R_D_Pct"],
+      "equation": "GET('Revenue_Total') * GET('OpEx_R_D_Pct')",
+      "description": "R&D expenses"
+    },
+    "S_M_Direct_Pct": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "Direct S&M as % of revenue"
+    },
+    "S_M_Direct_Sales": {
+      "type": "Financial_Line_Item",
+      "parents": ["Revenue_Total", "S_M_Direct_Pct"],
+      "equation": "GET('Revenue_Total') * GET('S_M_Direct_Pct')",
+      "description": "Direct channel S&M"
+    },
+    "S_M_Franchise_Pct": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "Franchise S&M as % of revenue"
+    },
+    "S_M_Franchise": {
+      "type": "Financial_Line_Item",
+      "parents": ["Revenue_Total", "S_M_Franchise_Pct"],
+      "equation": "GET('Revenue_Total') * GET('S_M_Franchise_Pct')",
+      "description": "Franchise channel S&M"
+    },
+    "OpEx_Sales_Marketing": {
+      "type": "Financial_Line_Item",
+      "parents": ["S_M_Direct_Sales", "S_M_Franchise"],
+      "equation": "GET('S_M_Direct_Sales') + GET('S_M_Franchise')",
+      "description": "Total S&M expenses"
+    },
+    "EBITDA": {
+      "type": "Financial_Line_Item",
+      "parents": ["Gross_Profit", "OpEx_G_A", "OpEx_R_D", "OpEx_Sales_Marketing"],
+      "equation": "GET('Gross_Profit') - GET('OpEx_G_A') - GET('OpEx_R_D') - GET('OpEx_Sales_Marketing')",
+      "description": "EBITDA = Gross Profit - OpEx"
+    },
+    "D_A_Pct": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "D&A as % of revenue"
+    },
+    "D_A": {
+      "type": "Financial_Line_Item",
+      "parents": ["Revenue_Total", "D_A_Pct"],
+      "equation": "GET('Revenue_Total') * GET('D_A_Pct')",
+      "description": "Depreciation and amortization"
+    },
+    "EBIT": {
+      "type": "Financial_Line_Item",
+      "parents": ["EBITDA", "D_A"],
+      "equation": "GET('EBITDA') - GET('D_A')",
+      "description": "EBIT = EBITDA - D&A"
+    },
+    "Tax_Rate": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "Effective tax rate (0 during NOL utilization)"
+    },
+    "NOPAT": {
+      "type": "Financial_Line_Item",
+      "parents": ["EBIT", "Tax_Rate"],
+      "equation": "GET('EBIT') * (1 - GET('Tax_Rate'))",
+      "description": "Net operating profit after tax"
+    },
+    "WC_Receivables_Days": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "Days sales outstanding"
+    },
+    "WC_Receivables": {
+      "type": "Financial_Line_Item",
+      "parents": ["Revenue_Total", "WC_Receivables_Days"],
+      "equation": "GET('Revenue_Total') * GET('WC_Receivables_Days') / 365",
+      "description": "Trade receivables"
+    },
+    "WC_Payables_Days": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "Days payables outstanding"
+    },
+    "WC_Payables": {
+      "type": "Financial_Line_Item",
+      "parents": ["Revenue_Total", "WC_Payables_Days"],
+      "equation": "GET('Revenue_Total') * GET('WC_Payables_Days') / 365",
+      "description": "Trade payables"
+    },
+    "WC_Deferred_Pct": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "Deferred revenue as % of revenue"
+    },
+    "WC_Prepayments": {
+      "type": "Financial_Line_Item",
+      "parents": ["Revenue_Total", "WC_Deferred_Pct"],
+      "equation": "GET('Revenue_Total') * GET('WC_Deferred_Pct')",
+      "description": "Deferred revenue / prepayments"
+    },
+    "Working_Capital": {
+      "type": "Financial_Line_Item",
+      "parents": ["WC_Receivables", "WC_Payables", "WC_Prepayments"],
+      "equation": "GET('WC_Receivables') - GET('WC_Payables') - GET('WC_Prepayments')",
+      "description": "Net working capital"
+    },
+    "Delta_Working_Capital": {
+      "type": "Financial_Line_Item",
+      "parents": ["Working_Capital"],
+      "equation": "GET('Working_Capital') - PREV('Working_Capital')",
+      "description": "Change in working capital"
+    },
+    "CapEx_Pct": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "CapEx as % of revenue"
+    },
+    "CapEx": {
+      "type": "Financial_Line_Item",
+      "parents": ["Revenue_Total", "CapEx_Pct"],
+      "equation": "GET('Revenue_Total') * GET('CapEx_Pct')",
+      "description": "Capital expenditures"
+    },
+    "Invested_Capital": {
+      "type": "Financial_Line_Item",
+      "parents": ["Working_Capital", "CapEx", "D_A"],
+      "equation": "PREV('Invested_Capital') + GET('CapEx') - GET('D_A') + GET('Delta_Working_Capital')",
+      "description": "Invested capital accumulation"
+    },
+    "ROIC": {
+      "type": "Financial_Line_Item",
+      "parents": ["NOPAT", "Invested_Capital"],
+      "equation": "GET('NOPAT') / max(GET('Invested_Capital'), 1)",
+      "description": "Return on invested capital"
+    },
+    "FCF_Unlevered": {
+      "type": "Financial_Line_Item",
+      "parents": ["NOPAT", "D_A", "Delta_Working_Capital", "CapEx"],
+      "equation": "GET('NOPAT') + GET('D_A') - GET('Delta_Working_Capital') - GET('CapEx')",
+      "description": "Unlevered free cash flow"
+    },
+    "Debt_Service_Interest": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "Interest expense (goes to 0 post-paydown)"
+    },
+    "Debt_Service_Principal": {
+      "type": "Exogenous_Driver",
+      "parents": [],
+      "equation": "",
+      "description": "Principal/earnout payments"
+    },
+    "Debt_Service": {
+      "type": "Financial_Line_Item",
+      "parents": ["Debt_Service_Interest", "Debt_Service_Principal"],
+      "equation": "GET('Debt_Service_Interest') + GET('Debt_Service_Principal')",
+      "description": "Total debt service"
+    },
+    "Net_Debt": {
+      "type": "Financial_Line_Item",
+      "parents": ["Debt_Service", "FCF_Unlevered"],
+      "equation": "max(PREV('Net_Debt') + GET('Debt_Service_Interest') - min(GET('FCF_Unlevered'), GET('Debt_Service_Principal')), 0)",
+      "description": "Net debt trajectory"
+    },
+    "Revenue": {
+      "type": "Alias",
+      "parents": ["Revenue_Total"],
+      "equation": "GET('Revenue_Total')",
+      "description": "Alias for kernel compatibility"
+    }
+  },
+  "coverage_manifest": {
+    "Revenue_CPaaS": "CPaaS segment revenue",
+    "Revenue_SaaS": "SaaS segment revenue",
+    "Revenue_Total": "Consolidated revenue",
+    "Revenue": "Alias for Revenue_Total",
+    "Gross_Profit": "Segment-weighted gross profit",
+    "OpEx_G_A": "Total G&A expenses",
+    "OpEx_R_D": "R&D expenses",
+    "S_M_Direct_Sales": "Direct channel S&M",
+    "S_M_Franchise": "Franchise channel S&M",
+    "OpEx_Sales_Marketing": "Total S&M expenses",
+    "EBITDA": "Earnings before interest, taxes, D&A",
+    "EBIT": "Earnings before interest and taxes",
+    "D_A": "Depreciation and amortization",
+    "NOPAT": "Net operating profit after tax",
+    "Working_Capital": "Net working capital",
+    "Delta_Working_Capital": "Change in working capital",
+    "WC_Receivables": "Trade receivables",
+    "WC_Payables": "Trade payables",
+    "WC_Prepayments": "Deferred revenue",
+    "CapEx": "Capital expenditures",
+    "Invested_Capital": "Total invested capital",
+    "ROIC": "Return on invested capital",
+    "FCF_Unlevered": "Unlevered free cash flow",
+    "Debt_Service_Interest": "Interest expense",
+    "Debt_Service_Principal": "Principal/earnout payments",
+    "Debt_Service": "Total debt service",
+    "Net_Debt": "Net debt position"
+  }
+}
