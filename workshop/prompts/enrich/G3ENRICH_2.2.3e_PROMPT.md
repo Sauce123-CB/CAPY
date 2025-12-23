@@ -61,11 +61,11 @@ The two-shot architecture provides:
 ### A. Environmental Awareness and Tools
 
 * Mandatory Inputs:
-   1. MRC State 1 (BASE Output): The 6 artifacts (A.1, A.2, A.3, A.5, A.6, A.7) produced by G3BASE 2.2.2e.
+   1. MRC State 1 (BASE Output): The 6 artifacts (A.1, A.2, A.3, A.5, A.6, A.7) produced by G3BASE 2.2.3e.
    2. A.8_RESEARCH_STRATEGY_MAP: The targeted research plan from RQ_GEN 2.2.3, containing Uncertainty_Nexus_Analysis and Research_Plan.
    3. RQ Outputs (1-7): The research reports produced by the RQ execution stage, organized by Coverage_Objective (M-1/M-2/M-3a/M-3b/D-1/D-2/D-3).
-* The Verification Doctrine (Externalized Schemas): The required output schemas are provided in the attached G3ENRICH_2.2.2e_SCHEMAS.md. The A.9_ENRICHMENT_TRACE schema is new to this stage.
-* The CVR Kernel (Context Reference): The CVR Kernel (attached as CVR_KERNEL_ENRICH_2.2.2e.py) defines the computational logic that Turn 2 will execute. It is provided in Turn 1 for CONTEXTUAL UNDERSTANDING ONLY—to ensure your artifacts are semantically aligned with kernel expectations (DSL modes, node naming, equation syntax). Do NOT attempt to execute this code in Turn 1.
+* The Verification Doctrine (Externalized Schemas): The required output schemas are provided in the attached G3ENRICH_2.2.3e_SCHEMAS.md. The A.9_ENRICHMENT_TRACE schema is new to this stage.
+* The CVR Kernel (Context Reference): The CVR Kernel (attached as CVR_KERNEL_ENRICH_2.2.3e.py) defines the computational logic that Turn 2 will execute. It is provided in Turn 1 for CONTEXTUAL UNDERSTANDING ONLY—to ensure your artifacts are semantically aligned with kernel expectations (DSL modes, node naming, equation syntax). Do NOT attempt to execute this code in Turn 1.
 * Search Policy: Minimize search. ENRICHMENT focuses on synthesizing provided inputs. Ad-hoc search is permitted ONLY for clarifying specific data points explicitly referenced within the RQ Outputs or for validating critical factual claims where ambiguity remains high after synthesis.
 * Emission Policy: The output must ONLY contain analytical narratives and artifacts. Reprinting instructions, schemas, or the CVR Kernel code is strictly forbidden.
 
@@ -86,7 +86,40 @@ This prompt operates in TWO-SHOT EXECUTION mode with strict separation of concer
 - Verify internal consistency (DAG coverage, GIM-KG alignment, DR consistency)
 - Execute kernel using validated artifacts as input
 - Generate A.7 (LightweightValuationSummary)
-- Emit unified MRC State 2 report
+- Generate Kernel Receipt (Pattern 13) - see below
+- Write A.7 + receipt to disk as atomized files
+
+**Kernel Receipt Generation (Pattern 13 - MANDATORY):**
+
+After kernel execution, generate `{TICKER}_KERNEL_RECEIPT_ENRICH.json` with:
+
+```json
+{
+  "artifact_type": "KERNEL_EXECUTION_RECEIPT",
+  "ticker": "{TICKER}",
+  "stage": "ENRICH",
+  "timestamp": "ISO-8601 timestamp of execution",
+  "kernel": {
+    "file": "CVR_KERNEL_ENRICH_2.2.3e.py",
+    "version": "2.2.3e",
+    "sha256": "sha256 hash of kernel file (use: shasum -a 256 kernel.py)"
+  },
+  "inputs": {
+    "a2_kg": "{TICKER}_A2_ANALYTIC_KG_ENRICH.json",
+    "a3_dag": "{TICKER}_A3_CAUSAL_DAG_ENRICH.json",
+    "a5_gim": "{TICKER}_A5_GIM_ENRICH.json",
+    "a6_dr": "{TICKER}_A6_DR_ENRICH.json"
+  },
+  "command": "python3 CVR_KERNEL_ENRICH_2.2.3e.py --kg ... --dag ... --gim ... --dr ... --output ...",
+  "outputs": {
+    "a7_valuation": "{TICKER}_A7_VALUATION_ENRICH.json"
+  },
+  "exit_code": 0,
+  "execution_time_seconds": 2.3
+}
+```
+
+**Purpose:** Reproducibility proof. Anyone can copy inputs + kernel to Colab, run the command, and verify outputs match.
 
 This architecture leverages Turn 1's strengths (deep reasoning, Bayesian synthesis, evidence integration) while Turn 2 provides a validation layer and deterministic computation.
 
@@ -221,7 +254,7 @@ Iterate through the assumptions, executing the Bayesian Update Protocol and docu
    b. Synthesize Evidence: Compile relevant findings from across the RQs. Apply Conflict Resolution if needed.
    c. Update the Posterior: Determine the refined assumption. Apply the Variance Mandate if deviating from the Anchor.
    d. Decision: Record MODIFY or CONFIRM.
-   e. If MODIFY: Specify the updated DSL (mode and parameters). Utilize the Expanded DSL (see G3ENRICH_2.2.2e_NORMDEFS.md), including S_CURVE or MULTI_STAGE_FADE, if necessary to model the refined trajectory.
+   e. If MODIFY: Specify the updated DSL (mode and parameters). Utilize the Expanded DSL (see G3ENRICH_2.2.3e_NORMDEFS.md), including S_CURVE or MULTI_STAGE_FADE, if necessary to model the refined trajectory.
    f. Justification: Provide the causal rationale linking Evidence → Assumption → Expected Valuation Impact.
 
 3. Constrained Refinement Protocols (P2/P3):
@@ -277,7 +310,7 @@ ENRICHMENT's novel analytical contribution. Contains:
 ### E. Computational Execution and Emission (Phase E — State 2)
 
 1. CVR Kernel Loading (P7):
-   * Load the CVR Kernel G3_2.2.2e (attached as CVR_KERNEL_ENRICH_2.2.2e.py) into the execution environment.
+   * Load the CVR Kernel G3_2.2.3e (attached as CVR_KERNEL_ENRICH_2.2.3e.py) into the execution environment.
 
 2. Sensitivity Scenario Definition:
    * Inherit sensitivity scenarios from BASE A.7 Tornado top-5 drivers plus Discount_Rate.

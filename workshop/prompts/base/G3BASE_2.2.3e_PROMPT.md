@@ -94,9 +94,9 @@ The two-shot architecture provides:
     > **DO NOT** use prices from source documents (stale) or from memory (potentially hallucinated). This is required for accurate upside/downside calculations.
 
 -   **The Verification Doctrine (Externalized Schemas):** The required
-    > output schemas are provided in the attached G3BASE_2.2.2e_SCHEMAS.md.
+    > output schemas are provided in the attached G3BASE_2.2.3e_SCHEMAS.md.
 
--   **The CVR Kernel (Context Reference):** The CVR Kernel (attached as BASE_CVR_KERNEL_2.2.2e.py) defines the computational logic that Turn 2 will execute. It is provided in Turn 1 for CONTEXTUAL UNDERSTANDING ONLY—to ensure your artifacts are semantically aligned with kernel expectations. Do NOT attempt to execute this code in Turn 1.
+-   **The CVR Kernel (Context Reference):** The CVR Kernel (attached as BASE_CVR_KERNEL_2.2.3e.py) defines the computational logic that Turn 2 will execute. It is provided in Turn 1 for CONTEXTUAL UNDERSTANDING ONLY—to ensure your artifacts are semantically aligned with kernel expectations. Do NOT attempt to execute this code in Turn 1.
 
 ### B. Two-Shot Execution Architecture (Critical)
 
@@ -106,7 +106,7 @@ This prompt operates in TWO-SHOT EXECUTION mode with strict separation of concer
 
 - Construct all analytical artifacts (A.1–A.6) with full epistemic rigor
 - Emit artifacts as valid JSON in a single fenced code block
-- Ensure structural compatibility with kernel requirements (see G3BASE_2.2.2e_NORMDEFS.md)
+- Ensure structural compatibility with kernel requirements (see G3BASE_2.2.3e_NORMDEFS.md)
 - Do NOT execute kernel code or compute A.7
 
 **TURN 2 RESPONSIBILITY (Fresh Instance, Validation & Execution):**
@@ -115,7 +115,40 @@ This prompt operates in TWO-SHOT EXECUTION mode with strict separation of concer
 - Verify internal consistency (DAG coverage, GIM-KG alignment, DR consistency)
 - Execute kernel using validated artifacts as input
 - Generate A.7 (LightweightValuationSummary)
-- Emit unified MRC State 1 report
+- Generate Kernel Receipt (Pattern 13) - see below
+- Write A.7 + receipt to disk as atomized files
+
+**Kernel Receipt Generation (Pattern 13 - MANDATORY):**
+
+After kernel execution, generate `{TICKER}_KERNEL_RECEIPT_BASE.json` with:
+
+```json
+{
+  "artifact_type": "KERNEL_EXECUTION_RECEIPT",
+  "ticker": "{TICKER}",
+  "stage": "BASE",
+  "timestamp": "ISO-8601 timestamp of execution",
+  "kernel": {
+    "file": "BASE_CVR_KERNEL_2.2.3e.py",
+    "version": "2.2.3e",
+    "sha256": "sha256 hash of kernel file (use: shasum -a 256 kernel.py)"
+  },
+  "inputs": {
+    "a2_kg": "{TICKER}_A2_ANALYTIC_KG_BASE.json",
+    "a3_dag": "{TICKER}_A3_CAUSAL_DAG_BASE.json",
+    "a5_gim": "{TICKER}_A5_GIM_BASE.json",
+    "a6_dr": "{TICKER}_A6_DR_BASE.json"
+  },
+  "command": "python3 BASE_CVR_KERNEL_2.2.3e.py --kg ... --dag ... --gim ... --dr ... --output ...",
+  "outputs": {
+    "a7_valuation": "{TICKER}_A7_VALUATION_BASE.json"
+  },
+  "exit_code": 0,
+  "execution_time_seconds": 2.3
+}
+```
+
+**Purpose:** Reproducibility proof. Anyone can copy inputs + kernel to Colab, run the command, and verify outputs match.
 
 This architecture leverages Turn 1's strengths (deep reasoning, causal inference, synthesis) while Turn 2 provides a validation layer and deterministic computation. Once Turn 1 artifacts are finalized and validated, kernel execution is purely mechanical—all analytical intelligence is embedded in artifact construction.
 
