@@ -1,6 +1,6 @@
 # CAPY Workshop - Prompt Development Environment
 
-> **Version:** 0.14.2
+> **Version:** 0.14.3
 > **Last reviewed:** 2024-12-23
 > **Review cadence:** Weekly during active development, monthly otherwise
 
@@ -787,10 +787,12 @@ Each artifact gets a stage suffix indicating when it was created or last modifie
 |-----------|------|--------|------------|
 | Pipeline Validator | CAPY_PIPELINE_VALIDATOR_2_2e.md | CANONICAL | DAVE_20241210 |
 | Inter-turn Validator | CAPY_VALIDATOR_2_2e.md | CANONICAL | DAVE_20241210 |
+| BASE T1 Validator | BASE_T1_VALIDATOR.md | **EXPERIMENTAL** | - |
+| BASE REFINE Validator | BASE_REFINE_VALIDATOR.md | **EXPERIMENTAL** | - |
 | A.8 Validator | A8_VALIDATOR.md | EXPERIMENTAL | - |
 | A.9 Validator | A9_VALIDATOR.md | EXPERIMENTAL | - |
-| SCENARIO T1 Validator | SCENARIO_T1_VALIDATOR.md | EXPERIMENTAL | - |
-| A.10 Validator | A10_VALIDATOR.md | EXPERIMENTAL | - |
+| SCENARIO T1 Validator | SCENARIO_T1_VALIDATOR.md | **EXPERIMENTAL** | - |
+| A.10 Validator | A10_VALIDATOR.md | **EXPERIMENTAL** | - |
 | SC Validator | SC_VALIDATOR.md | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
 | INT T1 Validator | INT_T1_VALIDATOR.md | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
 | INT T2 Validator | INT_T2_VALIDATOR.md | CANONICAL | DAVE_ENRICH_SMOKE_20251220 |
