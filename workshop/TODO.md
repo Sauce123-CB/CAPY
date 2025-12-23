@@ -1,7 +1,7 @@
 # CAPY Workshop - Master TODO
 
-> **Last updated:** 2024-12-20
-> **Structure version:** 0.8 (INTEGRATION smoke test complete, prompts CANONICAL)
+> **Last updated:** 2024-12-23
+> **Structure version:** 0.9 (IRR smoke test in progress, 2.2.3e patches applied)
 
 ---
 
@@ -237,6 +237,29 @@
 - Consider splitting large prompts into modular components
 - Explore MCP server for CAPY pipeline
 - Investigate prompt caching for repeated runs
+
+### Python Orchestrator (Evaluate after 2.2.3e stabilizes)
+
+**Context (2024-12-23):** Current architecture uses LLM (Claude Code) as orchestrator. Orchestration is purely deterministic (copy files, spawn subagent, run kernel, check validator, proceed/stop). Only the LLM *steps* (T1/T2/validators) are non-deterministic.
+
+**Problem with LLM orchestration:**
+- Instruction-following decay (validators skipped, steps forgotten)
+- Context pressure causes control flow errors
+- External orchestration files less authoritative than inline CLAUDE.md
+- These are systematic, not edge cases
+
+**Python orchestrator would:**
+- Never forget to run a validator (0% vs 10-20% with LLM)
+- Never skip copy-forward (0% vs 5% with LLM)
+- Provide real parallelism (asyncio for RQ/SC stages)
+- Enable proper logging, retries, error handling
+- Claude only does what Claude's good at (reasoning in T1/T2/validators)
+
+**Tradeoff:** Python is "brittle" (parser errors if LLM output drifts) vs LLM is "flexible" (can adapt to variations). But we already have schemas + validators to enforce structure, so the flexibility isn't needed.
+
+**Implementation:** Translate `smoke_tests/CLAUDE.md` into Python that calls Anthropic API for LLM steps, subprocess for kernels, shutil for file ops.
+
+**Trigger:** If LLM orchestration continues to have >10% failure rate after pattern hardening, build Python orchestrator. METR benchmark: Claude Code 50% failure at 5hrs. CAPY is ~3hrs. Target: <10% failure with patterns.
 
 ---
 
