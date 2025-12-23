@@ -1,0 +1,287 @@
+{
+  "schema_version": "G3_2.2.3e",
+  "ticker": "ZENV",
+  "company_name": "Zenvia Inc.",
+  "analysis_date": "2025-12-23",
+
+  "dag_nodes": [
+    {
+      "id": "D1",
+      "label": "CPaaS Market Commoditization",
+      "category": "external",
+      "description": "Industry-wide competitive pressure and pricing dynamics in WhatsApp/SMS messaging business",
+      "controllability": "LOW"
+    },
+    {
+      "id": "D2",
+      "label": "Carrier Cost Inflation",
+      "category": "external",
+      "description": "Telco carriers increasing wholesale messaging costs, passed through to customers with lag",
+      "controllability": "LOW"
+    },
+    {
+      "id": "D3",
+      "label": "CPaaS Revenue Growth",
+      "category": "operational",
+      "description": "Volume expansion in CPaaS segment driving top-line growth despite margin pressure",
+      "controllability": "MEDIUM"
+    },
+    {
+      "id": "D4",
+      "label": "CPaaS Gross Margin Decline",
+      "category": "financial",
+      "description": "CPaaS margin compressed from 24% to 12% due to commoditization + carrier costs",
+      "controllability": "LOW"
+    },
+    {
+      "id": "D5",
+      "label": "Revenue Mix Shift",
+      "category": "business_mix",
+      "description": "CPaaS increasing from 66% to 72% of total revenue, SaaS declining from 34% to 28%",
+      "controllability": "MEDIUM"
+    },
+    {
+      "id": "D6",
+      "label": "Consolidated Gross Margin Compression",
+      "category": "financial",
+      "description": "Blended gross margin collapsed from 38% to 20% due to unfavorable mix shift",
+      "controllability": "MEDIUM"
+    },
+    {
+      "id": "D7",
+      "label": "G&A Cost Reduction",
+      "category": "operational",
+      "description": "15% workforce reduction and operational streamlining reducing G&A by 25% YoY",
+      "controllability": "HIGH"
+    },
+    {
+      "id": "D8",
+      "label": "EBITDA Generation",
+      "category": "financial",
+      "description": "LTM normalized EBITDA stable at BRL 88-100MM despite margin pressure",
+      "controllability": "MEDIUM"
+    },
+    {
+      "id": "D9",
+      "label": "Operating Cash Flow",
+      "category": "financial",
+      "description": "Cash generation from operations reduced due to margin compression",
+      "controllability": "MEDIUM"
+    },
+    {
+      "id": "D10",
+      "label": "Liquidity Stress",
+      "category": "financial",
+      "description": "Negative working capital BRL -444MM, cash declining from BRL 117MM to BRL 33MM",
+      "controllability": "MEDIUM"
+    },
+    {
+      "id": "D11",
+      "label": "Debt Renegotiation & Covenant Waivers",
+      "category": "capital_structure",
+      "description": "Extended payment terms and covenant relief obtained but signals fragility",
+      "controllability": "MEDIUM"
+    },
+    {
+      "id": "D12",
+      "label": "Strategic Pivot to SaaS",
+      "category": "strategic",
+      "description": "Management focus shift to Zenvia Customer Cloud, CPaaS divestiture under evaluation",
+      "controllability": "HIGH"
+    },
+    {
+      "id": "D13",
+      "label": "Zenvia Customer Cloud Adoption",
+      "category": "operational",
+      "description": "Product traction: 23% YoY growth, 80% usage increase Q2 vs Q1, franchisee channel launched",
+      "controllability": "MEDIUM"
+    },
+    {
+      "id": "D14",
+      "label": "CPaaS Divestiture (Potential)",
+      "category": "strategic",
+      "description": "Sale of CPaaS business to deleverage balance sheet, estimated BRL 400-500MM proceeds",
+      "controllability": "MEDIUM"
+    },
+    {
+      "id": "D15",
+      "label": "Shareholder Value",
+      "category": "outcome",
+      "description": "Stock price, market cap, intrinsic value realization",
+      "controllability": "LOW"
+    }
+  ],
+
+  "dag_edges": [
+    {
+      "from": "D1",
+      "to": "D4",
+      "mechanism": "Competitive pressure forces pricing concessions, reducing CPaaS unit economics",
+      "strength": "STRONG",
+      "polarity": "negative"
+    },
+    {
+      "from": "D2",
+      "to": "D4",
+      "mechanism": "Carrier cost increases directly compress CPaaS gross margin with pass-through lag",
+      "strength": "STRONG",
+      "polarity": "negative"
+    },
+    {
+      "from": "D1",
+      "to": "D3",
+      "mechanism": "Competitive pricing enables volume growth but at deteriorating margins",
+      "strength": "MEDIUM",
+      "polarity": "positive"
+    },
+    {
+      "from": "D3",
+      "to": "D5",
+      "mechanism": "CPaaS volume growth increases CPaaS revenue share mechanically",
+      "strength": "STRONG",
+      "polarity": "positive"
+    },
+    {
+      "from": "D4",
+      "to": "D6",
+      "mechanism": "CPaaS margin decline (24%→12%) directly reduces consolidated gross margin",
+      "strength": "STRONG",
+      "polarity": "negative"
+    },
+    {
+      "from": "D5",
+      "to": "D6",
+      "mechanism": "Shift to CPaaS (12% margin) from SaaS (55% margin) mechanically compresses blended margin",
+      "strength": "STRONG",
+      "polarity": "negative"
+    },
+    {
+      "from": "D6",
+      "to": "D8",
+      "mechanism": "Gross margin compression reduces gross profit dollars available for EBITDA",
+      "strength": "STRONG",
+      "polarity": "negative"
+    },
+    {
+      "from": "D7",
+      "to": "D8",
+      "mechanism": "G&A reduction partially offsets margin compression, supporting EBITDA resilience",
+      "strength": "STRONG",
+      "polarity": "positive"
+    },
+    {
+      "from": "D8",
+      "to": "D9",
+      "mechanism": "EBITDA generation drives operating cash flow (excluding working capital changes)",
+      "strength": "STRONG",
+      "polarity": "positive"
+    },
+    {
+      "from": "D9",
+      "to": "D10",
+      "mechanism": "Reduced operating cash flow exacerbates liquidity stress and working capital deficit",
+      "strength": "STRONG",
+      "polarity": "negative"
+    },
+    {
+      "from": "D10",
+      "to": "D11",
+      "mechanism": "Liquidity stress necessitates debt renegotiation and covenant waiver requests",
+      "strength": "STRONG",
+      "polarity": "positive"
+    },
+    {
+      "from": "D12",
+      "to": "D13",
+      "mechanism": "Strategic focus and resource allocation accelerate Zenvia Customer Cloud development and GTM",
+      "strength": "STRONG",
+      "polarity": "positive"
+    },
+    {
+      "from": "D13",
+      "to": "D8",
+      "mechanism": "SaaS adoption at 70% gross margin improves EBITDA as it scales",
+      "strength": "MEDIUM",
+      "polarity": "positive"
+    },
+    {
+      "from": "D10",
+      "to": "D14",
+      "mechanism": "Liquidity stress creates urgency to divest CPaaS for balance sheet deleveraging",
+      "strength": "STRONG",
+      "polarity": "positive"
+    },
+    {
+      "from": "D12",
+      "to": "D14",
+      "mechanism": "Strategic pivot makes CPaaS divestiture coherent with long-term SaaS-only vision",
+      "strength": "MEDIUM",
+      "polarity": "positive"
+    },
+    {
+      "from": "D14",
+      "to": "D10",
+      "mechanism": "CPaaS sale proceeds (BRL 400-500MM) would eliminate liquidity stress and debt",
+      "strength": "STRONG",
+      "polarity": "positive"
+    },
+    {
+      "from": "D8",
+      "to": "D15",
+      "mechanism": "EBITDA generation supports valuation multiples and shareholder value",
+      "strength": "MEDIUM",
+      "polarity": "positive"
+    },
+    {
+      "from": "D13",
+      "to": "D15",
+      "mechanism": "SaaS scaling at high margins drives long-term shareholder value creation",
+      "strength": "MEDIUM",
+      "polarity": "positive"
+    },
+    {
+      "from": "D10",
+      "to": "D15",
+      "mechanism": "Liquidity stress and going concern risk depresses valuation multiples and stock price",
+      "strength": "STRONG",
+      "polarity": "negative"
+    },
+    {
+      "from": "D14",
+      "to": "D15",
+      "mechanism": "Successful CPaaS divestiture unlocks value through balance sheet repair and strategic clarity",
+      "strength": "STRONG",
+      "polarity": "positive"
+    }
+  ],
+
+  "critical_path": {
+    "description": "The critical path to shareholder value runs through successful execution of the strategic pivot: (1) Zenvia Customer Cloud must achieve scale and profitability to offset CPaaS decline, AND (2) CPaaS divestiture must execute at reasonable valuation to resolve liquidity stress. Failure on either dimension results in continued margin compression, cash burn, and dilutive refinancing.",
+    "key_nodes": ["D12", "D13", "D14", "D10", "D15"],
+    "key_risks": [
+      "SaaS scaling slower than CPaaS margin erosion",
+      "CPaaS divestiture fails to execute or achieves low valuation",
+      "Liquidity crisis forces distressed equity raise or asset sale",
+      "Competitive pressure in both CPaaS and SaaS intensifies"
+    ]
+  },
+
+  "feedback_loops": [
+    {
+      "id": "LOOP1",
+      "type": "vicious",
+      "nodes": ["D6", "D9", "D10", "D11"],
+      "description": "Margin compression → reduced cash flow → liquidity stress → covenant breaches → distraction/uncertainty → harder to execute strategic pivot",
+      "strength": "STRONG",
+      "note": "Company trapped in negative cycle; CPaaS divestiture is circuit breaker"
+    },
+    {
+      "id": "LOOP2",
+      "type": "virtuous",
+      "nodes": ["D12", "D13", "D8", "D15"],
+      "description": "Strategic focus → SaaS adoption → improved margins/EBITDA → higher valuation → easier capital access → more investment in SaaS",
+      "strength": "MEDIUM",
+      "note": "Positive flywheel IF SaaS scales quickly enough"
+    }
+  ]
+}

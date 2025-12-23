@@ -1,12 +1,16 @@
 # SOURCE Stage Orchestration
 
-> **Version:** 1.0.1
+> **Version:** 1.1.0
 > **Pipeline Position:** Stage 0 of 9 (PDF → SOURCE → BASE)
 > **Created:** 2024-12-23
+> **Updated:** 2024-12-23 - Added table detection, image placeholders, VISUAL_MANIFEST
 
 ## SOURCE Stage Overview
 
-The SOURCE stage handles PDF preprocessing - converting raw PDF documents into machine-readable text and images for analysis.
+The SOURCE stage handles PDF preprocessing - converting raw PDF documents into machine-readable text and images for analysis. This includes:
+- **Text extraction** with table detection
+- **Image placeholders** noting where charts/figures appear
+- **Page images** for runtime vision analysis via VISUAL_MANIFEST
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -18,7 +22,7 @@ The SOURCE stage handles PDF preprocessing - converting raw PDF documents into m
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │ STEP 1: SCAN FOR PDFS                                                │   │
 │  │                                                                       │   │
-│  │   Check ../production/source_library/{TICKER}/ for:                  │   │
+│  │   Check source_library/{TICKER}/ for:                                │   │
 │  │   - *.pdf files                                                       │   │
 │  │   - Missing *.extracted.md files (need preprocessing)                 │   │
 │  │                                                                       │   │
@@ -27,31 +31,36 @@ The SOURCE stage handles PDF preprocessing - converting raw PDF documents into m
 │                              │                                              │
 │                              ▼                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │ STEP 2: TEXT EXTRACTION (pdfplumber)                                 │   │
+│  │ STEP 2: TEXT + TABLE EXTRACTION (pdfplumber)                         │   │
 │  │                                                                       │   │
 │  │   For each PDF without .extracted.md:                                │   │
 │  │   - Open with pdfplumber                                             │   │
 │  │   - Extract text from each page                                      │   │
+│  │   - Detect and format TABLES as markdown tables                      │   │
+│  │   - Note IMAGE POSITIONS as placeholders                             │   │
 │  │   - Write to {filename}.extracted.md                                 │   │
 │  │                                                                       │   │
 │  │   Format:                                                             │   │
 │  │   # {filename}                                                        │   │
-│  │   Extracted: {ISO-8601 timestamp}                                     │   │
-│  │   --- Page 1 ---                                                      │   │
+│  │   *Extracted from: {filename}.pdf*                                   │   │
+│  │   ## Page 1 of N                                                      │   │
 │  │   {page text}                                                         │   │
-│  │   --- Page 2 ---                                                      │   │
-│  │   ...                                                                 │   │
+│  │   ### Table 1 (Page 1)                                                │   │
+│  │   | Col1 | Col2 | ...                                                 │   │
+│  │   *[Image detected: page_1_img_1.png - position: x=..., y=...]*      │   │
 │  └─────────────────────────────────────────────────────────────────────┘   │
 │                              │                                              │
 │                              ▼                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │ STEP 3: IMAGE EXTRACTION (pdf2image)                                 │   │
+│  │ STEP 3: IMAGE EXTRACTION + VISUAL_MANIFEST (pdf2image)               │   │
 │  │                                                                       │   │
 │  │   For each PDF without _pages/ directory:                            │   │
 │  │   - Convert pages to PNG at 150 DPI                                  │   │
 │  │   - Save to {filename}_pages/page_001.png, page_002.png, ...         │   │
+│  │   - Create VISUAL_MANIFEST.md with instructions for runtime vision   │   │
 │  │                                                                       │   │
-│  │   Purpose: Visual analysis of charts, tables, presentations          │   │
+│  │   VISUAL_MANIFEST.md tells Claude which images to read at runtime    │   │
+│  │   for charts, graphs, and visual data that pdfplumber can't extract  │   │
 │  └─────────────────────────────────────────────────────────────────────┘   │
 │                              │                                              │
 │                              ▼                                              │
@@ -68,13 +77,14 @@ The SOURCE stage handles PDF preprocessing - converting raw PDF documents into m
 │                              │                                              │
 │                              ▼                                              │
 │  OUTPUT:                                                                    │
-│  ../production/source_library/{TICKER}/                                     │
+│  source_library/{TICKER}/                                                   │
 │  ├── {filename}.pdf                    ← Original PDF (unchanged)          │
-│  ├── {filename}.extracted.md           ← Text extraction                   │
-│  ├── {filename}_pages/                 ← Page images                       │
+│  ├── {filename}.extracted.md           ← Text + tables + image placeholders│
+│  ├── {filename}_pages/                 ← Page images for vision analysis   │
 │  │   ├── page_001.png                                                      │
 │  │   ├── page_002.png                                                      │
-│  │   └── ...                                                               │
+│  │   ├── ...                                                               │
+│  │   └── VISUAL_MANIFEST.md            ← Instructions for runtime vision  │
 │  └── INVENTORY.md                      ← Document manifest                 │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -121,32 +131,119 @@ import pdfplumber
 from pdf2image import convert_from_path
 from pathlib import Path
 from datetime import datetime
-import sys
 
 TICKER = "{TICKER}"  # <-- REPLACE THIS
 SOURCE_DIR = Path(f"source_library/{TICKER}")
 
+def format_table(table):
+    """Convert pdfplumber table to markdown format."""
+    if not table or len(table) == 0:
+        return ""
+
+    # Clean cells
+    def clean_cell(cell):
+        if cell is None:
+            return ""
+        return str(cell).replace("\n", " ").strip()
+
+    rows = [[clean_cell(cell) for cell in row] for row in table]
+    if not rows:
+        return ""
+
+    # Build markdown table
+    header = "| " + " | ".join(rows[0]) + " |"
+    separator = "| " + " | ".join(["---"] * len(rows[0])) + " |"
+    body = "\n".join("| " + " | ".join(row) + " |" for row in rows[1:])
+
+    return f"{header}\n{separator}\n{body}"
+
+def extract_page_content(page, page_num, total_pages):
+    """Extract text, tables, and image positions from a page."""
+    parts = [f"## Page {page_num} of {total_pages}\n"]
+
+    # Extract text
+    text = page.extract_text() or ""
+    if text.strip():
+        parts.append(text)
+
+    # Extract tables
+    tables = page.extract_tables()
+    for i, table in enumerate(tables, 1):
+        md_table = format_table(table)
+        if md_table:
+            parts.append(f"\n### Table {i} (Page {page_num})\n\n{md_table}")
+
+    # Note image positions
+    if hasattr(page, 'images') and page.images:
+        for i, img in enumerate(page.images, 1):
+            x, y = img.get('x0', 0), img.get('top', 0)
+            parts.append(f"\n*[Image detected: page_{page_num}_img_{i}.png - position: x={x}, y={y}]*")
+
+    return "\n\n".join(parts)
+
+def create_visual_manifest(img_dir, pdf_name, page_count):
+    """Create VISUAL_MANIFEST.md for runtime vision analysis."""
+    manifest_parts = ["# Visual Analysis Manifest\n"]
+    manifest_parts.append("Pages extracted for visual analysis. Use Read tool on each image.\n")
+    manifest_parts.append("---\n")
+
+    # Sample key pages (first 10, then every 5th)
+    key_pages = list(range(1, min(11, page_count + 1)))
+    key_pages += list(range(15, page_count + 1, 5))
+    key_pages = sorted(set(key_pages))
+
+    for p in key_pages:
+        img_file = f"page_{p:03d}.png"
+        manifest_parts.append(f"""
+## {pdf_name}_page_{p:03d}.png
+
+**Path:** `{img_dir.name}/{img_file}`
+
+**Action:** Read this image and extract:
+
+- All numerical values (revenue, margins, growth rates, etc.)
+
+- Chart data points and trends
+
+- Table contents
+
+- Key metrics and KPIs
+""")
+
+    manifest_path = img_dir / "VISUAL_MANIFEST.md"
+    manifest_path.write_text("\n".join(manifest_parts))
+    return manifest_path
+
 def preprocess_pdf(pdf_path):
+    """Full preprocessing: text+tables, image placeholders, page images, manifest."""
     print(f"Processing: {pdf_path.name}")
 
-    # === TEXT EXTRACTION (pdfplumber) ===
-    text_parts = []
+    # === TEXT + TABLE EXTRACTION (pdfplumber) ===
+    content_parts = [f"# {pdf_path.stem}\n"]
+    content_parts.append(f"*Extracted from: {pdf_path.name}*\n")
+    content_parts.append("---\n")
+
     with pdfplumber.open(pdf_path) as pdf:
+        total_pages = len(pdf.pages)
         for i, page in enumerate(pdf.pages, 1):
-            text = page.extract_text() or ""
-            text_parts.append(f"--- Page {i} ---\n{text}")
+            page_content = extract_page_content(page, i, total_pages)
+            content_parts.append(page_content)
 
     md_path = pdf_path.with_suffix(".extracted.md")
-    md_path.write_text(f"# {pdf_path.stem}\n\nExtracted: {datetime.now().isoformat()}\n\n" + "\n\n".join(text_parts))
-    print(f"  → Text: {md_path.name}")
+    md_path.write_text("\n\n".join(content_parts))
+    print(f"  → Text+Tables: {md_path.name}")
 
-    # === IMAGE EXTRACTION (pdf2image) - REQUIRED ===
+    # === IMAGE EXTRACTION (pdf2image) ===
     img_dir = pdf_path.parent / f"{pdf_path.stem}_pages"
     img_dir.mkdir(parents=True, exist_ok=True)
     images = convert_from_path(pdf_path, dpi=150)
     for i, img in enumerate(images, 1):
         img.save(img_dir / f"page_{i:03d}.png", "PNG")
     print(f"  → Images: {img_dir.name}/ ({len(images)} pages)")
+
+    # === VISUAL MANIFEST ===
+    manifest_path = create_visual_manifest(img_dir, pdf_path.stem, len(images))
+    print(f"  → Manifest: {manifest_path.name}")
 
     return len(images)
 
@@ -157,16 +254,17 @@ for pdf_path in sorted(SOURCE_DIR.glob("*.pdf")):
     else:
         print(f"Skipping (already extracted): {pdf_path.name}")
 
-print(f"\nDone. Verify both .extracted.md AND _pages/ folders exist.")
+print(f"\nDone. Verify .extracted.md, _pages/ folders, and VISUAL_MANIFEST.md exist.")
 ```
 
 **Verification after running:**
 ```bash
-ls source_library/{TICKER}/*.extracted.md     # Text files
-ls -d source_library/{TICKER}/*_pages/        # Image folders (MUST EXIST)
+ls source_library/{TICKER}/*.extracted.md           # Text files with tables
+ls -d source_library/{TICKER}/*_pages/              # Image folders
+ls source_library/{TICKER}/*_pages/VISUAL_MANIFEST.md  # Manifests for vision
 ```
 
-**If `_pages/` folders are missing, preprocessing FAILED. Re-run the script.**
+**If `_pages/` folders or VISUAL_MANIFEST.md are missing, preprocessing FAILED.**
 
 ## Integration with Pipeline
 
