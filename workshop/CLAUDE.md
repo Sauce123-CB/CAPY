@@ -276,6 +276,10 @@ These commands handle PDF preprocessing - converting raw PDFs into machine-reada
 
 ### SOURCE: UPLOAD {TICKER}
 
+> **⚠️ MANDATORY: Read `orchestration/SOURCE_STAGE.md` BEFORE preprocessing.**
+> **⚠️ DO NOT use `pdftotext`. Use the Python implementation below.**
+> **⚠️ BOTH text extraction AND image extraction are REQUIRED.**
+
 Auto-find, organize, and preprocess PDF documents for a company.
 
 **Trigger:** User says `SOURCE: UPLOAD {TICKER}` after dropping PDFs into the repository.
