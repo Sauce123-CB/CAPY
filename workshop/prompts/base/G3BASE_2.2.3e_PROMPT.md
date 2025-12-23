@@ -394,6 +394,29 @@ impact on ROIC interpretation.
 
 including structure and equations.
 
+**DAG Equation Format (CRITICAL - Kernel Compatibility):**
+
+Equations must be executable Python expressions that the kernel can `eval()`.
+
+✅ CORRECT formats:
+- `"GET('Node_A') + GET('Node_B')"` - arithmetic on nodes
+- `"GET('Units') * GET('Price_Per_Unit')"` - multiplication
+- `"PREV('Invested_Capital') * (1 + GET('Growth_Rate'))"` - lagged reference
+- `"GET('Revenue') * GET('Margin')"` - margin calculation
+- `""` - empty string for exogenous drivers (no equation needed)
+
+❌ WRONG formats:
+- `"f(x, y, z)"` - descriptive notation
+- `"Revenue = Units × Price"` - prose description
+- `"sum of segment revenues"` - natural language
+- `"calculated from components"` - vague reference
+
+**Syntax rules:**
+- Use `GET('NodeName')` for intra-period node references
+- Use `PREV('NodeName')` for prior-period values (e.g., BOP Invested Capital for ROIC)
+- Node names in equations must exactly match node names in the DAG
+- Exogenous drivers have empty equations (`""`) - their values come from GIM
+
 **C. Assumption Definition and Anchoring (Phases B & C)**
 
 1\. Epistemic Anchor Protocol (Phase B: Long-Term Anchors): Establish

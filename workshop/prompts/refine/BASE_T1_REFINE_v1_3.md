@@ -234,6 +234,23 @@ Your JSON artifacts MUST use these exact structures for kernel compatibility:
 | CAGR_INTERP | `start_value`, `end_value`, `years` | Compound growth |
 | EXPLICIT_SCHEDULE | `schedule: {Y1: v1, Y2: v2, ...}` | Year-by-year values |
 
+#### Equation Format Validation (CRITICAL)
+
+Before emitting artifacts, verify ALL equations in A.3 are executable Python:
+
+✅ CORRECT formats:
+- `"GET('Node_A') + GET('Node_B')"` - arithmetic on nodes
+- `"GET('Units') * GET('Price_Per_Unit')"` - multiplication
+- `"PREV('Invested_Capital') * (1 + GET('Growth_Rate'))"` - lagged reference
+- `""` - empty string for exogenous drivers
+
+❌ WRONG formats (kernel will FAIL):
+- `"f(x, y, z)"` - descriptive notation
+- `"Revenue = Units × Price"` - prose description
+- `"sum of segment revenues"` - natural language
+
+**Validation test:** Could Python's `eval()` execute this string with GET/PREV defined? If no, rewrite the equation.
+
 ### 5. Discount Rate Re-Derivation
 
 Re-read BASE prompt sections D.1 and 1.3_dr_derivation_methodology.

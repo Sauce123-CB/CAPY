@@ -260,6 +260,23 @@ Iterate through the assumptions, executing the Bayesian Update Protocol and docu
 3. Constrained Refinement Protocols (P2/P3):
    * Anchor Refinement: If the evidence threshold is met (P3), update A.1_EPISTEMIC_ANCHORS. Document the superior data source and rationale in A.9.
    * DAG Enrichment: If the evidence threshold is met (P2), update A.3_CAUSAL_DAG. Ensure any new exogenous nodes are added to A.5 with appropriate DSL assumptions. Document in A.9.
+
+     **DAG Equation Format (CRITICAL - Kernel Compatibility):**
+
+     Any new or modified equations must be executable Python expressions:
+
+     ✅ CORRECT formats:
+     - `"GET('Node_A') + GET('Node_B')"` - arithmetic on nodes
+     - `"GET('Units') * GET('Price_Per_Unit')"` - multiplication
+     - `"PREV('Invested_Capital') * (1 + GET('Growth_Rate'))"` - lagged reference
+     - `""` - empty string for exogenous drivers
+
+     ❌ WRONG formats (kernel will FAIL):
+     - `"f(x, y, z)"` - descriptive notation
+     - `"Revenue = Units × Price"` - prose description
+     - `"sum of components"` - natural language
+
+     **Validation test:** Could Python's `eval()` execute this string with GET/PREV defined? If no, rewrite.
    * KG Update: If RQs provided superior historical (Y0) data, update A.2_ANALYTIC_KG. Document in A.9.
      * ATP Preservation Mandate: When modifying Y0_data, verify the update is consistent with the accounting_translation_log inherited from BASE. If the RQ evidence reveals a need to revise an ATP reconciliation (e.g., a different SBC treatment is more economically accurate), document both the Y0_data change AND the corresponding accounting_translation_log update in the kg_changelog.
 

@@ -233,6 +233,23 @@ For each artifact (A.1, A.2, A.3, A.5, A.6, A.10):
    - If REJECT or no finding touches artifact: Copy unchanged
 4. **WRITE** the complete artifact with `_S4` suffix
 
+**DAG Equation Format (CRITICAL - Kernel Compatibility):**
+
+When modifying A.3_CAUSAL_DAG equations, ensure all equations are executable Python:
+
+✅ CORRECT formats:
+- `"GET('Node_A') + GET('Node_B')"` - arithmetic on nodes
+- `"GET('Units') * GET('Price_Per_Unit')"` - multiplication
+- `"PREV('Invested_Capital') * (1 + GET('Growth_Rate'))"` - lagged reference
+- `""` - empty string for exogenous drivers
+
+❌ WRONG formats (kernel will FAIL):
+- `"f(x, y, z)"` - descriptive notation
+- `"Revenue = Units × Price"` - prose description
+- `"sum of components"` - natural language
+
+**Validation test:** Could Python's `eval()` execute this string with GET/PREV defined? If no, rewrite.
+
 **CASCADE.json Schema:**
 
 ```json

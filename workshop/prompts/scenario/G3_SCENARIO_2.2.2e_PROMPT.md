@@ -574,6 +574,23 @@ that differ from the Base Case under this scenario.
 \* For STRUCTURAL: Define structural_modifications --- changes to DAG
 nodes or equations.
 
+  **DAG Equation Format (CRITICAL - Kernel Compatibility):**
+
+  Any new or modified equations must be executable Python expressions:
+
+  ✅ CORRECT formats:
+  - `"GET('Node_A') + GET('Node_B')"` - arithmetic on nodes
+  - `"GET('Units') * GET('Price_Per_Unit')"` - multiplication
+  - `"PREV('Invested_Capital') * (1 + GET('Growth_Rate'))"` - lagged reference
+  - `""` - empty string for exogenous drivers
+
+  ❌ WRONG formats (kernel will FAIL):
+  - `"f(x, y, z)"` - descriptive notation
+  - `"Revenue = Units × Price"` - prose description
+  - `"sum of components"` - natural language
+
+  **Validation test:** Could Python's `eval()` execute this string with GET/PREV defined? If no, rewrite.
+
 \* For Lump Sums: Use EXPLICIT_SCHEDULE on an FCF adjustment driver.
 
 2\. Risk Alignment Assessment (P2):
