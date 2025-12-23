@@ -1,6 +1,6 @@
 # SOURCE Stage Orchestration
 
-> **Version:** 1.0.0
+> **Version:** 1.0.1
 > **Pipeline Position:** Stage 0 of 9 (PDF → SOURCE → BASE)
 > **Created:** 2024-12-23
 
@@ -110,9 +110,54 @@ SOURCE: UPLOAD {TICKER}
 SOURCE: UPLOAD NVDA
 ```
 
-## Implementation Reference
+## Implementation Code (MANDATORY - DO NOT IMPROVISE)
 
-See `workshop/CLAUDE.md` section "Source Document Commands" for full implementation code.
+**CRITICAL:** Use this exact Python code. Do NOT substitute with `pdftotext` or other tools.
+
+```python
+import pdfplumber
+from pdf2image import convert_from_path
+from pathlib import Path
+from datetime import datetime
+
+def extract_text(pdf_path: Path) -> str:
+    """Extract text from PDF using pdfplumber."""
+    text_parts = []
+    with pdfplumber.open(pdf_path) as pdf:
+        for i, page in enumerate(pdf.pages, 1):
+            text = page.extract_text() or ""
+            text_parts.append(f"--- Page {i} ---\n{text}")
+    return "\n\n".join(text_parts)
+
+def extract_images(pdf_path: Path, output_dir: Path) -> int:
+    """Convert PDF pages to PNG images at 150 DPI."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    images = convert_from_path(pdf_path, dpi=150)
+    for i, img in enumerate(images, 1):
+        img.save(output_dir / f"page_{i:03d}.png", "PNG")
+    return len(images)
+
+def preprocess_pdf(pdf_path: Path) -> dict:
+    """Full preprocessing: text extraction + image extraction."""
+    # Text extraction
+    text = extract_text(pdf_path)
+    md_path = pdf_path.with_suffix(".extracted.md")
+    md_path.write_text(f"# {pdf_path.stem}\n\nExtracted: {datetime.now().isoformat()}\n\n{text}")
+
+    # Image extraction
+    img_dir = pdf_path.parent / f"{pdf_path.stem}_pages"
+    page_count = extract_images(pdf_path, img_dir)
+
+    return {"text_file": md_path, "image_dir": img_dir, "pages": page_count}
+
+# Usage: For each PDF in source_library/{TICKER}/
+for pdf_path in Path("source_library/{TICKER}").glob("*.pdf"):
+    if not pdf_path.with_suffix(".extracted.md").exists():
+        result = preprocess_pdf(pdf_path)
+        print(f"Processed: {pdf_path.name} -> {result['pages']} pages")
+```
+
+**Execution:** Run this Python code via Bash tool. Both text AND image extraction are REQUIRED.
 
 ## Integration with Pipeline
 
