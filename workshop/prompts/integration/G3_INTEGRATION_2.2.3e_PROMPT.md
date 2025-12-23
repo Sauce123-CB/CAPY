@@ -153,8 +153,11 @@ python3 CVR_KERNEL_INT_2.2.3e.py \
 
 **Output:**
 - `{TICKER}_INT_T2_{YYYYMMDD}.md` - Kernel execution log + State 3→4 bridge
-- `{TICKER}_A7_VALUATION_S4.json` - Kernel output (new valuation summary)
-- `{TICKER}_A10_SCENARIO_MODEL_S4_FINAL.json` - Updated SSE if scenarios modified
+- `{TICKER}_A7_VALUATION_INT.json` - Kernel output (new valuation summary)
+- `{TICKER}_A10_SCENARIO_INT.json` - Updated SSE if scenarios modified
+- `{TICKER}_KERNEL_RECEIPT_INT.json` - Kernel execution proof (Pattern 13)
+
+**Kernel Receipt (Pattern 13):** After kernel execution, write receipt documenting kernel file, version, inputs, outputs, exit_code, and execution_time_seconds.
 
 **Turn 3: Final CVR Assembly**
 

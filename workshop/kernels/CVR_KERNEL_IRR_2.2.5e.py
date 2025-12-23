@@ -28,9 +28,14 @@ import logging
 
 FORECAST_YEARS = 20
 EPSILON = 1e-9
-KERNEL_VERSION = "G3_2.2.5e_IRR"
+KERNEL_VERSION = "G3_2.2.6e_IRR"
 SENSITIVITY_TORNADO_TOP_N = 5
 TERMINAL_G_RFR_CAP = True  # If True, Terminal g is capped at RFR
+
+# Terminal g derived from topline growth, capped at GDP × multiplier
+GDP_PROXY = 0.025  # 2.5% long-term GDP growth
+GDP_MULTIPLIER = 1.4  # Allow up to 1.4× GDP for share-gainers
+DEFAULT_ROIC_ANCHOR = 0.15  # Industry median ROIC if not in A.1
 
 
 # Configure Logging (Minimal for production)
@@ -579,48 +584,42 @@ def calculate_apv(forecast_df, dr, kg):
     pv_fcf = np.sum(fcf * discount_factors)
 
 
-    # 4. Determine Terminal Growth (g) and Terminal ROIC (r)
-    roic_T = forecast_df['ROIC'].iloc[-1]
-    terminal_roic_r = roic_T
+    # 4. Determine Terminal Growth (g) - PATCH 2.2.6e: from topline, not NOPAT
+    # === TERMINAL GROWTH DERIVATION (from topline) ===
+    revenue_growth_rates = forecast_df['Revenue'].pct_change().values[1:]
+    ebit_growth_rates = forecast_df['EBIT'].pct_change().values[1:]
 
+    revenue_g = np.mean(revenue_growth_rates[-3:]) if len(revenue_growth_rates) >= 3 else np.mean(revenue_growth_rates)
+    ebit_g = np.mean(ebit_growth_rates[-3:]) if len(ebit_growth_rates) >= 3 else np.mean(ebit_growth_rates)
 
-    # Estimate terminal growth from NOPAT trajectory
-    nopat_growth_rates = forecast_df['NOPAT'].pct_change().values[1:]
-    terminal_g_estimate = np.mean(nopat_growth_rates[-3:])  # Average of last 3 years
-    terminal_g = terminal_g_estimate
+    terminal_g_estimate = (revenue_g + ebit_g) / 2
+    terminal_g_cap = GDP_PROXY * GDP_MULTIPLIER  # 3.5%
 
-
-    # Apply Constraints
     if TERMINAL_G_RFR_CAP and rfr is not None:
-        if terminal_g > rfr:
-            logger.info(f"Capping terminal growth ({terminal_g:.4f}) at RFR ({rfr:.4f}).")
-            terminal_g = rfr
+        terminal_g_cap = min(terminal_g_cap, rfr)
 
+    terminal_g = min(terminal_g_estimate, terminal_g_cap)
+    terminal_g = max(terminal_g, 0)
 
     if terminal_g >= dr:
-        logger.warning(f"Terminal growth ({terminal_g:.4f}) >= DR ({dr:.4f}). Adjusting g to 99% of DR.")
-        terminal_g = dr * 0.99
+        logger.warning(f"Terminal g ({terminal_g:.4f}) >= DR ({dr:.4f}). Capping at 80% of DR.")
+        terminal_g = dr * 0.80
 
+    # === ROIC ANCHOR (from A.1, not modeled) ===
+    core_data_y0 = kg.get('core_data', {}).get('Y0_data', {})
+    roic_anchor = core_data_y0.get('ROIC_anchor', DEFAULT_ROIC_ANCHOR)
+    terminal_roic_r = roic_anchor  # For output compatibility
 
-    if terminal_g < 0:
-        terminal_g = 0
-
-
-    # 5. Calculate Terminal Value (Value Driver Formula)
-    nopat_T_plus_1 = nopat_T * (1 + terminal_g)
-
-
-    if abs(terminal_roic_r) > EPSILON:
-        reinvestment_rate_terminal = terminal_g / terminal_roic_r
+    if abs(roic_anchor) > EPSILON:
+        reinvestment_rate_terminal = terminal_g / roic_anchor
     else:
         reinvestment_rate_terminal = 0
 
+    reinvestment_rate_terminal = min(reinvestment_rate_terminal, 1.0)
+    reinvestment_rate_terminal = max(reinvestment_rate_terminal, 0.0)
 
-    if reinvestment_rate_terminal < 0:
-        logger.warning("Terminal Reinvestment Rate is negative. Assuming g=0.")
-        terminal_g = 0
-        reinvestment_rate_terminal = 0
-        nopat_T_plus_1 = nopat_T
+    # 5. Calculate Terminal Value (Value Driver Formula)
+    nopat_T_plus_1 = nopat_T * (1 + terminal_g)
 
 
     numerator = nopat_T_plus_1 * (1 - reinvestment_rate_terminal)
@@ -2555,7 +2554,7 @@ def execute_full_scenario_analysis(kg, dag, gim, dr_trace, base_ivps, scenario_d
 #
 # ==========================================================================================
 
-KERNEL_VERSION = "G3_2.2.5e_IRR"
+KERNEL_VERSION = "G3_2.2.6e_IRR"
 
 
 # IRR-specific constants

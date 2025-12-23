@@ -1,6 +1,6 @@
 G3 SCENARIO 2.2.2e: Probabilistic Causal Valuation
 
-> **Version:** 2.2.2e (Atomized)
+> **Version:** 2.2.3e (Atomized)
 > **Change from 2.2.1e:** Split into 3 files for improved context management. Schemas in G3_SCENARIO_2.2.2e_SCHEMAS.md, normative definitions in G3_SCENARIO_2.2.2e_NORMDEFS.md. Kernel delivered as separate file CVR_KERNEL_SCEN_2.2.2e.py.
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
@@ -771,26 +771,47 @@ Phase F: Synthesis and Emission
 
 \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
-V. ARTIFACT EMISSION CHECKLIST
+V. OUTPUT MANDATE (Atomized Artifact Emission)
 
-The SCENARIO stage produces a single consolidated artifact that captures
-the complete probabilistic analysis:
+**CRITICAL: Atomized Output (Pattern 12)**
 
-Artifact
+Each artifact MUST be written as an **individual file**. DO NOT embed JSON in markdown.
 
-Schema
+### T1 Required Outputs
 
-Description
+| File | Content |
+|------|---------|
+| `{TICKER}_SCEN_EXECUTION_ARGS_SCEN.json` | Scenario definitions, probabilities, interventions (kernel input) |
+| `{TICKER}_N6_SCENARIO_SCEN.md` | Scenario synthesis narrative |
 
-A.10_SCENARIO_MODEL_OUTPUT
+### T2 Required Outputs
 
-G3_SCENARIO_2.2.2e_SCHEMAS.md
+| File | Content |
+|------|---------|
+| `{TICKER}_A10_SCENARIO_SCEN.json` | Kernel output: SSE results, distribution, E[IVPS] |
+| `{TICKER}_KERNEL_RECEIPT_SCEN.json` | Kernel execution proof (Pattern 13) |
 
-Consolidated artifact containing scenario definitions, probability
-traces, intervention traces, SSE results, distributional analysis, and
-analytical synthesis
+### Kernel Receipt Schema (Pattern 13)
 
-Emission Format: JSON, validated against schema.
+After kernel execution, write receipt:
+```json
+{
+  "artifact_type": "KERNEL_EXECUTION_RECEIPT",
+  "ticker": "{TICKER}",
+  "stage": "SCEN",
+  "timestamp": "{ISO8601}",
+  "kernel": {"file": "CVR_KERNEL_SCEN_2_2_2e.py", "version": "G3_2.2.3e_SCEN"},
+  "inputs": ["SCEN_EXECUTION_ARGS", "A2", "A3", "A5", "A6"],
+  "outputs": ["A10_SCENARIO"],
+  "exit_code": 0,
+  "execution_time_seconds": null
+}
+```
 
-State Transition: Upon successful emission, the CVR transitions from MRC
-State 2 (deterministic) to MRC State 3 (probabilistic).
+### Anti-Patterns (DO NOT DO)
+
+- Do NOT embed JSON in markdown
+- Do NOT produce "unified emission" documents
+- Do NOT return file contents to orchestrator (write to disk, return filepath only)
+
+State Transition: Upon successful emission, the CVR transitions from MRC State 2 (deterministic) to MRC State 3 (probabilistic).

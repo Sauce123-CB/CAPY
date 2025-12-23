@@ -1,4 +1,4 @@
-G3 IRR 2.2.5e: Expected Return Analysis
+G3 IRR 2.2.6e: Expected Return Analysis
 ________________
 
 
@@ -96,9 +96,11 @@ The IRR stage executes across two turns to separate analytical judgment from det
 - Format A.14 output
 
 **Output:**
-- A.14_IRR_ANALYSIS artifact
-- Executive summary narrative
-- Filename: {TICKER}_IRR_T2_{YYYYMMDD}.md
+- `{TICKER}_A14_IRR_ANALYSIS_IRR.json` - Kernel output (IRR analysis)
+- `{TICKER}_KERNEL_RECEIPT_IRR.json` - Kernel execution proof (Pattern 13)
+- `{TICKER}_N7_IRR_IRR.md` - Executive summary narrative
+
+**Kernel Receipt (Pattern 13):** After kernel execution, write receipt documenting kernel file, version, inputs, outputs, exit_code, and execution_time_seconds.
 
 **Critical:** T2 performs NO reasoning. All analytical judgment is locked in A.13.
 
@@ -429,18 +431,27 @@ Output: Complete IRR stage artifacts
 ________________
 
 
-V. ARTIFACT EMISSION CHECKLIST
-The IRR stage produces two new artifacts:
-Artifact
-        Schema Reference
-        Content
-        A.13_RESOLUTION_TIMELINE
-        G3_IRR_2.2.5e_SCHEMAS.md
-        ρ estimates per scenario with evidence traces
-        A.14_IRR_ANALYSIS
-        G3_IRR_2.2.5e_SCHEMAS.md
-        Full IRR analysis including anchors, null case, forks, distribution, sanity checks
-        State Transition:
+V. OUTPUT MANDATE (Atomized Artifact Emission)
+
+**CRITICAL: Atomized Output (Pattern 12)**
+
+Each artifact MUST be written as an **individual file**. DO NOT embed JSON in markdown.
+
+### T1 Required Outputs
+
+| File | Content |
+|------|---------|
+| `{TICKER}_A13_RESOLUTION_IRR.json` | Resolution timeline with ρ estimates per scenario |
+
+### T2 Required Outputs
+
+| File | Content |
+|------|---------|
+| `{TICKER}_A14_IRR_ANALYSIS_IRR.json` | Full IRR analysis (kernel output) |
+| `{TICKER}_KERNEL_RECEIPT_IRR.json` | Kernel execution proof (Pattern 13) |
+| `{TICKER}_N7_IRR_IRR.md` | Executive summary narrative |
+
+### State Transition
 Upon successful emission, the CVR transitions from State 4 (Finalized) to State 5 (Expected Return).
 CVR_STATE_5 = {
   CVR_STATE_4,                    // All prior artifacts (A.1-A.12)
