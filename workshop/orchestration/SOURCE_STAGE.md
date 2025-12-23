@@ -110,54 +110,63 @@ SOURCE: UPLOAD {TICKER}
 SOURCE: UPLOAD NVDA
 ```
 
-## Implementation Code (MANDATORY - DO NOT IMPROVISE)
+## Implementation Code (MANDATORY - COPY VERBATIM)
 
-**CRITICAL:** Use this exact Python code. Do NOT substitute with `pdftotext` or other tools.
+**⚠️ COPY AND PASTE THIS EXACT SCRIPT. DO NOT WRITE YOUR OWN VERSION.**
+
+Replace `{TICKER}` with actual ticker and run via `python3 << 'EOF' ... EOF`:
 
 ```python
 import pdfplumber
 from pdf2image import convert_from_path
 from pathlib import Path
 from datetime import datetime
+import sys
 
-def extract_text(pdf_path: Path) -> str:
-    """Extract text from PDF using pdfplumber."""
+TICKER = "{TICKER}"  # <-- REPLACE THIS
+SOURCE_DIR = Path(f"source_library/{TICKER}")
+
+def preprocess_pdf(pdf_path):
+    print(f"Processing: {pdf_path.name}")
+
+    # === TEXT EXTRACTION (pdfplumber) ===
     text_parts = []
     with pdfplumber.open(pdf_path) as pdf:
         for i, page in enumerate(pdf.pages, 1):
             text = page.extract_text() or ""
             text_parts.append(f"--- Page {i} ---\n{text}")
-    return "\n\n".join(text_parts)
 
-def extract_images(pdf_path: Path, output_dir: Path) -> int:
-    """Convert PDF pages to PNG images at 150 DPI."""
-    output_dir.mkdir(parents=True, exist_ok=True)
+    md_path = pdf_path.with_suffix(".extracted.md")
+    md_path.write_text(f"# {pdf_path.stem}\n\nExtracted: {datetime.now().isoformat()}\n\n" + "\n\n".join(text_parts))
+    print(f"  → Text: {md_path.name}")
+
+    # === IMAGE EXTRACTION (pdf2image) - REQUIRED ===
+    img_dir = pdf_path.parent / f"{pdf_path.stem}_pages"
+    img_dir.mkdir(parents=True, exist_ok=True)
     images = convert_from_path(pdf_path, dpi=150)
     for i, img in enumerate(images, 1):
-        img.save(output_dir / f"page_{i:03d}.png", "PNG")
+        img.save(img_dir / f"page_{i:03d}.png", "PNG")
+    print(f"  → Images: {img_dir.name}/ ({len(images)} pages)")
+
     return len(images)
 
-def preprocess_pdf(pdf_path: Path) -> dict:
-    """Full preprocessing: text extraction + image extraction."""
-    # Text extraction
-    text = extract_text(pdf_path)
-    md_path = pdf_path.with_suffix(".extracted.md")
-    md_path.write_text(f"# {pdf_path.stem}\n\nExtracted: {datetime.now().isoformat()}\n\n{text}")
-
-    # Image extraction
-    img_dir = pdf_path.parent / f"{pdf_path.stem}_pages"
-    page_count = extract_images(pdf_path, img_dir)
-
-    return {"text_file": md_path, "image_dir": img_dir, "pages": page_count}
-
-# Usage: For each PDF in source_library/{TICKER}/
-for pdf_path in Path("source_library/{TICKER}").glob("*.pdf"):
+# Process all PDFs
+for pdf_path in sorted(SOURCE_DIR.glob("*.pdf")):
     if not pdf_path.with_suffix(".extracted.md").exists():
-        result = preprocess_pdf(pdf_path)
-        print(f"Processed: {pdf_path.name} -> {result['pages']} pages")
+        preprocess_pdf(pdf_path)
+    else:
+        print(f"Skipping (already extracted): {pdf_path.name}")
+
+print(f"\nDone. Verify both .extracted.md AND _pages/ folders exist.")
 ```
 
-**Execution:** Run this Python code via Bash tool. Both text AND image extraction are REQUIRED.
+**Verification after running:**
+```bash
+ls source_library/{TICKER}/*.extracted.md     # Text files
+ls -d source_library/{TICKER}/*_pages/        # Image folders (MUST EXIST)
+```
+
+**If `_pages/` folders are missing, preprocessing FAILED. Re-run the script.**
 
 ## Integration with Pipeline
 
