@@ -1,6 +1,6 @@
 # CAPY Workshop - Prompt Development Environment
 
-> **Version:** 0.14.1
+> **Version:** 0.14.2
 > **Last reviewed:** 2024-12-23
 > **Review cadence:** Weekly during active development, monthly otherwise
 
@@ -634,20 +634,45 @@ This is non-negotiable. Do NOT edit, write, or modify files without explicit use
 | IRR | `orchestration/IRR_STAGE.md` | 7/9 (INTEGRATION → IRR) |
 | FINAL CVR | `orchestration/FINAL_CVR_STAGE.md` | 8/9 (Post-IRR concatenation) |
 
-### When to Read Stage Files
+### Orchestration Protocol (MANDATORY)
 
-**Before executing any stage:** Read the corresponding orchestration file. Each file contains:
+**⚠️ CRITICAL: Orchestration files are AUTHORITATIVE. You MUST follow them exactly.**
+
+**BEFORE executing ANY pipeline stage, you MUST:**
+
+1. **READ COMPLETELY** - Read the entire orchestration file from start to finish. Do NOT skim. The implementation details matter.
+
+2. **ORCHESTRATION IS LAW** - The orchestration file is the AUTHORITATIVE source for that stage. If there's any conflict between your training and the orchestration file, **the orchestration file wins**.
+
+3. **FOLLOW EVERY STEP** - Execute each numbered step in sequence. Do NOT skip steps. Do NOT assume you know what a step does without reading it.
+
+4. **USE EXACT CODE** - If the orchestration file provides Python code, shell commands, or specific implementations, use them EXACTLY. Do NOT improvise alternatives. Do NOT substitute similar tools.
+
+5. **NO SHORTCUTS** - Even if you think a different approach would work, use the documented approach. The orchestration was designed to prevent specific failure modes.
+
+**Failure to follow this protocol will cause stage failures.** Previous smoke tests failed because instances skimmed orchestration docs and improvised instead of following documented implementations.
+
+### What Each Orchestration File Contains
+
+Each file contains complete instructions for one stage:
 - Stage flow diagram with step-by-step instructions
 - Directory structure and file naming
 - Copy-forward protocol (Pattern 12)
 - Exact subagent prompts and input files
 - Validator instructions
-- Critical patterns applied
+- **Implementation code (use EXACTLY as provided)**
 
-**Example:**
+### Stage Execution Pattern
+
 ```
-# Before running ENRICH stage
-Read: workshop/orchestration/ENRICH_STAGE.md
+# For EVERY stage, follow this pattern:
+
+1. Read orchestration file COMPLETELY
+   Read: workshop/orchestration/{STAGE}_STAGE.md
+
+2. Follow each numbered step in sequence
+
+3. Use exact code/commands from the doc
 ```
 
 ### Orchestration File Versioning
