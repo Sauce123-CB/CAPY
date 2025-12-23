@@ -128,6 +128,42 @@ The Kernel executes a simplified **Adjusted Present Value (APV)** calculation.
 
 ### Discount Rate (DR)
 
+#### Discount Rate Philosophy (READ THIS FIRST)
+
+This DR framework reflects the preferences of a concentrated portfolio
+practitioner (~20 positions), NOT institutional WACC or CAPM theory.
+
+**Why this matters:**
+- We are NOT trying to calculate the "theoretically correct" discount rate
+- We ARE encoding a specific utility function: lower required returns for
+  stable names, higher for volatile/crisis-correlated names
+- The X multiplier [0.5, 2.0] maps directly to this preference function
+- Size premiums, EM premiums, illiquidity premiums are NOT added separately —
+  they are already reflected in RFR (for country risk) and X (for company risk)
+
+**DO NOT "improve" this formula.** Adding extra premia, adjusting for factors
+not specified, or using institutional WACC logic will produce incorrect results.
+
+#### Currency-Matched RFR (MANDATORY)
+
+RFR MUST match the reporting currency of the financials. Use WebSearch to
+look up the current 10-year government bond yield for the reporting currency:
+
+| Reporting Currency | RFR Benchmark |
+|--------------------|---------------|
+| USD | US Treasury 10Y |
+| BRL | Brazil Government Bond 10Y |
+| EUR | German Bund 10Y |
+| GBP | UK Gilt 10Y |
+| JPY | Japan Government Bond 10Y |
+
+**Why currency-matched RFR:**
+- Country/sovereign risk is already priced into local government bonds
+- Adding separate EM/country premia would double-count this risk
+- The formula DR = RFR + (ERP × X) only produces correct results with matched currency
+
+#### Formula
+
 $$DR = RFR + (ERP \times X)$$
 
 Where ERP = 5.0% and X ∈ [0.5, 2.0].

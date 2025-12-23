@@ -242,14 +242,48 @@ The ENRICHMENT Kernel (G3_2.2.2e) supports six propagation modes:
 
 ## B.3. Discount Rate Methodology
 
-The Discount Rate is derived using a simplified model combining market parameters with a qualitative risk assessment.
+### Discount Rate Philosophy (READ THIS FIRST)
+
+This DR framework reflects the preferences of a concentrated portfolio
+practitioner (~20 positions), NOT institutional WACC or CAPM theory.
+
+**Why this matters:**
+- We are NOT trying to calculate the "theoretically correct" discount rate
+- We ARE encoding a specific utility function: lower required returns for
+  stable names, higher for volatile/crisis-correlated names
+- The X multiplier [0.5, 2.0] maps directly to this preference function
+- Size premiums, EM premiums, illiquidity premiums are NOT added separately —
+  they are already reflected in RFR (for country risk) and X (for company risk)
+
+**DO NOT "improve" this formula.** Adding extra premia, adjusting for factors
+not specified, or using institutional WACC logic will produce incorrect results.
+
+### Currency-Matched RFR (MANDATORY)
+
+RFR MUST match the reporting currency of the financials. Use WebSearch to
+look up the current 10-year government bond yield for the reporting currency:
+
+| Reporting Currency | RFR Benchmark |
+|--------------------|---------------|
+| USD | US Treasury 10Y |
+| BRL | Brazil Government Bond 10Y |
+| EUR | German Bund 10Y |
+| GBP | UK Gilt 10Y |
+| JPY | Japan Government Bond 10Y |
+
+**Why currency-matched RFR:**
+- Country/sovereign risk is already priced into local government bonds
+- Adding separate EM/country premia would double-count this risk
+- The formula DR = RFR + (ERP × X) only produces correct results with matched currency
+
+### Formula
 
 **Formula:** DR = RFR + (ERP × X)
 
 Where ERP = 5.0% and X ∈ [0.5, 2.0].
 
 **Components:**
-  - RFR (Risk-Free Rate): Proxy is the 10-Year US Treasury Yield at the valuation date.
+  - RFR (Risk-Free Rate): 10-Year government bond yield in the REPORTING CURRENCY (see table above).
   - ERP (Equity Risk Premium): Standardized at 5.0% per the G3 ERP Convention Mandate.
   - X (Risk Multiplier): Qualitative assessment of company-specific risk relative to the **global universe of 50,000+ securities** (NOT S&P 500).
 
