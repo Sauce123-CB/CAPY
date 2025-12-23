@@ -640,17 +640,19 @@ This is non-negotiable. Do NOT edit, write, or modify files without explicit use
 
 **BEFORE executing ANY pipeline stage, you MUST:**
 
-1. **READ COMPLETELY** - Read the entire orchestration file from start to finish. Do NOT skim. The implementation details matter.
+1. **NO EXPLORATION** - Do NOT explore the codebase, do NOT try to understand the "full picture", do NOT use Task/Explore agents to survey the system. The orchestration docs contain everything you need. Just read them and execute.
 
-2. **ORCHESTRATION IS LAW** - The orchestration file is the AUTHORITATIVE source for that stage. If there's any conflict between your training and the orchestration file, **the orchestration file wins**.
+2. **SEQUENTIAL EXECUTION** - Read the orchestration doc for the CURRENT stage only. Execute it. Then read the next stage's doc. You don't need context beyond the current stage.
 
-3. **FOLLOW EVERY STEP** - Execute each numbered step in sequence. Do NOT skip steps. Do NOT assume you know what a step does without reading it.
+3. **READ COMPLETELY** - Read the entire orchestration file from start to finish. Do NOT skim. The implementation details matter.
 
-4. **USE EXACT CODE** - If the orchestration file provides Python code, shell commands, or specific implementations, use them EXACTLY. Do NOT improvise alternatives. Do NOT substitute similar tools.
+4. **ORCHESTRATION IS LAW** - The orchestration file is the AUTHORITATIVE source for that stage. If there's any conflict between your training and the orchestration file, **the orchestration file wins**.
 
-5. **NO SHORTCUTS** - Even if you think a different approach would work, use the documented approach. The orchestration was designed to prevent specific failure modes.
+5. **FOLLOW EVERY STEP** - Execute each numbered step in sequence. Do NOT skip steps. Do NOT assume you know what a step does without reading it.
 
-**Failure to follow this protocol will cause stage failures.** Previous smoke tests failed because instances skimmed orchestration docs and improvised instead of following documented implementations.
+6. **USE EXACT CODE** - If the orchestration file provides Python code, shell commands, or specific implementations, use them EXACTLY. Do NOT improvise alternatives. Do NOT substitute similar tools.
+
+**Failure to follow this protocol will cause stage failures.** Previous smoke tests failed because instances explored instead of executing, or improvised instead of following documented implementations.
 
 ### What Each Orchestration File Contains
 

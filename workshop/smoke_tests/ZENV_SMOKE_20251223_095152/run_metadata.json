@@ -1,0 +1,35 @@
+{
+  "ticker": "ZENV",
+  "run_id": "ZENV_SMOKE_20251223_095152",
+  "run_timestamp": "2024-12-23T09:51:52Z",
+  "prompt_versions": {
+    "base_prompt": "G3BASE_2.2.3e_PROMPT.md",
+    "base_schemas": "G3BASE_2.2.3e_SCHEMAS.md",
+    "base_normdefs": "G3BASE_2.2.3e_NORMDEFS.md",
+    "base_kernel": "BASE_CVR_KERNEL_2.2.3e.py",
+    "refine": "BASE_T1_REFINE_v1_3.md",
+    "enrich_prompt": "G3ENRICH_2.2.3e_PROMPT.md",
+    "enrich_schemas": "G3ENRICH_2.2.3e_SCHEMAS.md",
+    "enrich_normdefs": "G3ENRICH_2.2.3e_NORMDEFS.md",
+    "enrich_kernel": "CVR_KERNEL_ENRICH_2.2.3e.py",
+    "rq_gen": "RQ_Gen_2_2_3e.md"
+  },
+  "source_docs": [
+    "20250911 - IR - ZENV - Zenvia Inc 2025 Q2 - 9 pages.extracted.md",
+    "20250911 Q2 6Ksec.gov_Archives_edgar_data_1836934_000129281425003268_zenvfs2q25_6k.htm.extracted.md",
+    "20250915 - 6K - ZENV - Current Report of Foreign - 1 page.extracted.md",
+    "20251201 - 6K - ZENV - Current Report of Foreign - 1 page.extracted.md",
+    "20251202 - 6K - ZENV - Current Report of Foreign - 6 pages.extracted.md",
+    "ZENV - T_E_document_dated_11-12-2025.extracted.md"
+  ],
+  "stages": {
+    "source": { "status": "completed", "timestamp": "2024-12-23T09:52:00Z" },
+    "base_t1": { "status": "pending" },
+    "base_refine": { "status": "pending" },
+    "base_t2": { "status": "pending" },
+    "rq": { "status": "pending" },
+    "enrich_t1": { "status": "pending" },
+    "enrich_t2": { "status": "pending" }
+  },
+  "validation_result": null
+}
