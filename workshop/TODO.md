@@ -261,6 +261,22 @@
 
 **Trigger:** If LLM orchestration continues to have >10% failure rate after pattern hardening, build Python orchestrator. METR benchmark: Claude Code 50% failure at 5hrs. CAPY is ~3hrs. Target: <10% failure with patterns.
 
+**Architecture (if built):**
+```
+Option: Hybrid (interactive + batch)
+───────────────────────────────────────
+Interactive/debug: Claude Code + CLAUDE.md (keep current)
+Production batch:  python capy_orchestrator.py (new)
+
+Both share: prompts/, kernels/, validators/, schemas
+```
+
+- Python CLI at `workshop/scripts/capy_orchestrator.py`
+- Uses Anthropic SDK for LLM steps, subprocess for kernels, shutil for files
+- CLAUDE.md documents both modes
+
+**Counterpoint (2024-12-23):** Claude-based orchestration is working reasonably well during ZENV smoke test. Key advantage: real-time observability. User can watch it churn, see intermediate outputs, intervene if needed. Python batch would be "fire and forget" - harder to debug when things go wrong. May want both modes rather than replacing one with the other.
+
 ---
 
 ## Suggested Review Cadence
