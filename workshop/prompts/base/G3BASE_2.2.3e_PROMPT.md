@@ -50,8 +50,8 @@ If the company trades on a different exchange (e.g., ADR), note both:
 - `price_currency`: Currency of market price (e.g., "USD")
 - `fx_rate_to_reporting`: FX rate if currencies differ
 
-- **Scope:** Execute Phases A-D (Sections III-IV). Produce analytical narratives (I-IV) and artifacts A.1-A.6 that logically entail A.7.
-- **Output:** Unified emission per Section V. Filename: `{TICKER}_BASE2.2.3eO_T1_{YYYYMMDD}.md`
+- **Scope:** Execute Phases A-D (Sections III-IV). Produce analytical narratives (N1-N4) and artifacts A.1-A.6 that logically entail A.7.
+- **Output:** Atomized files per Section V. Write 9 individual files (4 narratives + 5 artifacts) using the Write tool.
 - **Exclusion:** Do NOT compute A.7. Kernel is provided for semantic alignment only.
 
 **Turn 2: Validation & Execution**
@@ -61,10 +61,10 @@ If the company trades on a different exchange (e.g., ADR), note both:
   - This prompt (G3BASE_2.2.3e_PROMPT.md)
   - G3BASE_2.2.3e_SCHEMAS.md
   - G3BASE_2.2.3e_NORMDEFS.md
-  - Turn 1 Output ({TICKER}_BASE2.2.3eO_T1_{YYYYMMDD}.md)
+  - Turn 1 artifacts: All 9 files from 01_T1/ folder (A.1-A.6 JSON + N1-N4 markdown)
   - BASE_CVR_KERNEL_2.2.3e.py
-- **Scope:** Validate Turn 1 artifacts for JSON integrity and internal consistency, repair if needed, execute kernel, produce A.7, emit unified report.
-- **Output:** Complete MRC State 1 with executed A.7. Filename: `{TICKER}_BASE2.2.3eO_T2_{YYYYMMDD}.md`
+- **Scope:** Validate Turn 1 artifacts for JSON integrity and internal consistency, repair if needed, execute kernel via Bash, write A.7 to disk.
+- **Output:** A.7 valuation artifact + kernel receipt. See Section V for filenames.
 
 ### Variable Substitution
 
@@ -428,59 +428,67 @@ metadata
 
 or Narrative #4 for downstream sensitivity configuration.
 
-**Turn 1 Terminus:** Upon completing pre-emission validation, emit the unified output per Section V. This concludes Turn 1. Turn 2 will perform secondary validation, execute the kernel, and produce the final unified report inclusive of A.7.
+**Turn 1 Terminus:** Upon completing pre-emission validation, write all 9 atomized files per Section V. This concludes Turn 1. Turn 2 will perform secondary validation, execute the kernel, and write A.7 + kernel receipt to disk.
 
-**V. OUTPUT MANDATE (The Unified MRC State Vector)**
+**V. OUTPUT MANDATE (Atomized Artifact Emission)**
 
-*This section governs Turn 1 output. Turn 2 output encompasses this structure plus executed A.7 and any validation notes.*
+*This section governs Turn 1 output. Turn 2 adds A.7 via kernel execution.*
 
-Emit the complete MRC State 1 in a single, unified block. Structure:
-Narratives
+### CRITICAL: Atomized Output (Pattern 12)
 
-followed immediately by JSON artifacts.
+**DO NOT emit a single consolidated markdown file with embedded JSON.**
 
-\[START OF UNIFIED EMISSION\]
+Each artifact and narrative MUST be written as an **individual file** using the Write tool. This prevents truncation and ensures downstream stages receive complete inputs.
 
-Analytical Narratives (I-IV)
+### Turn 1 Required Outputs (9 files)
 
-(Emit Narratives 1-4 with clear section headings.)
+Write each file individually to the analysis folder:
 
-MRC State 1 Artifacts (A.1-A.6)
+**Narratives (4 files):**
+| File | Content |
+|------|---------|
+| `{TICKER}_N1_THESIS_BASE.md` | Investment thesis narrative |
+| `{TICKER}_N2_IC_BASE.md` | Invested capital modeling narrative |
+| `{TICKER}_N3_ECON_GOV_BASE.md` | Economic governor constraints narrative |
+| `{TICKER}_N4_RISK_BASE.md` | Risk assessment narrative |
 
-(Emit JSON object containing 5 artifacts, strictly adhering to G3BASE_2.2.2e_SCHEMAS.md.)
+**Artifacts (5 files):**
+| File | Content |
+|------|---------|
+| `{TICKER}_A1_EPISTEMIC_ANCHORS_BASE.json` | Bayesian priors, ROIC_anchor |
+| `{TICKER}_A2_ANALYTIC_KG_BASE.json` | Knowledge graph, Y0_data, currency |
+| `{TICKER}_A3_CAUSAL_DAG_BASE.json` | DAG structure, coverage manifest |
+| `{TICKER}_A5_GIM_BASE.json` | Gestalt Impact Map |
+| `{TICKER}_A6_DR_BASE.json` | Discount rate derivation trace |
 
-{
+**Human Audit File (optional):**
+| File | Content |
+|------|---------|
+| `{TICKER}_BASE_T1_AUDIT.md` | Summary for human review (NOT machine input) |
 
-\"A.1_EPISTEMIC_ANCHORS\": {\...},
+### Turn 2 Required Outputs (1 file + kernel receipt)
 
-\"A.2_ANALYTIC_KG\": {
+| File | Content |
+|------|---------|
+| `{TICKER}_A7_VALUATION_BASE.json` | Kernel execution output |
+| `{TICKER}_KERNEL_RECEIPT_BASE.json` | Execution proof (Pattern 13) |
 
-\"metadata\": {\"atp_complexity_assessment\": \"\...\", \"atp_mode\":
-\"\...\"},
+### Output Protocol
 
-\"core_data\": {\...},
+1. **Write each artifact as pure JSON** - no markdown wrapper, no code fences
+2. **Write each narrative as markdown** - clear section headings
+3. **Use exact filenames above** - case-sensitive, underscores required
+4. **Validate JSON before writing** - must parse without errors
+5. **Include ROIC_anchor in A.1** - used for terminal reinvestment calculation
+6. **Include currency fields in A.2.market_context** - reporting_currency required
 
-\"accounting_translation_log\": {\...},
+### Anti-Patterns (DO NOT DO)
 
-\"market_context\": {\...},
-
-\"share_data\": {\...}
-
-},
-
-\"A.3_CAUSAL_DAG\": {
-
-\"DAG\": {\...},
-
-\"coverage_manifest\": {\...}
-
-},
-
-\"A.5_GESTALT_IMPACT_MAP\": {\...},
-
-\"A.6_DR_DERIVATION_TRACE\": {\...},
-
-}
+❌ Single consolidated markdown file with embedded JSON blocks
+❌ JSON wrapped in ```json code fences
+❌ Multiple artifacts in one file
+❌ Omitting files (all 9 T1 files required)
+❌ Using old naming convention ({TICKER}_BASE2.2.3eO_T1.md)
 
 ---
 
@@ -490,29 +498,30 @@ MRC State 1 Artifacts (A.1-A.6)
 
 | File | Description |
 |------|-------------|
-| `G3BASE_2.2.2e_PROMPT.md` | BASE stage prompt (this document) |
-| `G3BASE_2.2.2e_SCHEMAS.md` | Artifact schemas (Appendix A) |
-| `G3BASE_2.2.2e_NORMDEFS.md` | DSL and normative definitions (Appendix B) |
-| `BASE_CVR_KERNEL_2.2.2e.py` | BASE kernel (execution) |
+| `G3BASE_2.2.3e_PROMPT.md` | BASE stage prompt (this document) |
+| `G3BASE_2.2.3e_SCHEMAS.md` | Artifact schemas (Appendix A) |
+| `G3BASE_2.2.3e_NORMDEFS.md` | DSL and normative definitions (Appendix B) |
+| `BASE_CVR_KERNEL_2.2.3e.py` | BASE kernel (execution) |
 
-### Output Files
+### Output Files (Canonical Snapshot Naming)
 
-**Pattern:** `{TICKER}_{STAGE}{VERSION}O_T{N}_{YYYYMMDD}.md`
+**Pattern:** `{TICKER}_{ARTIFACT}_{STAGE}.{ext}`
 
 | Element | Description |
 |---------|-------------|
 | `{TICKER}` | Company identifier (uppercase) |
-| `{STAGE}` | Pipeline stage: `BASE`, `RQ`, `ENRICH` |
-| `{VERSION}` | Pipeline version (e.g., `2.2.2e`) |
-| `O` | Output file indicator |
-| `T{N}` | Turn number (T1, T2) — omit for single-turn stages |
-| `{YYYYMMDD}` | Valuation as-of date |
+| `{ARTIFACT}` | Artifact ID: `A1_EPISTEMIC_ANCHORS`, `N1_THESIS`, etc. |
+| `{STAGE}` | Pipeline stage suffix: `BASE`, `RQ`, `ENRICH`, `SCEN`, `SC`, `INT`, `IRR` |
+| `{ext}` | Extension: `.json` for artifacts, `.md` for narratives |
 
 ### Examples
 
 ```
-NVDA_BASE2.2.2eO_T1_20251207.md    # Turn 1: Narratives + A.1-A.6
-NVDA_BASE2.2.2eO_T2_20251207.md    # Turn 2: Unified report + A.7
-AAPL_BASE2.2.2eO_T1_20251215.md
-AAPL_BASE2.2.2eO_T2_20251215.md
+NVDA_A1_EPISTEMIC_ANCHORS_BASE.json   # A.1 artifact
+NVDA_A2_ANALYTIC_KG_BASE.json         # A.2 artifact (includes currency)
+NVDA_A5_GIM_BASE.json                 # A.5 artifact
+NVDA_N1_THESIS_BASE.md                # Narrative 1
+NVDA_N2_IC_BASE.md                    # Narrative 2
+NVDA_A7_VALUATION_BASE.json           # Kernel output (Turn 2)
+NVDA_KERNEL_RECEIPT_BASE.json         # Execution proof (Turn 2)
 ```
