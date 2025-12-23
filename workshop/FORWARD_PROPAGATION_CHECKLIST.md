@@ -14,6 +14,7 @@ These items have been propagated to ALL stages - no action needed:
 - [x] DR Philosophy + Currency-Matched RFR (all NORMDEFS files)
 - [x] X Range [0.5, 2.0] (all NORMDEFS files)
 - [x] DAG Equation Format GET/PREV syntax (BASE, REFINE, ENRICH, SCENARIO, INT prompts)
+- [x] ROIC_anchor in A.2.Y0_data (BASE prompt line 538, ENRICH prompt line 282)
 
 ---
 

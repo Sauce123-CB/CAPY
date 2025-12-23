@@ -535,7 +535,7 @@ Write each file individually to the analysis folder:
 2. **Write each narrative as markdown** - clear section headings
 3. **Use exact filenames above** - case-sensitive, underscores required
 4. **Validate JSON before writing** - must parse without errors
-5. **Include ROIC_anchor in A.1** - used for terminal reinvestment calculation
+5. **Include ROIC_anchor in A.1 AND A.2.Y0_data** - industry median ROIC (e.g., 0.12-0.18) from base rates; kernel reads from Y0_data for terminal reinvestment
 6. **Include currency fields in A.2.market_context** - reporting_currency required
 
 ### Anti-Patterns (DO NOT DO)

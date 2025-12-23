@@ -279,6 +279,7 @@ Iterate through the assumptions, executing the Bayesian Update Protocol and docu
      **Validation test:** Could Python's `eval()` execute this string with GET/PREV defined? If no, rewrite.
    * KG Update: If RQs provided superior historical (Y0) data, update A.2_ANALYTIC_KG. Document in A.9.
      * ATP Preservation Mandate: When modifying Y0_data, verify the update is consistent with the accounting_translation_log inherited from BASE. If the RQ evidence reveals a need to revise an ATP reconciliation (e.g., a different SBC treatment is more economically accurate), document both the Y0_data change AND the corresponding accounting_translation_log update in the kg_changelog.
+     * ROIC_anchor Preservation: Y0_data must retain ROIC_anchor from BASE (industry median ROIC for terminal reinvestment). Only update if RQ evidence provides superior industry base rate data; document any change in anchor_changelog.
 
 4. Economic Governor Check:
    * Before proceeding to execution, verify that the refined GIM produces a plausible terminal state.
